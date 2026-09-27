@@ -155,10 +155,11 @@ vallejo['70.995'];
 
 - `rgb`: `#RRGGBB`
 - `cmyk`: Vallejo's own print values from the chart, in percent
-- `oklch`: computed from `rgb` by `src/color.js`; `l` (0–1), `c`, `h`
-  (degrees, `null` for achromatic colors)
+- `oklch`: computed from `rgb` by `hexToOklch` in `src/color/oklab.ts`; `l`
+  (0–1), `c`, `h` (degrees, `null` for achromatic colors)
 
-To recompute `oklch` after changing `rgb` values:
+To recompute `oklch` after changing `rgb` values (Node 22.18 or later, which
+runs the TypeScript import directly):
 
 ```sh
 node scripts/add-oklch.js data/vallejo.json

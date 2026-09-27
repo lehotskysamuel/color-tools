@@ -147,6 +147,11 @@ export function hexToLinear(hex: string): Vec3 {
   ];
 }
 
+/** "#rrggbb" -> OKLCh. Hue is still computed for neutrals, where it carries no meaning. */
+export function hexToOklch(hex: string): Vec3 {
+  return oklabToOklch(linearSrgbToOklab(hexToLinear(hex)));
+}
+
 /** Linear sRGB -> "#rrggbb". Out-of-gamut channels are clamped. */
 export function linearToHex(rgb: Vec3): string {
   return (
