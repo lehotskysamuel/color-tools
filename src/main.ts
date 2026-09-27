@@ -36,6 +36,7 @@ const store = createStore({
   paints: [],
   hover: null,
   cut: 'wedge',
+  wireframe: false,
 });
 
 const lightness = new LightnessSlice(store, $('b1-stat'));
@@ -71,6 +72,8 @@ for (const input of document.querySelectorAll<HTMLInputElement>('#cut-mode input
   input.addEventListener('change', () => input.checked && store.set({ cut: input.value as CutMode }));
 }
 $('reset-view').addEventListener('click', () => solid.resetView());
+const wireButton = $<HTMLButtonElement>('wireframe');
+wireButton.addEventListener('click', () => store.set({ wireframe: !store.get().wireframe }));
 
 // Picked-color readout
 const readout = document.querySelector<HTMLElement>('.readout')!;
@@ -81,7 +84,7 @@ const pickHex = $<HTMLOutputElement>('pick-hex');
 const pickOklab = $<HTMLOutputElement>('pick-oklab');
 
 function renderControls(): void {
-  const { L, h, pick, pickPaint, cut } = store.get();
+  const { L, h, pick, pickPaint, cut, wireframe } = store.get();
   if (document.activeElement !== lSlider) lSlider.value = String(L);
   if (document.activeElement !== hSlider) hSlider.value = String(Math.round(h) % 360);
   lValue.value = L.toFixed(3);
@@ -95,12 +98,12 @@ function renderControls(): void {
   readout.classList.toggle('has-paint', pickPaint !== null);
   const radio = document.querySelector<HTMLInputElement>(`#cut-mode input[value="${cut}"]`);
   if (radio) radio.checked = true;
+  wireButton.setAttribute('aria-pressed', String(wireframe));
 }
 
 store.subscribe((_s, changed) => {
-  if (changed.has('L') || changed.has('h') || changed.has('pick') || changed.has('pickPaint') || changed.has('cut')) {
-    renderControls();
-  }
+  const keys = ['L', 'h', 'pick', 'pickPaint', 'cut', 'wireframe'] as const;
+  if (keys.some((key) => changed.has(key))) renderControls();
 });
 renderControls();
 

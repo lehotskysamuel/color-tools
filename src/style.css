@@ -448,6 +448,25 @@ input[type='range']:focus-visible {
   background: var(--bg);
 }
 
+.button[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.button[aria-pressed='true']:hover {
+  background: var(--ink-2);
+}
+
+/* A view option floating over its plot, clear of the panel's controls row. */
+.plot-action {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  background: var(--surface);
+}
+
 .plot {
   display: flex;
   justify-content: center;
@@ -462,6 +481,7 @@ input[type='range']:focus-visible {
 }
 
 .plot-solid {
+  position: relative;
   display: block;
   width: 100%;
   min-height: 240px;
