@@ -1,4 +1,6 @@
-"""Build data/vallejo.json and data/vallejo-layouts.json from Vallejo's charts.
+"""Build the Game Color and Model Color entries of data/vallejo.json and
+data/vallejo-layouts.json from Vallejo's charts. Other ranges already in those
+files (Squidmar Color) are kept.
 
 Usage:
     pip install -r scripts/requirements.txt
@@ -20,10 +22,8 @@ The color combination tables are small squares with a centered code label
 below each, laid out as blocks of Highlight / Base / Shadow columns.
 """
 import io
-import json
 import re
 import sys
-from pathlib import Path
 
 import pdfplumber
 from PIL import Image, ImageCms
@@ -31,6 +31,8 @@ from pdfminer.pdfcolor import PDFColorSpace
 from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdftypes import resolve1
 from pdfminer.psparser import literal_name
+
+import vallejo_data
 
 CODE_RE = re.compile(r"^\d{2}\.\d{3}$")
 
@@ -320,25 +322,6 @@ def process(path, product_range, sections):
     return by_code, layout, combo_rows
 
 
-def format_colors(colors):
-    """One color per line, so each diff line is one color."""
-    lines = [
-        f"  {json.dumps(code)}: {json.dumps(color, ensure_ascii=False)}"
-        for code, color in colors.items()
-    ]
-    return "{\n" + ",\n".join(lines) + "\n}\n"
-
-
-def format_layouts(layouts):
-    """Indented JSON with each innermost list of codes on one line."""
-    text = json.dumps(layouts, indent=2, ensure_ascii=False)
-    return re.sub(
-        r"\[\s+(\"[^\"\]]*\"(?:,\s+\"[^\"\]]*\")*)\s+\]",
-        lambda m: "[" + re.sub(r",\s+", ", ", m.group(1)) + "]",
-        text,
-    ) + "\n"
-
-
 def main(game_pdf, model_pdf, out_dir):
     colors = {}
     layouts = {}
@@ -362,11 +345,8 @@ def main(game_pdf, model_pdf, out_dir):
             "sections": [{"rows": rows} for rows in combo_rows],
         }
 
-    out = Path(out_dir)
-    colors = dict(sorted(colors.items()))
-    (out / "vallejo.json").write_text(format_colors(colors), encoding="utf-8")
-    (out / "vallejo-layouts.json").write_text(format_layouts(layouts), encoding="utf-8")
-    print(f"wrote {len(colors)} colors and {len(layouts)} layouts to {out}")
+    vallejo_data.update(out_dir, set(SOURCES), colors, layouts)
+    print(f"wrote {len(colors)} colors and {len(layouts)} layouts to {out_dir}")
 
 
 if __name__ == "__main__":
