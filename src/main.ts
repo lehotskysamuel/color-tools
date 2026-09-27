@@ -12,7 +12,7 @@ import {
   oklchToOklab,
 } from './color/oklab';
 import { type Paint, paintLabel } from './paints/vallejo';
-import { type CutMode, createStore } from './state';
+import { type AppState, type CutMode, type Gamut, type ShapeStyle, createStore } from './state';
 import { onThemeChange } from './theme';
 import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
@@ -36,7 +36,10 @@ const store = createStore({
   paints: [],
   hover: null,
   cut: 'wedge',
-  wireframe: false,
+  gamut: 'pointer',
+  gamutStyle: 'wireframe',
+  hull: true,
+  hullStyle: 'solid',
 });
 
 const lightness = new LightnessSlice(store, $('b1-stat'));
@@ -45,7 +48,7 @@ $('b1-host').appendChild(lightness.canvas);
 $('b2-host').appendChild(hue.canvas);
 
 const solidHost = $('solid-host');
-const solid = new GamutSolid(solidHost, store, lightness.image, hue.image);
+const solid = new GamutSolid(solidHost, store, lightness.image, hue.image, $('a-stat'));
 lightness.onImageChange = () => solid.lightnessImageChanged();
 hue.onImageChange = () => solid.hueImageChanged();
 
@@ -68,12 +71,22 @@ const lValue = $<HTMLOutputElement>('l-value');
 const hValue = $<HTMLOutputElement>('h-value');
 lSlider.addEventListener('input', () => store.set({ L: Number(lSlider.value) }));
 hSlider.addEventListener('input', () => store.set({ h: Number(hSlider.value) }));
-for (const input of document.querySelectorAll<HTMLInputElement>('#cut-mode input')) {
-  input.addEventListener('change', () => input.checked && store.set({ cut: input.value as CutMode }));
-}
 $('reset-view').addEventListener('click', () => solid.resetView());
-const wireButton = $<HTMLButtonElement>('wireframe');
-wireButton.addEventListener('click', () => store.set({ wireframe: !store.get().wireframe }));
+
+/** Segmented controls: each is a fieldset of radios whose value is written to the state. */
+const segmented: { id: string; value: (s: AppState) => string; patch: (value: string) => Partial<AppState> }[] = [
+  { id: 'cut-mode', value: (s) => s.cut, patch: (v) => ({ cut: v as CutMode }) },
+  { id: 'gamut', value: (s) => s.gamut, patch: (v) => ({ gamut: v as Gamut }) },
+  { id: 'gamut-style', value: (s) => s.gamutStyle, patch: (v) => ({ gamutStyle: v as ShapeStyle }) },
+  { id: 'hull', value: (s) => (s.hull ? 'on' : 'off'), patch: (v) => ({ hull: v === 'on' }) },
+  { id: 'hull-style', value: (s) => s.hullStyle, patch: (v) => ({ hullStyle: v as ShapeStyle }) },
+];
+for (const { id, patch } of segmented) {
+  for (const input of document.querySelectorAll<HTMLInputElement>(`#${id} input`)) {
+    input.addEventListener('change', () => input.checked && store.set(patch(input.value)));
+  }
+}
+const hullStyle = $<HTMLFieldSetElement>('hull-style');
 
 // Picked-color readout
 const readout = document.querySelector<HTMLElement>('.readout')!;
@@ -84,7 +97,8 @@ const pickHex = $<HTMLOutputElement>('pick-hex');
 const pickOklab = $<HTMLOutputElement>('pick-oklab');
 
 function renderControls(): void {
-  const { L, h, pick, pickPaint, cut, wireframe } = store.get();
+  const state = store.get();
+  const { L, h, pick, pickPaint } = state;
   if (document.activeElement !== lSlider) lSlider.value = String(L);
   if (document.activeElement !== hSlider) hSlider.value = String(Math.round(h) % 360);
   lValue.value = L.toFixed(3);
@@ -96,13 +110,15 @@ function renderControls(): void {
   pickOklab.value = formatOklab(pick);
   pickPaintOut.value = pickPaint ? paintLabel(pickPaint) : '';
   readout.classList.toggle('has-paint', pickPaint !== null);
-  const radio = document.querySelector<HTMLInputElement>(`#cut-mode input[value="${cut}"]`);
-  if (radio) radio.checked = true;
-  wireButton.setAttribute('aria-pressed', String(wireframe));
+  for (const { id, value } of segmented) {
+    const radio = document.querySelector<HTMLInputElement>(`#${id} input[value="${value(state)}"]`);
+    if (radio) radio.checked = true;
+  }
+  hullStyle.disabled = !state.hull;
 }
 
 store.subscribe((_s, changed) => {
-  const keys = ['L', 'h', 'pick', 'pickPaint', 'cut', 'wireframe'] as const;
+  const keys = ['L', 'h', 'pick', 'pickPaint', 'cut', 'gamut', 'gamutStyle', 'hull', 'hullStyle'] as const;
   if (keys.some((key) => changed.has(key))) renderControls();
 });
 renderControls();

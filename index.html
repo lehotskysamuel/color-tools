@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>OKLCh Atlas</title>
-    <meta name="description" content="The sRGB gamut in OKLCh: a 3D solid plus lightness and hue slices where distance on screen matches perceived color difference, with Vallejo paint swatches to pick from." />
+    <meta name="description" content="The sRGB gamut and Pointer's gamut of real surface colors in OKLCh: a 3D solid plus lightness and hue slices where distance on screen matches perceived color difference, with Vallejo paint swatches and how much of each gamut they cover." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,7 +19,7 @@
         <p class="lede">
           Every color an sRGB screen can show, placed in OKLab so that distance on the page matches how different two
           colors look. One unit is the same perceptual step on every axis of every view. Pick a Vallejo paint to see
-          where it sits.
+          where it sits, and compare the paints' hull with Pointer's gamut of real surface colors.
         </p>
       </header>
 
@@ -70,7 +70,10 @@
                 <h2 id="a-title">Gamut solid</h2>
                 <button type="button" class="button panel-head-action" id="reset-view">Reset view</button>
               </header>
-              <p class="panel-note">All sRGB colors at their OKLab position, lightness pointing up. Drag to orbit, scroll to zoom.</p>
+              <p class="panel-note">
+                A gamut as a solid in OKLab, lightness pointing up: Pointer's gamut of real surface colors, or every
+                sRGB color. Drag to orbit, scroll to zoom.
+              </p>
               <div class="controls">
                 <fieldset class="segmented" id="cut-mode">
                   <legend class="sr-only">Cut the solid</legend>
@@ -84,10 +87,50 @@
                   <label for="cut-wedge">Wedge</label>
                 </fieldset>
               </div>
-              <div class="plot plot-solid" id="solid-host">
-                <button type="button" class="button plot-action" id="wireframe" aria-pressed="false">Wireframe</button>
+              <div class="plot plot-solid" id="solid-host"></div>
+              <div class="panel-foot">
+                <div class="shape-controls">
+                  <div class="shape-group">
+                    <span class="eyebrow" aria-hidden="true">Color space</span>
+                    <fieldset class="segmented" id="gamut">
+                      <legend class="sr-only">Color space</legend>
+                      <input type="radio" name="gamut" id="gamut-srgb" value="srgb" />
+                      <label for="gamut-srgb">sRGB</label>
+                      <input type="radio" name="gamut" id="gamut-pointer" value="pointer" />
+                      <label for="gamut-pointer">Pointer's</label>
+                    </fieldset>
+                    <fieldset class="segmented" id="gamut-style">
+                      <legend class="sr-only">Draw the color space as</legend>
+                      <input type="radio" name="gamut-style" id="gamut-wireframe" value="wireframe" />
+                      <label for="gamut-wireframe">Wireframe</label>
+                      <input type="radio" name="gamut-style" id="gamut-solid" value="solid" />
+                      <label for="gamut-solid">Solid</label>
+                    </fieldset>
+                  </div>
+                  <div class="shape-group">
+                    <span class="eyebrow" aria-hidden="true">Paint hull</span>
+                    <fieldset class="segmented" id="hull">
+                      <legend class="sr-only">Hull of the shown paints</legend>
+                      <input type="radio" name="hull" id="hull-on" value="on" />
+                      <label for="hull-on">On</label>
+                      <input type="radio" name="hull" id="hull-off" value="off" />
+                      <label for="hull-off">Off</label>
+                    </fieldset>
+                    <fieldset class="segmented" id="hull-style">
+                      <legend class="sr-only">Draw the paint hull as</legend>
+                      <input type="radio" name="hull-style" id="hull-wireframe" value="wireframe" />
+                      <label for="hull-wireframe">Wireframe</label>
+                      <input type="radio" name="hull-style" id="hull-solid" value="solid" />
+                      <label for="hull-solid">Solid</label>
+                    </fieldset>
+                  </div>
+                </div>
+                <p class="stat" id="a-stat"></p>
+                <p class="stat">
+                  The paint hull is the smallest convex solid around the shown paints. The cut faces are slices B.1
+                  and B.2; dashed lines show where the cut goes through the hull. The gray line is the neutral axis.
+                </p>
               </div>
-              <p class="stat">The cut faces are slices B.1 and B.2. The gray line is the neutral axis from black to white.</p>
             </section>
 
             <section class="panel" aria-labelledby="b1-title">

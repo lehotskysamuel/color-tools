@@ -1,7 +1,8 @@
 # color-tools
 
 Browser tools for seeing color the way people perceive it. The first one, **OKLCh Atlas**, draws the sRGB
-gamut in OKLab so that distance on screen matches perceived color difference.
+gamut and Pointer's gamut of real surface colors in OKLab, so that distance on screen matches perceived color
+difference, and measures how much of them a set of paints covers.
 
 ```sh
 npm install
@@ -59,7 +60,7 @@ distance is the same perceptual difference everywhere, in both slices.
 
 | | View | Shows | Distances |
 |---|---|---|---|
-| **A** | Gamut solid (3D) | Every sRGB color at its OKLab position, L pointing up. Drag to orbit, scroll to zoom. The solid can be cut at the current L, at the current hue, or with a wedge that removes one quarter. **Wireframe** swaps the surface for a see-through cage; the cut still decides which slices show inside it. | Correct in 3D. The on-screen projection is only faithful for pairs parallel to the screen. The camera is orthographic, so there is no perspective distortion on top of that. |
+| **A** | Gamut solid (3D) | A color space's gamut at its OKLab position, L pointing up: Pointer's gamut (default) or every sRGB color. With it, the convex hull of the shown paints. Drag to orbit, scroll to zoom. The solids can be cut at the current L, at the current hue, or with a wedge that removes one quarter. Each shape is drawn as a see-through **wireframe** or an opaque **solid**; the cut still decides which slices show inside a wireframe. See [Pointer's gamut and the paint hull](#pointers-gamut-and-the-paint-hull). | Correct in 3D. The on-screen projection is only faithful for pairs parallel to the screen. The camera is orthographic, so there is no perspective distortion on top of that. |
 | **B.1** | Lightness slice | A horizontal cut at one lightness. Hue is the angle, chroma the radius. | Exact within the slice. |
 | **B.2** | Hue slice | A vertical plane through the gray axis. Hue h on the right, its complement h + 180° on the left, L up. It is a true plane, so the complement half is not mirrored or stretched. Diamonds mark each half's cusp, its most chromatic point. | Exact within the slice, including across the gray axis. |
 
@@ -78,8 +79,9 @@ The page chrome is deliberately achromatic. A tinted surround shifts how the plo
 
 The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
 **Layout** select switches between the six layouts in `data/vallejo-layouts.json` (Game Color chart and
-combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials), and the page remembers
-the choice in `localStorage`.
+combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials) plus **All paints**, the
+charts and the Mega Set one after the other, which holds every paint in the catalog once. The page remembers the
+choice in `localStorage`.
 
 **Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
 its paints on, and **Select all** / **Select none** switch them all at once.
@@ -98,12 +100,59 @@ its paints on, and **Select all** / **Select none** switch them all at once.
 
 - **A (solid):** every dot that is on, drawn after the solid with a fresh depth buffer. No dot hides inside the
   solid, and nearer dots still cover farther ones. The flip side: a dot behind the solid looks as if it sat on
-  its front surface, so orbit the solid to judge depth, or switch on **Wireframe** to see through it. Dots are
+  its front surface, so orbit the solid to judge depth, or draw it as a **Wireframe** to see through it. Dots are
   drawn over the slice planes inside the cage too. Dots keep a fixed size on screen when zooming.
 - **B.1 and B.2 (slices):** only paints within ΔE<sub>OK</sub> 0.04 of the slice plane (`PAINT_BAND` in
   `src/views/slicePlot.ts`), at their orthogonal projection onto it. The farther from the plane, the fainter the
   dot. A dot's position is exact only for a paint that lies on the plane; at the band's edge it can be off by up
   to 0.04.
+
+### Pointer's gamut and the paint hull
+
+View A draws two shapes, each with its own options under the solid:
+
+| Shape | Options | Default |
+|---|---|---|
+| **Color space** | **sRGB** or **Pointer's** gamut; **Wireframe** or **Solid** | Pointer's, wireframe |
+| **Paint hull** | **On** or **Off**; **Wireframe** or **Solid** | On, solid |
+
+**Pointer's gamut** is the gamut of real surface colors: M. R. Pointer measured 4089 samples of paints, inks,
+plastics and textiles and published, for every 5 units of CIELAB lightness (L\* 15 to 90) and every 10° of hue,
+the highest chroma any of them reached ("The gamut of real surface colours", *Color Research & Application* 5,
+1980). The table (`src/color/pointer.ts`) is the one [colour-science](https://www.colour-science.org/) publishes.
+It is in CIE LCh under illuminant C. Each point is converted to OKLab through XYZ, with Bradford adaptation from
+C to D65, so a neutral surface stays neutral and white maps to OKLab L = 1.
+
+- Between table entries, chroma is linear in L\* and in hue.
+- The table stops at L\* 15 and 90. The solid is closed with a straight taper to zero chroma at black and white.
+  That part is an extrapolation, not data. It holds 2.4 % of the volume, and leaving it out moves the Vallejo
+  figure below by 0.1 points.
+- Outside sRGB, the surface shows the sRGB color of the same L and h with the chroma reduced until it fits.
+  Hovering it shows the real value and says it is outside sRGB; clicking there picks nothing.
+
+**The paint hull** is the convex hull of the shown paints in OKLab: the smallest convex solid that contains them.
+It is drawn once at least 5 paints are shown. Its faces are flat in OKLab and split into cells of 0.03 so every
+point shows its own color. Where a cut goes through it, a dashed line traces its outline. A convex hull is a
+measure of spread, not a claim that every color inside it can be mixed from the paints.
+
+**Coverage.** The line under the solid gives the share of the color space's volume that the hull covers, and in
+Pointer's mode the share sRGB covers. Volumes are measured in OKLab, so equal volumes are equal perceptual
+extents. They are sums over a grid of cells 0.01 on a side (`src/color/coverage.ts`); a four times finer grid
+moves the figures by less than 0.05 points.
+
+| Paints shown | Share of Pointer's gamut covered by their hull |
+|---|---|
+| All paints (302) | 52 % |
+| Game Color chart (108) | 52 % |
+| Model Color chart (194) | 34 % |
+| All paints, without the 8 fluorescents | 47 % |
+| All paints, acrylics only (no washes, inks or fluorescents) | 42 % |
+| *sRGB itself, for comparison* | *78 %* |
+
+Measured by CIELAB volume instead, all paints cover 52.5 % and sRGB 75 %. The hull of all paints has 26 corners,
+and 13 of them are washes, inks and fluorescents. Adding the Model Color chart to the Game Color chart raises the
+figure by 0.3 points. Because the paint colors come from a printed chart converted to sRGB, their hull cannot
+cover much more than sRGB does.
 
 Page layout, by width:
 
@@ -126,12 +175,17 @@ takes a share of it.
   basis. Every pixel is converted independently, so the gamut boundary is exact at pixel resolution. Picking,
   hover markers and "is this color on the plane" checks all use the same basis.
 - **Solid** (`src/views/gamutSolid.ts`): the six faces of the RGB cube, each a 64 × 64 grid sampled uniformly in
-  gamma-encoded sRGB (which spreads vertices evenly in L), are mapped to OKLab (x = a, y = L, z = −b). The material
-  is unlit, so each surface point shows exactly its own color. Instead of shading, the cut faces get outlines.
-  The cuts use three.js clipping planes, and the caps are the slice textures, themselves clipped in wedge mode.
+  gamma-encoded sRGB (which spreads vertices evenly in L), are mapped to OKLab (x = a, y = L, z = −b). Pointer's
+  gamut is a grid on its own table, every 1 L\* and 2° of CIELAB hue. The material is unlit, so each surface
+  point shows exactly its own color. Instead of shading, the cut faces get outlines. The cuts use three.js
+  clipping planes, and the caps are the slice textures, themselves clipped in wedge mode.
   The wireframe cage traces the gamut boundary along OKLCh lines, so it matches the slices: rings every 0.1 L
-  (what B.1 outlines), meridians every 30° of hue (what B.2 outlines), plus the 12 edges of the RGB cube, which
-  are the solid's creases. Each vertex has its own color.
+  (what B.1 outlines), meridians every 30° of hue (what B.2 outlines), plus for sRGB the 12 edges of the RGB
+  cube, which are the solid's creases. Each vertex has its own color. Pointer's boundary on an OKLCh line is
+  found by bisection, like sRGB's; a unit test checks that each constant-L, constant-h ray leaves it once.
+- **Hull** (`src/color/hull.ts`): built incrementally. Each point outside the current hull removes the faces it
+  can see and is joined to their horizon, which is instant for a few hundred paints. The same face planes give
+  the inside test that coverage uses.
 
 Two details of the sRGB gamut in OKLab turned up while building this. Both are handled and covered by tests.
 
@@ -147,14 +201,20 @@ Two details of the sRGB gamut in OKLab turned up while building this. Both are h
 src/
   color/oklab.ts          conversions, gamut test, max chroma, cusp
   color/oklab.test.ts
-  paints/vallejo.ts       Vallejo paints and layouts from data/, with OKLab computed from the hex
+  color/pointer.ts        Pointer's gamut: the table, CIELAB (C) <-> OKLab, inside test, boundary
+  color/pointer.test.ts
+  color/hull.ts           3D convex hull, inside test, volume
+  color/hull.test.ts
+  color/coverage.ts       share of a gamut's OKLab volume inside a hull
+  color/coverage.test.ts
+  paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab computed from the hex
   paints/vallejo.test.ts  every layout code resolves, OKLab agrees with the stored OKLCh
-  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, wireframe)
+  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
   views/lightnessSlice.ts B.1
   views/hueSlice.ts       B.2
-  views/gamutSolid.ts     A (three.js)
+  views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
   views/swatchPane.ts     Vallejo swatches, the layout select, and which paints are shown
   main.ts                 wiring, layout, tooltip, readout
 ```
@@ -168,6 +228,9 @@ src/
   two colors look.
 - **No viewing conditions.** Surround, adaptation and display luminance are not modeled. CAM16-UCS would add them
   at the cost of more parameters.
+- **Paint coverage is bounded by the data.** The paint colors are Vallejo's printed chart converted to sRGB, so
+  their hull says how the chart spreads, not how far real paint reaches. Pointer's gamut reaches past sRGB (22 %
+  of its volume), so real paints can too; showing that would need measured Lab data of the paints.
 
 ## Data
 
@@ -357,7 +420,8 @@ Alternatives, and why not:
      near-duplicate.
    - Between sets: each color's nearest match in the other set; the worst of those (Hausdorff distance) and the
      average (Chamfer distance); for equal-size palettes, the optimal one-to-one matching (Hungarian algorithm).
-   - Coverage: convex-hull volume in OKLab (quickhull), plus L range and chroma range.
+   - Coverage: convex-hull volume in OKLab, plus L range and chroma range. The hull and the volume-share
+     measure already exist (`src/color/hull.ts`, `src/color/coverage.ts`).
 10. **Links to A and B.** Draw set colors as points in the 3D solid. In B.1 and B.2, show points within a thin band
    around the slice plane, faded by their distance from it.
 
