@@ -84,7 +84,7 @@ body {
 }
 
 .page {
-  max-width: 1560px;
+  max-width: 1920px;
   margin: 0 auto;
   padding-inline: 20px;
   padding-block: 28px 40px;
@@ -113,8 +113,26 @@ body {
   color: var(--ink-2);
 }
 
+/*
+ * Two panes: Vallejo swatches on the left, the readout and the three views on the right.
+ * The swatch pane spans every row and sticks to the top, so the paints stay in reach while the views scroll.
+ * The last row is 1fr so a tall swatch pane never stretches the rows it spans.
+ */
+.workspace {
+  display: grid;
+  grid-template-columns: clamp(300px, 22vw, 420px) minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    'swatches readout'
+    'swatches views'
+    'swatches notes';
+  gap: 20px;
+  align-items: start;
+}
+
 /* Picked-color readout */
 .readout {
+  grid-area: readout;
   position: sticky;
   top: env(safe-area-inset-top, 0px);
   z-index: 5;
@@ -149,6 +167,22 @@ body {
   color: var(--ink-3);
 }
 
+.readout-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 8px;
+}
+
+.readout-paint {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.readout.has-paint .narrow-only {
+  display: none;
+}
+
 .readout-main {
   font-size: 15px;
   font-weight: 500;
@@ -167,7 +201,112 @@ body {
   max-width: 34ch;
 }
 
+/* Vallejo swatches */
+.swatch-pane {
+  grid-area: swatches;
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  min-width: 0;
+}
+
+.select {
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/*
+ * Charts: columns are set per layout in JS, and every swatch has an explicit row and column,
+ * so short printed rows keep their gaps.
+ */
+.swatch-grid {
+  --swatch-max: 52px;
+  display: grid;
+  gap: 3px;
+  justify-content: start;
+  padding: 3px;
+}
+
+/* Combinations: one block per printed block, as many side by side as fit with cells of at least 24px. */
+.swatch-grid.is-combinations {
+  --triplet: 3;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--triplet) * 26px), 1fr));
+  justify-content: stretch;
+  gap: 14px 10px;
+}
+
+.swatch-block {
+  display: grid;
+  grid-template-columns: repeat(var(--triplet), minmax(0, var(--swatch-max)));
+  align-content: start;
+  gap: 5px 2px;
+}
+
+.swatch-heading {
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  font-weight: 500;
+}
+
+.swatch-heading:first-child {
+  margin-top: 0;
+}
+
+.swatch {
+  display: block;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.swatch:hover {
+  outline: 1px solid var(--ink-3);
+  outline-offset: 1px;
+}
+
+.swatch:focus-visible {
+  outline: 2px dashed var(--ink);
+  outline-offset: 1px;
+}
+
+/* Every instance of the picked paint; the combination tables repeat paints. */
+.swatch[aria-pressed='true'] {
+  position: relative;
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
 /* The three views. Subgrid keeps heads, controls and plots aligned across columns. */
+.views-host {
+  grid-area: views;
+  container: views / inline-size;
+  min-width: 0;
+}
+
 .views {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -190,6 +329,10 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.panel-head-action {
+  margin-left: auto;
 }
 
 .panel-head h2 {
@@ -335,6 +478,7 @@ input[type='range']:focus-visible {
 }
 
 .notes {
+  grid-area: notes;
   display: grid;
   gap: 6px;
   font-size: 13px;
@@ -372,19 +516,64 @@ input[type='range']:focus-visible {
   flex: none;
 }
 
+.tooltip-name {
+  font-weight: 500;
+}
+
 .tooltip-sub {
   color: var(--ink-2);
 }
 
-@media (max-width: 1080px) {
+/*
+ * Narrower than three columns fit (the solid's cut control needs about 290px): the two slices side by side,
+ * the solid full width below them. main.ts reads the resulting column count.
+ */
+@container views (max-width: 1039px) {
+  .views {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .views > .panel:first-child {
+    grid-column: 1 / -1;
+    grid-row: 6 / span 5;
+    margin-top: 20px;
+  }
+}
+
+@container views (max-width: 639px) {
   .views {
     grid-template-columns: minmax(0, 1fr);
     gap: 20px;
   }
 
+  .views > .panel:first-child {
+    grid-column: auto;
+    grid-row: auto;
+    margin-top: 0;
+  }
+
   .panel {
     grid-row: auto;
     grid-template-rows: auto;
+  }
+}
+
+/* One column: the readout first so a tapped paint shows up there, then the paints, then the views. */
+@media (max-width: 899px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas:
+      'readout'
+      'swatches'
+      'views'
+      'notes';
+  }
+
+  .swatch-pane {
+    position: static;
+    max-height: none;
+    overflow: visible;
   }
 
   .readout-hint {

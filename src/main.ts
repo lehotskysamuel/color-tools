@@ -11,11 +11,13 @@ import {
   oklabToOklch,
   oklchToOklab,
 } from './color/oklab';
+import { type Paint, paintLabel } from './paints/vallejo';
 import { type CutMode, createStore } from './state';
 import { onThemeChange } from './theme';
 import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
 import { LightnessSlice } from './views/lightnessSlice';
+import { SwatchPane } from './views/swatchPane';
 
 /** ΔE_OK of roughly one just-noticeable difference (the value CSS Color 4 uses for gamut mapping). */
 const JND = 0.02;
@@ -44,6 +46,8 @@ const solid = new GamutSolid(solidHost, store, lightness.image, hue.image);
 lightness.onImageChange = () => solid.lightnessImageChanged();
 hue.onImageChange = () => solid.hueImageChanged();
 
+const swatches = new SwatchPane($('swatch-grid'), $<HTMLSelectElement>('layout-select'), $('swatch-note'), store);
+
 // Controls
 const lSlider = $<HTMLInputElement>('l-slider');
 const hSlider = $<HTMLInputElement>('h-slider');
@@ -57,6 +61,8 @@ for (const input of document.querySelectorAll<HTMLInputElement>('#cut-mode input
 $('reset-view').addEventListener('click', () => solid.resetView());
 
 // Picked-color readout
+const readout = document.querySelector<HTMLElement>('.readout')!;
+const pickPaint = $<HTMLOutputElement>('pick-paint');
 const pickSwatch = $('pick-swatch');
 const pickOklch = $<HTMLOutputElement>('pick-oklch');
 const pickHex = $<HTMLOutputElement>('pick-hex');
@@ -73,6 +79,9 @@ function renderControls(): void {
   pickOklch.value = formatOklch(oklabToOklch(pick));
   pickHex.value = hex;
   pickOklab.value = formatOklab(pick);
+  const paint = swatches.pickedPaint;
+  pickPaint.value = paint ? paintLabel(paint) : '';
+  readout.classList.toggle('has-paint', paint !== null);
   const radio = document.querySelector<HTMLInputElement>(`#cut-mode input[value="${cut}"]`);
   if (radio) radio.checked = true;
 }
@@ -82,18 +91,21 @@ store.subscribe((_s, changed) => {
 });
 renderControls();
 
-// Hover tooltip, shared by all three views
+// Hover tooltip, shared by the three views and the paint swatches
 const tooltip = $('tooltip');
+const tipName = $('tip-name');
 const tipSwatch = $('tip-swatch');
 const tipMain = $('tip-main');
 const tipSub = $('tip-sub');
 
-function showHover(lab: Vec3 | null, clientX: number, clientY: number): void {
+function showHover(lab: Vec3 | null, clientX: number, clientY: number, paint?: Paint): void {
   store.set({ hover: lab });
   if (!lab) {
     tooltip.hidden = true;
     return;
   }
+  tipName.textContent = paint ? paintLabel(paint) : '';
+  tipName.hidden = !paint;
   const inGamut = isOklabInGamut(lab);
   tipMain.textContent = formatOklch(oklabToOklch(lab));
   if (inGamut) {
@@ -116,11 +128,15 @@ function showHover(lab: Vec3 | null, clientX: number, clientY: number): void {
 lightness.onHover = showHover;
 hue.onHover = showHover;
 solid.onHover = showHover;
+swatches.onHover = showHover;
 
 // Layout: both slices share one pixel scale, so a given distance looks the same size in each.
+const views = document.querySelector<HTMLElement>('.views')!;
+
 function layout(): void {
   const width = $('b2-host').clientWidth;
-  const stacked = window.matchMedia('(max-width: 1080px)').matches;
+  // One column when the views area is narrow, two or three otherwise (container queries in style.css).
+  const stacked = getComputedStyle(views).gridTemplateColumns.split(' ').length < 2;
   const b1Margins = lightness.sizeAt(0);
   const b2Margins = hue.sizeAt(0);
   const maxPlotHeight = stacked ? window.innerHeight * 0.8 : Math.max(380, window.innerHeight - 280);
@@ -146,7 +162,7 @@ const scheduleLayout = () => {
     layout();
   });
 };
-new ResizeObserver(scheduleLayout).observe(document.querySelector('.views')!);
+new ResizeObserver(scheduleLayout).observe(views);
 window.addEventListener('resize', scheduleLayout);
 layout();
 
