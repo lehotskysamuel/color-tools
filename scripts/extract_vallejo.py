@@ -1,24 +1,29 @@
-"""Build data/vallejo.json from Vallejo's official color chart PDFs.
+"""Build data/vallejo.json and data/vallejo-layouts.json from Vallejo's charts.
 
 Usage:
     pip install -r scripts/requirements.txt
     curl -A "Mozilla/5.0" -o game.pdf  https://acrylicosvallejo.com/wp-content/uploads/2025/09/CC266-Game_Color.pdf
     curl -A "Mozilla/5.0" -o model.pdf https://acrylicosvallejo.com/wp-content/uploads/2024/03/CC329-R00-Model-Color-NewIC.pdf
-    python scripts/extract_vallejo.py game.pdf model.pdf data/vallejo.json
+    python scripts/extract_vallejo.py game.pdf model.pdf data
+    node scripts/add-oklch.js data/vallejo.json
 
-Every swatch in the charts is a filled rectangle with its code label directly
-below it, followed by a running index number and the name (Model Color also
-prints a Spanish name on a second line). Fills are print values: DeviceCMYK,
-or /Separation spot colors whose alternate space is DeviceCMYK. They are
-converted to sRGB through the chart's own output intent ICC profile
+Every swatch in the color charts is a filled rectangle with its code label
+directly below it, followed by a running index number and the name (Model
+Color also prints a Spanish name on a second line). Fills are print values:
+DeviceCMYK, or /Separation spot colors whose alternate space is DeviceCMYK.
+They are converted to sRGB through the chart's own output intent ICC profile
 (Coated FOGRA39) using relative colorimetric intent with black point
-compensation, the Adobe default for displaying CMYK documents. The print
-CMYK itself is kept too, in percent. Colors are written in chart order.
+compensation, the Adobe default for displaying CMYK documents. The print CMYK
+itself is kept too, in percent.
+
+The color combination tables are small squares with a centered code label
+below each, laid out as blocks of Highlight / Base / Shadow columns.
 """
 import io
 import json
 import re
 import sys
+from pathlib import Path
 
 import pdfplumber
 from PIL import Image, ImageCms
@@ -29,25 +34,32 @@ from pdfminer.psparser import literal_name
 
 CODE_RE = re.compile(r"^\d{2}\.\d{3}$")
 
-# Chart index ranges (the small number printed next to each code).
+# Chart index ranges (the small number printed next to each code), the paint
+# type, and the chart heading the swatches sit under. Sections without a
+# heading are left out: metallics, and Special FX, whose swatches are photo
+# textures without a single flat color.
 GAME_SECTIONS = [
-    (1, 79, "opaque"),
-    (81, 88, "wash"),
-    (89, 100, "special-fx"),
-    (101, 108, "fluorescent"),
-    (109, 120, "ink"),
-    (121, 129, "metallic"),
+    (1, 79, "acrylic", "Game Color Chart"),
+    (81, 88, "wash", "Game Color Wash"),
+    (89, 100, "special-fx", None),
+    (101, 108, "fluorescent", "Game Color Fluo"),
+    (109, 120, "ink", "Game Color Ink"),
+    (121, 129, "metallic", None),
 ]
 MODEL_SECTIONS = [
-    (1, 192, "opaque"),
-    (193, 194, "ink"),
-    (195, 204, "metallic"),
+    (1, 192, "acrylic", "Model Color Chart"),
+    (193, 194, "ink", "Model Color Chart"),
+    (195, 204, "metallic", None),
 ]
-# Special FX swatches are photo textures without a single flat color.
-EXCLUDED_TYPES = {"metallic", "special-fx"}
 EXPECTED_COUNTS = {
-    "Game Color": {"opaque": 80, "wash": 8, "fluorescent": 8, "ink": 12},
-    "Model Color": {"opaque": 192, "ink": 2},
+    "Game Color": {"acrylic": 80, "wash": 8, "fluorescent": 8, "ink": 12},
+    "Model Color": {"acrylic": 192, "ink": 2},
+}
+EXPECTED_COMBINATIONS = {"Game Color": [11, 11, 10], "Model Color": [17, 17, 17, 17]}
+
+SOURCES = {
+    "Game Color": "CC266 Game Color & Xpress Color, Rev. 03 (September 2025)",
+    "Model Color": "CC329 Model Color, Rev. 00 (March 2024)",
 }
 
 # Words the charts truncate to fit the label width.
@@ -127,18 +139,26 @@ def expand(name):
 
 
 def section(index, sections):
-    for lo, hi, kind in sections:
+    for lo, hi, kind, heading in sections:
         if lo <= index <= hi:
-            return kind
+            return kind, heading
     raise ValueError(f"index {index} outside known chart sections")
 
 
-def extract(path, product_range, sections):
-    pdf = pdfplumber.open(path)
-    page = pdf.pages[0]
-    seps = separations(page)
-    # Split on font changes: index numbers otherwise merge with the next code.
-    words = page.extract_words(extra_attrs=["fontname", "size"])
+def cluster(values, tolerance):
+    """Sorted cluster representatives: values closer than tolerance merge."""
+    reps = []
+    for v in sorted(values):
+        if not reps or v - reps[-1] > tolerance:
+            reps.append(v)
+    return reps
+
+
+def nearest(reps, v):
+    return min(range(len(reps)), key=lambda i: abs(reps[i] - v))
+
+
+def chart_swatches(page, words, seps, product_range, sections):
     swatches = [
         r for r in page.rects
         if r["fill"] and 35 <= r["width"] <= 42 and 21 <= r["height"] <= 26
@@ -168,16 +188,70 @@ def extract(path, product_range, sections):
              and 2 < v["top"] - w["top"] < 9),
             key=lambda v: v["x0"],
         )
+        kind, heading = section(index, sections)
         colors.append({
             "code": w["text"],
             "name": expand(" ".join(v["text"] for v in first_line)),
             "range": product_range,
-            "type": section(index, sections),
+            "type": kind,
             "cmyk": fill_to_cmyk(swatch["non_stroking_color"], seps),
+            "heading": heading,
             # Chart order: the printed index, then position (one index repeats).
-            "order": (index, round(w["top"]), w["x0"]),
+            "order": (index, w["top"], w["x0"]),
         })
-    return colors, output_intent_profile(pdf)
+    return colors
+
+
+def chart_layout(colors):
+    """Group chart-ordered colors into headed sections of printed rows."""
+    sections = []
+    prev = None
+    for c in colors:
+        _, top, x0 = c["order"]
+        if not sections or sections[-1]["title"] != c["heading"]:
+            sections.append({"title": c["heading"], "rows": [[]]})
+        elif abs(top - prev[1]) > 2 or x0 < prev[2]:
+            sections[-1]["rows"].append([])
+        sections[-1]["rows"][-1].append(c["code"])
+        prev = c["order"]
+    return sections
+
+
+def combinations(page, words, seps):
+    """Highlight / Base / Shadow triplets, one list of rows per printed block."""
+    squares = [
+        r for r in page.rects
+        if r["fill"] and 15 <= r["width"] <= 30 and abs(r["width"] - r["height"]) < 0.5
+    ]
+    cells = []
+    for r in squares:
+        center = (r["x0"] + r["x1"]) / 2
+        label = [
+            w for w in words
+            if CODE_RE.match(w["text"]) and 0 <= w["top"] - r["bottom"] < 8
+            and abs((w["x0"] + w["x1"]) / 2 - center) < r["width"] / 2
+        ]
+        if len(label) == 1:
+            cells.append((r, label[0]["text"]))
+    columns = cluster([r["x0"] for r, _ in cells], 2)
+    rows = cluster([r["top"] for r, _ in cells], 3)
+    if len(columns) % 3:
+        raise ValueError(f"combination columns not in H/B/S groups: {len(columns)}")
+    grid = {}
+    for r, code in cells:
+        grid[(nearest(rows, r["top"]), nearest(columns, r["x0"]))] = (code, r)
+    blocks = []
+    for first in range(0, len(columns), 3):
+        block = []
+        for row in range(len(rows)):
+            triplet = [grid.get((row, first + i)) for i in range(3)]
+            if not any(triplet):
+                continue
+            if not all(triplet):
+                raise ValueError(f"incomplete combination in row {row}, column {first}")
+            block.append(triplet)
+        blocks.append(block)
+    return blocks
 
 
 def cmyk_percent(cmyk):
@@ -194,39 +268,105 @@ def cmyk_to_srgb_hex(cmyk, transform):
     return f"#{r:02X}{g:02X}{b:02X}"
 
 
-def main(game_pdf, model_pdf, out_path):
-    srgb = ImageCms.createProfile("sRGB")
-    result = []
-    for path, product_range, sections in (
-        (game_pdf, "Game Color", GAME_SECTIONS),
-        (model_pdf, "Model Color", MODEL_SECTIONS),
-    ):
-        colors, icc = extract(path, product_range, sections)
-        transform = ImageCms.buildTransform(
-            ImageCms.ImageCmsProfile(io.BytesIO(icc)), srgb, "CMYK", "RGB",
-            renderingIntent=ImageCms.Intent.RELATIVE_COLORIMETRIC,
-            flags=ImageCms.Flags.BLACKPOINTCOMPENSATION,
-        )
-        kept = [c for c in colors if c["type"] not in EXCLUDED_TYPES]
-        counts = {}
-        for c in kept:
-            counts[c["type"]] = counts.get(c["type"], 0) + 1
-        if counts != EXPECTED_COUNTS[product_range]:
-            raise ValueError(f"{product_range}: unexpected counts {counts}")
-        kept.sort(key=lambda c: c.pop("order"))
-        for c in kept:
-            cmyk = c.pop("cmyk")
-            c["rgb"] = cmyk_to_srgb_hex(cmyk, transform)
-            c["cmyk"] = cmyk_percent(cmyk)
-        result.extend(kept)
+def process(path, product_range, sections):
+    pdf = pdfplumber.open(path)
+    page = pdf.pages[0]
+    seps = separations(page)
+    # Split on font changes: index numbers otherwise merge with the next code.
+    words = page.extract_words(extra_attrs=["fontname", "size"])
+    transform = ImageCms.buildTransform(
+        ImageCms.ImageCmsProfile(io.BytesIO(output_intent_profile(pdf))),
+        ImageCms.createProfile("sRGB"), "CMYK", "RGB",
+        renderingIntent=ImageCms.Intent.RELATIVE_COLORIMETRIC,
+        flags=ImageCms.Flags.BLACKPOINTCOMPENSATION,
+    )
 
-    codes = [c["code"] for c in result]
-    if len(codes) != len(set(codes)):
-        raise ValueError("duplicate codes")
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(result, f, indent=2, ensure_ascii=False)
-        f.write("\n")
-    print(f"wrote {len(result)} colors to {out_path}")
+    colors = [
+        c for c in chart_swatches(page, words, seps, product_range, sections)
+        if c["heading"]
+    ]
+    counts = {}
+    for c in colors:
+        counts[c["type"]] = counts.get(c["type"], 0) + 1
+    if counts != EXPECTED_COUNTS[product_range]:
+        raise ValueError(f"{product_range}: unexpected counts {counts}")
+    colors.sort(key=lambda c: c["order"])
+    layout = chart_layout(colors)
+
+    by_code = {}
+    for c in colors:
+        cmyk = c["cmyk"]
+        by_code[c["code"]] = {
+            "code": c["code"],
+            "name": c["name"],
+            "range": c["range"],
+            "type": c["type"],
+            "rgb": cmyk_to_srgb_hex(cmyk, transform),
+            "cmyk": cmyk_percent(cmyk),
+        }
+
+    blocks = combinations(page, words, seps)
+    if [len(b) for b in blocks] != EXPECTED_COMBINATIONS[product_range]:
+        raise ValueError(f"{product_range}: unexpected combination blocks")
+    for block in blocks:
+        for triplet in block:
+            for code, square in triplet:
+                if code not in by_code:
+                    raise ValueError(f"combination uses unknown color {code}")
+                # The combination swatch must be the same ink as the chart swatch.
+                if cmyk_percent(fill_to_cmyk(square["non_stroking_color"], seps)) != by_code[code]["cmyk"]:
+                    raise ValueError(f"combination swatch for {code} differs from chart")
+    combo_rows = [[[code for code, _ in t] for t in block] for block in blocks]
+    return by_code, layout, combo_rows
+
+
+def format_colors(colors):
+    """One color per line, so each diff line is one color."""
+    lines = [
+        f"  {json.dumps(code)}: {json.dumps(color, ensure_ascii=False)}"
+        for code, color in colors.items()
+    ]
+    return "{\n" + ",\n".join(lines) + "\n}\n"
+
+
+def format_layouts(layouts):
+    """Indented JSON with each innermost list of codes on one line."""
+    text = json.dumps(layouts, indent=2, ensure_ascii=False)
+    return re.sub(
+        r"\[\s+(\"[^\"\]]*\"(?:,\s+\"[^\"\]]*\")*)\s+\]",
+        lambda m: "[" + re.sub(r",\s+", ", ", m.group(1)) + "]",
+        text,
+    ) + "\n"
+
+
+def main(game_pdf, model_pdf, out_dir):
+    colors = {}
+    layouts = {}
+    for path, product_range, sections, key in (
+        (game_pdf, "Game Color", GAME_SECTIONS, "gameColor"),
+        (model_pdf, "Model Color", MODEL_SECTIONS, "modelColor"),
+    ):
+        by_code, layout, combo_rows = process(path, product_range, sections)
+        if colors.keys() & by_code.keys():
+            raise ValueError("duplicate codes across ranges")
+        colors.update(by_code)
+        layouts[key] = {
+            "title": f"{product_range} chart",
+            "source": SOURCES[product_range],
+            "sections": layout,
+        }
+        layouts[f"{key}Combinations"] = {
+            "title": f"{product_range} combinations",
+            "source": SOURCES[product_range],
+            "columns": ["highlight", "base", "shadow"],
+            "sections": [{"rows": rows} for rows in combo_rows],
+        }
+
+    out = Path(out_dir)
+    colors = dict(sorted(colors.items()))
+    (out / "vallejo.json").write_text(format_colors(colors), encoding="utf-8")
+    (out / "vallejo-layouts.json").write_text(format_layouts(layouts), encoding="utf-8")
+    print(f"wrote {len(colors)} colors and {len(layouts)} layouts to {out}")
 
 
 if __name__ == "__main__":

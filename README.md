@@ -129,38 +129,34 @@ Game Color 2023, new Model Color 2024), excluding metallics.
 
 | range       | type          | count |
 | ----------- | ------------- | ----- |
-| Game Color  | `opaque`      | 80    |
+| Game Color  | `acrylic`     | 80    |
 | Game Color  | `ink`         | 12    |
 | Game Color  | `wash`        | 8     |
 | Game Color  | `fluorescent` | 8     |
-| Model Color | `opaque`      | 192   |
+| Model Color | `acrylic`     | 192   |
 | Model Color | `ink`         | 2     |
 
 Not included: metallics, Game Color Special FX (textured effects without a
 single flat color), Model Color Liquid Metal, Xpress Color, and
 mediums/varnishes.
 
-Each entry has `code`, English `name`, `range`, `type`, `rgb` (`#RRGGBB`),
-`cmyk` and `oklch`:
+Colors are keyed by code, one color per line:
 
+```js
+import vallejo from './data/vallejo.json' with { type: 'json' };
+
+vallejo['70.995'];
+// {
+//   code: '70.995', name: 'German Grey', range: 'Model Color', type: 'acrylic',
+//   rgb: '#2E2E2C', cmyk: { c: 70, m: 60, y: 60, k: 70 },
+//   oklch: { l: 0.3004, c: 0.0035, h: 106.61 }
+// }
+```
+
+- `rgb`: `#RRGGBB`
 - `cmyk`: Vallejo's own print values from the chart, in percent
 - `oklch`: computed from `rgb` by `src/color.js`; `l` (0–1), `c`, `h`
   (degrees, `null` for achromatic colors)
-
-Entries are in chart order: Game Color (opaque, wash, fluorescent, ink), then
-Model Color (opaque, ink).
-
-```json
-{
-  "code": "72.021",
-  "name": "Magic Blue",
-  "range": "Game Color",
-  "type": "opaque",
-  "rgb": "#103D7D",
-  "cmyk": { "c": 100, "m": 79, "y": 12, "k": 14 },
-  "oklch": { "l": 0.3701, "c": 0.119, "h": 258.31 }
-}
-```
 
 To recompute `oklch` after changing `rgb` values:
 
@@ -168,17 +164,48 @@ To recompute `oklch` after changing `rgb` values:
 node scripts/add-oklch.js data/vallejo.json
 ```
 
-**Source:** Vallejo's official color charts:
+### `data/vallejo-layouts.json`
+
+The order Vallejo prints colors in, as rows of codes. Every code is a key in
+`vallejo.json`.
+
+| key                      | contents                                              |
+| ------------------------ | ----------------------------------------------------- |
+| `gameColor`              | Game Color chart: main chart, Wash, Fluo, Ink         |
+| `modelColor`             | Model Color chart (its two inks sit in the main grid) |
+| `gameColorCombinations`  | 32 Highlight / Base / Shadow triplets in 3 blocks     |
+| `modelColorCombinations` | 68 Highlight / Base / Shadow triplets in 4 blocks     |
+
+Each layout has `sections`, and each section has `rows`, an array of arrays of
+codes. In the charts a row is one printed row of swatches, and sections carry
+the chart heading as `title`. In the combinations each row is one
+`[highlight, base, shadow]` triplet (named by the layout's `columns`), and
+each section is one printed block.
+
+```js
+import layouts from './data/vallejo-layouts.json' with { type: 'json' };
+
+layouts.gameColor.sections[0].rows[0];
+// ['72.001', '72.101', '72.098', '72.034', '72.003', '72.100', '72.107', '72.108', '72.099']
+
+layouts.gameColorCombinations.sections[0].rows[0].map((code) => vallejo[code].name);
+// ['Dead White', 'Off-White', 'Elfic Flesh']
+```
+
+### Source
+
+Vallejo's official color charts:
 
 - [CC266 Game Color & Xpress Color, Rev. 03 (September 2025)](https://acrylicosvallejo.com/wp-content/uploads/2025/09/CC266-Game_Color.pdf)
 - [CC329 Model Color, Rev. 00 (March 2024)](https://acrylicosvallejo.com/wp-content/uploads/2024/03/CC329-R00-Model-Color-NewIC.pdf)
 
 The charts store each swatch as print CMYK (for Coated FOGRA39).
-`scripts/extract_vallejo.py` reads those values from the PDFs and converts
-them to sRGB through the charts' embedded Coated FOGRA39 ICC profile, using
-relative colorimetric intent with black point compensation. Names are taken
-from the chart labels, with truncated words spelled out (`Cam.` →
-`Camouflage`, `Unif.` → `Uniform`, …).
+`scripts/extract_vallejo.py` reads those values, the chart rows and the
+combination tables from the PDFs, and converts the CMYK to sRGB through the
+charts' embedded Coated FOGRA39 ICC profile, using relative colorimetric
+intent with black point compensation. Names are taken from the chart labels,
+with truncated words spelled out (`Cam.` → `Camouflage`, `Unif.` →
+`Uniform`, …).
 
 The RGB values are what the official chart looks like on screen, not a
 measurement of dried paint. Vallejo notes that printed chart colors are only
