@@ -59,7 +59,7 @@ distance is the same perceptual difference everywhere, in both slices.
 
 | | View | Shows | Distances |
 |---|---|---|---|
-| **A** | Gamut solid (3D) | Every sRGB color at its OKLab position, L pointing up. Drag to orbit, scroll to zoom. The solid can be cut at the current L, at the current hue, or with a wedge that removes one quarter. | Correct in 3D. The on-screen projection is only faithful for pairs parallel to the screen. The camera is orthographic, so there is no perspective distortion on top of that. |
+| **A** | Gamut solid (3D) | Every sRGB color at its OKLab position, L pointing up. Drag to orbit, scroll to zoom. The solid can be cut at the current L, at the current hue, or with a wedge that removes one quarter. **Wireframe** swaps the surface for a see-through cage; the cut still decides which slices show inside it. | Correct in 3D. The on-screen projection is only faithful for pairs parallel to the screen. The camera is orthographic, so there is no perspective distortion on top of that. |
 | **B.1** | Lightness slice | A horizontal cut at one lightness. Hue is the angle, chroma the radius. | Exact within the slice. |
 | **B.2** | Hue slice | A vertical plane through the gray axis. Hue h on the right, its complement h + 180° on the left, L up. It is a true plane, so the complement half is not mirrored or stretched. Diamonds mark each half's cusp, its most chromatic point. | Exact within the slice, including across the gray axis. |
 
@@ -97,7 +97,8 @@ its paints on, and **Select all** / **Select none** switch them all at once.
 
 - **A (solid):** every dot that is on, drawn after the solid with a fresh depth buffer. No dot hides inside the
   solid, and nearer dots still cover farther ones. The flip side: a dot behind the solid looks as if it sat on
-  its front surface, so orbit the solid to judge depth. Dots keep a fixed size on screen when zooming.
+  its front surface, so orbit the solid to judge depth, or switch on **Wireframe** to see through it. Dots are
+  drawn over the slice planes inside the cage too. Dots keep a fixed size on screen when zooming.
 - **B.1 and B.2 (slices):** only paints within ΔE<sub>OK</sub> 0.04 of the slice plane (`PAINT_BAND` in
   `src/views/slicePlot.ts`), at their orthogonal projection onto it. The farther from the plane, the fainter the
   dot. A dot's position is exact only for a paint that lies on the plane; at the band's edge it can be off by up
@@ -127,6 +128,9 @@ takes a share of it.
   gamma-encoded sRGB (which spreads vertices evenly in L), are mapped to OKLab (x = a, y = L, z = −b). The material
   is unlit, so each surface point shows exactly its own color. Instead of shading, the cut faces get outlines.
   The cuts use three.js clipping planes, and the caps are the slice textures, themselves clipped in wedge mode.
+  The wireframe cage traces the gamut boundary along OKLCh lines, so it matches the slices: rings every 0.1 L
+  (what B.1 outlines), meridians every 30° of hue (what B.2 outlines), plus the 12 edges of the RGB cube, which
+  are the solid's creases. Each vertex has its own color.
 
 Two details of the sRGB gamut in OKLab turned up while building this. Both are handled and covered by tests.
 
@@ -144,7 +148,7 @@ src/
   color/oklab.test.ts
   paints/vallejo.ts       Vallejo paints and layouts from data/, with OKLab computed from the hex
   paints/vallejo.test.ts  every layout code resolves, OKLab agrees with the stored OKLCh
-  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut mode)
+  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, wireframe)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
   views/lightnessSlice.ts B.1

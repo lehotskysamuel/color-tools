@@ -18,6 +18,8 @@ export interface AppState {
   /** The color under the pointer in any view, in OKLab, or null. */
   hover: Vec3 | null;
   cut: CutMode;
+  /** Draw the solid as a wire cage instead of an opaque surface, so everything inside it shows. */
+  wireframe: boolean;
 }
 
 export type Listener = (state: AppState, changed: Set<keyof AppState>) => void;

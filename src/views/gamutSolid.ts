@@ -8,6 +8,7 @@ import {
   Group,
   Line,
   LineBasicMaterial,
+  LineSegments,
   type Material,
   Mesh,
   MeshBasicMaterial,
@@ -100,6 +101,64 @@ function buildGamutGeometry(steps: number): BufferGeometry {
   return geometry;
 }
 
+/** Lightness step of the cage's rings and hue step of its meridians. */
+const CAGE_L_STEP = 0.1;
+const CAGE_H_STEP = 30;
+
+/**
+ * The wireframe: the gamut boundary traced along OKLCh lines, so the cage matches the slices.
+ * Rings at constant L are what B.1 outlines, meridians at constant h what B.2 outlines. The 12 edges of
+ * the RGB cube add the solid's creases, such as the ridge through the six primaries and secondaries.
+ * Every vertex has its own color, as on the solid.
+ */
+function buildCageGeometry(): BufferGeometry {
+  const positions: number[] = [];
+  const colors: number[] = [];
+  const addPolyline = (labs: Vec3[]) => {
+    for (let i = 1; i < labs.length; i++) {
+      for (const lab of [labs[i - 1], labs[i]]) {
+        positions.push(lab[1], lab[0], -lab[2]);
+        colors.push(...oklabToLinearSrgb(lab).map((c) => Math.min(1, Math.max(0, c))));
+      }
+    }
+  };
+  const boundary = (L: number, h: number) => oklchToOklab([L, maxChroma(L, h), h]);
+
+  for (let L = CAGE_L_STEP; L < 1 - 1e-9; L += CAGE_L_STEP) {
+    const ring: Vec3[] = [];
+    for (let h = 0; h <= 360; h += 2) ring.push(boundary(L, h));
+    addPolyline(ring);
+  }
+  for (let h = 0; h < 360; h += CAGE_H_STEP) {
+    const meridian: Vec3[] = [];
+    for (let i = 0; i <= 200; i++) meridian.push(boundary(i / 200, h));
+    addPolyline(meridian);
+  }
+  const corners: Vec3[] = [
+    [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1],
+    [1, 1, 0], [0, 1, 1], [1, 0, 1], [1, 1, 1],
+  ];
+  for (let i = 0; i < corners.length; i++) {
+    for (let j = i + 1; j < corners.length; j++) {
+      const [p, q] = [corners[i], corners[j]];
+      // Cube edges are the corner pairs that differ in exactly one channel.
+      if (p.filter((c, k) => c !== q[k]).length !== 1) continue;
+      const edge: Vec3[] = [];
+      for (let t = 0; t <= 32; t++) {
+        // Uniform in gamma-encoded sRGB, like the solid's grid.
+        const s = srgbToLinear(t / 32);
+        edge.push(linearSrgbToOklab(p.map((c, k) => c + (q[k] - c) * s) as Vec3));
+      }
+      addPolyline(edge);
+    }
+  }
+
+  const geometry = new BufferGeometry();
+  geometry.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
+  geometry.setAttribute('color', new BufferAttribute(new Float32Array(colors), 3));
+  return geometry;
+}
+
 function makeMarker(radius: number): { group: Group; fill: MeshBasicMaterial; rim: MeshBasicMaterial } {
   const fill = new MeshBasicMaterial({ depthTest: false, depthWrite: false });
   const rim = new MeshBasicMaterial({ side: BackSide, depthTest: false, depthWrite: false });
@@ -156,6 +215,7 @@ export class GamutSolid {
   private readonly controls: OrbitControls;
   private readonly solidMaterial: MeshBasicMaterial;
   private readonly solid: Mesh;
+  private readonly cage: LineSegments;
   private readonly lightnessCap: Mesh<PlaneGeometry, MeshBasicMaterial>;
   private readonly hueCap: Mesh<PlaneGeometry, MeshBasicMaterial>;
   private readonly lightnessTexture: CanvasTexture;
@@ -206,6 +266,8 @@ export class GamutSolid {
     this.solidMaterial = new MeshBasicMaterial({ vertexColors: true, side: DoubleSide });
     this.solid = new Mesh(buildGamutGeometry(FACE_STEPS), this.solidMaterial);
     this.scene.add(this.solid);
+    this.cage = new LineSegments(buildCageGeometry(), new LineBasicMaterial({ vertexColors: true }));
+    this.scene.add(this.cage);
 
     // The cut faces are the slice images from B.1 and B.2, so the three views always agree.
     this.lightnessTexture = new CanvasTexture(lightnessImage);
@@ -283,7 +345,7 @@ export class GamutSolid {
     });
 
     store.subscribe((state, changed) => this.sync(state, changed));
-    this.sync(store.get(), new Set(['L', 'h', 'cut', 'pick', 'hover', 'paints']));
+    this.sync(store.get(), new Set(['L', 'h', 'cut', 'wireframe', 'pick', 'hover', 'paints']));
     this.resetView();
   }
 
@@ -351,6 +413,11 @@ export class GamutSolid {
 
   private sync(state: AppState, changed: Set<keyof AppState>): void {
     if (changed.has('L') || changed.has('h') || changed.has('cut')) this.updateCut(state);
+    if (changed.has('wireframe')) {
+      // The caps and their outlines still follow the cut mode, so a cut shows its slice inside the cage.
+      this.solid.visible = !state.wireframe;
+      this.cage.visible = state.wireframe;
+    }
     if (changed.has('pick')) this.placeMarker(this.pickMarker, state.pick);
     if (changed.has('paints')) this.placeDots(state.paints);
     if (changed.has('hover')) {
