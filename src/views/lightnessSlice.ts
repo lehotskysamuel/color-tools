@@ -35,7 +35,7 @@ export class LightnessSlice extends SlicePlot {
   protected pick(lab: Vec3): void {
     const [, C, h] = oklabToOklch(lab);
     // A neutral has no hue; keep the hue slice where it is.
-    this.store.set({ pick: lab, h: C > 1e-4 ? h : this.store.get().h });
+    this.store.set({ pick: lab, pickPaint: null, h: C > 1e-4 ? h : this.store.get().h });
   }
 
   protected drawOverlay(ctx: CanvasRenderingContext2D, state: AppState, theme: Theme): void {

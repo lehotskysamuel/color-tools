@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>OKLCh Atlas</title>
-    <meta name="description" content="The sRGB gamut in OKLCh: a 3D solid plus lightness and hue slices where distance on screen matches perceived color difference." />
+    <meta name="description" content="The sRGB gamut in OKLCh: a 3D solid plus lightness and hue slices where distance on screen matches perceived color difference, with Vallejo paint swatches to pick from." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,92 +18,126 @@
         <h1>OKLCh Atlas</h1>
         <p class="lede">
           Every color an sRGB screen can show, placed in OKLab so that distance on the page matches how different two
-          colors look. One unit is the same perceptual step on every axis of every view.
+          colors look. One unit is the same perceptual step on every axis of every view. Pick a Vallejo paint to see
+          where it sits.
         </p>
       </header>
 
-      <section class="readout" aria-label="Picked color">
-        <div class="readout-swatch" id="pick-swatch"></div>
-        <div class="readout-values">
-          <span class="eyebrow">Picked<span class="narrow-only"> · tap any view to change</span></span>
-          <output class="mono readout-main" id="pick-oklch"></output>
-          <span class="mono readout-sub"><output id="pick-hex"></output> · <output id="pick-oklab"></output></span>
-        </div>
-        <p class="readout-hint">Click a color in any view to pick it. Both slices move to pass through it.</p>
-      </section>
-
-      <main class="views">
-        <section class="panel" aria-labelledby="a-title">
-          <header class="panel-head">
-            <span class="tag">A</span>
-            <h2 id="a-title">Gamut solid</h2>
-          </header>
-          <p class="panel-note">All sRGB colors at their OKLab position, lightness pointing up. Drag to orbit, scroll to zoom.</p>
-          <div class="controls">
-            <fieldset class="segmented" id="cut-mode">
-              <legend class="sr-only">Cut the solid</legend>
-              <input type="radio" name="cut" id="cut-whole" value="whole" />
-              <label for="cut-whole">Whole</label>
-              <input type="radio" name="cut" id="cut-lightness" value="lightness" />
-              <label for="cut-lightness">Cut at L</label>
-              <input type="radio" name="cut" id="cut-hue" value="hue" />
-              <label for="cut-hue">Cut at hue</label>
-              <input type="radio" name="cut" id="cut-wedge" value="wedge" />
-              <label for="cut-wedge">Wedge</label>
-            </fieldset>
-            <button type="button" class="button" id="reset-view">Reset view</button>
+      <div class="workspace">
+        <section class="readout" aria-label="Picked color">
+          <div class="readout-swatch" id="pick-swatch"></div>
+          <div class="readout-values">
+            <span class="readout-top">
+              <span class="eyebrow">Picked<span class="narrow-only" id="pick-tap-hint"> · tap any view to change</span></span>
+              <output class="readout-paint" id="pick-paint"></output>
+            </span>
+            <output class="mono readout-main" id="pick-oklch"></output>
+            <span class="mono readout-sub"><output id="pick-hex"></output> · <output id="pick-oklab"></output></span>
           </div>
-          <div class="plot plot-solid" id="solid-host"></div>
-          <p class="stat">The cut faces are the two slices on the right. The gray line is the neutral axis from black to white.</p>
+          <p class="readout-hint">Click a color or a paint dot in any view to pick it. Both slices move through it.</p>
         </section>
 
-        <section class="panel" aria-labelledby="b1-title">
+        <aside class="swatch-pane" aria-labelledby="paints-title">
           <header class="panel-head">
-            <span class="tag">B.1</span>
-            <h2 id="b1-title">Lightness slice</h2>
+            <h2 id="paints-title">Vallejo paints</h2>
           </header>
-          <p class="panel-note">A horizontal cut at one lightness. Hue is the angle, chroma the distance from the gray center.</p>
           <div class="controls">
-            <label class="slider-label" for="l-slider">Lightness</label>
-            <input type="range" id="l-slider" min="0" max="1" step="0.005" />
-            <output class="mono slider-value" id="l-value" for="l-slider"></output>
+            <label class="slider-label" for="layout-select">Layout</label>
+            <select class="select" id="layout-select"></select>
           </div>
-          <div class="plot" id="b1-host"></div>
-          <p class="stat" id="b1-stat"></p>
-        </section>
-
-        <section class="panel" aria-labelledby="b2-title">
-          <header class="panel-head">
-            <span class="tag">B.2</span>
-            <h2 id="b2-title">Hue slice</h2>
-          </header>
-          <p class="panel-note">A vertical cut through the gray axis. Hue h on the right, its complement h + 180° on the left.</p>
           <div class="controls">
-            <label class="slider-label" for="h-slider">Hue</label>
-            <input type="range" id="h-slider" min="0" max="359" step="1" />
-            <output class="mono slider-value" id="h-value" for="h-slider"></output>
+            <button type="button" class="button" id="show-all">Select all</button>
+            <button type="button" class="button" id="show-none">Select none</button>
+            <output class="stat mono" id="swatch-count"></output>
           </div>
-          <div class="plot" id="b2-host"></div>
-          <p class="stat" id="b2-stat"></p>
-        </section>
-      </main>
+          <div class="swatch-grid" id="swatch-grid"></div>
+          <p class="stat">
+            Click a paint to show or hide it as a dot in the views. Showing a paint also picks it, so double-click a
+            shown paint to pick it. The slices show paints within ΔE<sub>OK</sub> 0.04 of their plane, fainter the
+            farther away. The solid draws every dot on top; orbit it to judge depth.
+          </p>
+          <p class="stat" id="swatch-note"></p>
+          <p class="stat">
+            Colors are Vallejo's printed chart converted to sRGB, not measurements of dried paint.
+          </p>
+        </aside>
 
-      <footer class="notes">
-        <p>
-          ΔE<sub>OK</sub> of about 0.02 is one just-noticeable difference. Hatched areas are outside sRGB: no screen
-          color exists there. The page is neutral gray on purpose, because a tinted surround changes how the colors
-          look.
-        </p>
-        <p>
-          Color math: OKLab by Björn Ottosson (2020). Straight-line OKLab distance is a good model for small and
-          medium differences and overstates very large ones.
-        </p>
-      </footer>
+        <main class="views-host">
+          <div class="views">
+            <section class="panel" aria-labelledby="a-title">
+              <header class="panel-head">
+                <span class="tag">A</span>
+                <h2 id="a-title">Gamut solid</h2>
+                <button type="button" class="button panel-head-action" id="reset-view">Reset view</button>
+              </header>
+              <p class="panel-note">All sRGB colors at their OKLab position, lightness pointing up. Drag to orbit, scroll to zoom.</p>
+              <div class="controls">
+                <fieldset class="segmented" id="cut-mode">
+                  <legend class="sr-only">Cut the solid</legend>
+                  <input type="radio" name="cut" id="cut-whole" value="whole" />
+                  <label for="cut-whole">Whole</label>
+                  <input type="radio" name="cut" id="cut-lightness" value="lightness" />
+                  <label for="cut-lightness">Cut at L</label>
+                  <input type="radio" name="cut" id="cut-hue" value="hue" />
+                  <label for="cut-hue">Cut at hue</label>
+                  <input type="radio" name="cut" id="cut-wedge" value="wedge" />
+                  <label for="cut-wedge">Wedge</label>
+                </fieldset>
+              </div>
+              <div class="plot plot-solid" id="solid-host"></div>
+              <p class="stat">The cut faces are slices B.1 and B.2. The gray line is the neutral axis from black to white.</p>
+            </section>
+
+            <section class="panel" aria-labelledby="b1-title">
+              <header class="panel-head">
+                <span class="tag">B.1</span>
+                <h2 id="b1-title">Lightness slice</h2>
+              </header>
+              <p class="panel-note">A horizontal cut at one lightness. Hue is the angle, chroma the distance from the gray center.</p>
+              <div class="controls">
+                <label class="slider-label" for="l-slider">Lightness</label>
+                <input type="range" id="l-slider" min="0" max="1" step="0.005" />
+                <output class="mono slider-value" id="l-value" for="l-slider"></output>
+              </div>
+              <div class="plot" id="b1-host"></div>
+              <p class="stat" id="b1-stat"></p>
+            </section>
+
+            <section class="panel" aria-labelledby="b2-title">
+              <header class="panel-head">
+                <span class="tag">B.2</span>
+                <h2 id="b2-title">Hue slice</h2>
+              </header>
+              <p class="panel-note">A vertical cut through the gray axis. Hue h on the right, its complement h + 180° on the left.</p>
+              <div class="controls">
+                <label class="slider-label" for="h-slider">Hue</label>
+                <input type="range" id="h-slider" min="0" max="359" step="1" />
+                <output class="mono slider-value" id="h-value" for="h-slider"></output>
+              </div>
+              <div class="plot" id="b2-host"></div>
+              <p class="stat" id="b2-stat"></p>
+            </section>
+          </div>
+        </main>
+
+        <footer class="notes">
+          <p>
+            ΔE<sub>OK</sub> of about 0.02 is one just-noticeable difference. Hatched areas are outside sRGB: no screen
+            color exists there. The page is neutral gray on purpose, because a tinted surround changes how the colors
+            look.
+          </p>
+          <p>
+            Color math: OKLab by Björn Ottosson (2020). Straight-line OKLab distance is a good model for small and
+            medium differences and overstates very large ones.
+          </p>
+        </footer>
+      </div>
     </div>
 
     <div class="tooltip" id="tooltip" role="status" hidden>
       <div class="tooltip-swatch" id="tip-swatch"></div>
       <div class="tooltip-text">
+        <div class="tooltip-name" id="tip-name" hidden></div>
         <div class="mono" id="tip-main"></div>
         <div class="mono tooltip-sub" id="tip-sub"></div>
       </div>

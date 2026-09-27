@@ -3,6 +3,7 @@ import {
   BufferAttribute,
   BufferGeometry,
   CanvasTexture,
+  Color,
   DoubleSide,
   Group,
   Line,
@@ -13,6 +14,8 @@ import {
   OrthographicCamera,
   Plane,
   PlaneGeometry,
+  Points,
+  PointsMaterial,
   Raycaster,
   Scene,
   SphereGeometry,
@@ -33,7 +36,8 @@ import {
   oklchToOklab,
   srgbToLinear,
 } from '../color/oklab';
-import type { AppState, CutMode, Store } from '../state';
+import type { Paint } from '../paints/vallejo';
+import { type AppState, type CutMode, type Store, pickPaint } from '../state';
 import type { HoverHandler } from './slicePlot';
 
 /** Grid resolution per face of the RGB cube. */
@@ -48,6 +52,11 @@ const TARGET = new Vector3(0, 0.5, 0);
  */
 const labToScene = ([L, a, b]: Vec3) => new Vector3(a, L, -b);
 const sceneToLab = (p: Vector3): Vec3 => [p.y, p.x, -p.z];
+
+/** Paint dots: diameter of the rim and of the color inside it, and the pointer hit radius, in CSS pixels. */
+const DOT_RIM = 9;
+const DOT_FILL = 6;
+const DOT_HIT = 6;
 
 /** Surface of the sRGB cube mapped into OKLab, colored with its own colors. */
 function buildGamutGeometry(steps: number): BufferGeometry {
@@ -103,6 +112,29 @@ function makeMarker(radius: number): { group: Group; fill: MeshBasicMaterial; ri
   return { group, fill, rim };
 }
 
+/** A round point sprite; PointsMaterial multiplies it by each point's color. */
+function discTexture(): CanvasTexture {
+  const size = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2);
+  ctx.fill();
+  return new CanvasTexture(canvas);
+}
+
+function makeDots(size: number, renderOrder: number, map: CanvasTexture): Points<BufferGeometry, PointsMaterial> {
+  const dots = new Points(
+    new BufferGeometry(),
+    new PointsMaterial({ size, sizeAttenuation: false, vertexColors: true, map, alphaTest: 0.5 }),
+  );
+  dots.renderOrder = renderOrder;
+  dots.frustumCulled = false;
+  return dots;
+}
+
 function clippedBy(point: Vector3, material: Material): boolean {
   const planes = material.clippingPlanes;
   if (!planes || planes.length === 0) return false;
@@ -115,6 +147,11 @@ export class GamutSolid {
 
   private readonly renderer: WebGLRenderer;
   private readonly scene = new Scene();
+  /**
+   * Drawn after the solid with a fresh depth buffer, so no paint dot is hidden inside the solid,
+   * while the dots still hide each other by depth. The pick and hover markers go on top of everything.
+   */
+  private readonly overlay = new Scene();
   private readonly camera = new OrthographicCamera(-1, 1, 1, -1, -10, 10);
   private readonly controls: OrbitControls;
   private readonly solidMaterial: MeshBasicMaterial;
@@ -127,6 +164,11 @@ export class GamutSolid {
   private readonly hueOutline = new Line(new BufferGeometry(), new LineBasicMaterial());
   private readonly pickMarker = makeMarker(0.011);
   private readonly hoverMarker = makeMarker(0.008);
+  private readonly dotTexture = discTexture();
+  // The fill is drawn after the rim at the same depth; the default less-or-equal depth test lets it through.
+  private readonly dotRims = makeDots(DOT_RIM, 1, this.dotTexture);
+  private readonly dotFills = makeDots(DOT_FILL, 2, this.dotTexture);
+  private paints: readonly Paint[] = [];
   private readonly raycaster = new Raycaster();
 
   // Clipping planes. three.js discards fragments on the negative side of a plane.
@@ -151,6 +193,7 @@ export class GamutSolid {
   ) {
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setClearColor(0x000000, 0);
+    this.renderer.autoClear = false;
     this.renderer.localClippingEnabled = true;
     this.renderer.domElement.className = 'solid-canvas';
     this.renderer.domElement.setAttribute('role', 'img');
@@ -191,7 +234,7 @@ export class GamutSolid {
     );
     this.scene.add(axis);
 
-    this.scene.add(this.pickMarker.group, this.hoverMarker.group);
+    this.overlay.add(this.dotRims, this.dotFills, this.pickMarker.group, this.hoverMarker.group);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.copy(TARGET);
@@ -211,10 +254,15 @@ export class GamutSolid {
       const down = this.pointerDown;
       this.pointerDown = null;
       if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) return;
+      const paint = this.paintAtPointer(e);
+      if (paint) {
+        pickPaint(this.store, paint);
+        return;
+      }
       const lab = this.labAtPointer(e);
       if (!lab) return;
       const [L, C, h] = oklabToOklch(lab);
-      this.store.set({ pick: lab, L, h: C > 1e-4 ? h : this.store.get().h });
+      this.store.set({ pick: lab, pickPaint: null, L, h: C > 1e-4 ? h : this.store.get().h });
     });
     el.addEventListener('pointermove', (e) => {
       if (this.dragging || e.buttons !== 0) return;
@@ -224,7 +272,9 @@ export class GamutSolid {
         this.hoverFrame = 0;
         const ev = this.lastPointer;
         if (!ev) return;
-        this.onHover?.(this.labAtPointer(ev), ev.clientX, ev.clientY);
+        const paint = this.paintAtPointer(ev);
+        if (paint) this.onHover?.(paint.lab, ev.clientX, ev.clientY, paint);
+        else this.onHover?.(this.labAtPointer(ev), ev.clientX, ev.clientY);
       });
     });
     el.addEventListener('pointerleave', () => {
@@ -233,7 +283,7 @@ export class GamutSolid {
     });
 
     store.subscribe((state, changed) => this.sync(state, changed));
-    this.sync(store.get(), new Set(['L', 'h', 'cut', 'pick', 'hover']));
+    this.sync(store.get(), new Set(['L', 'h', 'cut', 'pick', 'hover', 'paints']));
     this.resetView();
   }
 
@@ -302,6 +352,7 @@ export class GamutSolid {
   private sync(state: AppState, changed: Set<keyof AppState>): void {
     if (changed.has('L') || changed.has('h') || changed.has('cut')) this.updateCut(state);
     if (changed.has('pick')) this.placeMarker(this.pickMarker, state.pick);
+    if (changed.has('paints')) this.placeDots(state.paints);
     if (changed.has('hover')) {
       this.hoverMarker.group.visible = state.hover !== null;
       if (state.hover) this.placeMarker(this.hoverMarker, state.hover);
@@ -388,6 +439,48 @@ export class GamutSolid {
     marker.rim.color.set(lab[0] > 0.62 ? 0x000000 : 0xffffff);
   }
 
+  private placeDots(paints: readonly Paint[]): void {
+    this.paints = paints;
+    const positions = new Float32Array(paints.length * 3);
+    const fills = new Float32Array(paints.length * 3);
+    const rims = new Float32Array(paints.length * 3);
+    paints.forEach((paint, i) => {
+      positions.set(labToScene(paint.lab).toArray(), i * 3);
+      // Vertex colors are linear-light, like the solid's.
+      fills.set(oklabToLinearSrgb(paint.lab).map((c) => Math.min(1, Math.max(0, c))), i * 3);
+      rims.set(new Color(paint.lab[0] > 0.62 ? 0x000000 : 0xffffff).toArray(), i * 3);
+    });
+    for (const [dots, colors] of [
+      [this.dotRims, rims],
+      [this.dotFills, fills],
+    ] as const) {
+      dots.geometry.dispose();
+      dots.geometry = new BufferGeometry();
+      dots.geometry.setAttribute('position', new BufferAttribute(positions, 3));
+      dots.geometry.setAttribute('color', new BufferAttribute(colors, 3));
+    }
+  }
+
+  /** The front-most paint dot under the pointer. Dots are drawn over the solid, so they win over it. */
+  private paintAtPointer(e: PointerEvent): Paint | null {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    const p = new Vector3();
+    let best: Paint | null = null;
+    let bestDepth = Infinity;
+    for (const paint of this.paints) {
+      p.copy(labToScene(paint.lab)).project(this.camera);
+      const x = ((p.x + 1) / 2) * rect.width;
+      const y = ((1 - p.y) / 2) * rect.height;
+      if (Math.hypot(x - px, y - py) <= DOT_HIT && p.z < bestDepth) {
+        best = paint;
+        bestDepth = p.z;
+      }
+    }
+    return best;
+  }
+
   private labAtPointer(e: PointerEvent): Vec3 | null {
     const rect = this.renderer.domElement.getBoundingClientRect();
     const ndc = new Vector2(
@@ -422,7 +515,10 @@ export class GamutSolid {
     if (this.frame) return;
     this.frame = requestAnimationFrame(() => {
       this.frame = 0;
+      this.renderer.clear();
       this.renderer.render(this.scene, this.camera);
+      this.renderer.clearDepth();
+      this.renderer.render(this.overlay, this.camera);
     });
   }
 }
