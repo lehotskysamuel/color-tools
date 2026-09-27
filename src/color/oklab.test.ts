@@ -5,6 +5,7 @@ import {
   encodeLinear8,
   findCusp,
   hexToLinear,
+  hexToOklch,
   isLinearInGamut,
   linearSrgbToOklab,
   linearToHex,
@@ -15,8 +16,6 @@ import {
   oklchToOklab,
   srgbToLinear,
 } from './oklab';
-
-const lch = (hex: string): Vec3 => oklabToOklch(linearSrgbToOklab(hexToLinear(hex)));
 
 describe('sRGB transfer function', () => {
   it('round-trips', () => {
@@ -48,7 +47,7 @@ describe('OKLab conversion', () => {
     ['#00ff00', 0.86644, 0.29483, 142.495],
     ['#0000ff', 0.45201, 0.31321, 264.052],
   ])('%s matches the CSS Color 4 reference', (hex, L, C, h) => {
-    const [l, c, hh] = lch(hex);
+    const [l, c, hh] = hexToOklch(hex);
     expect(l).toBeCloseTo(L, 4);
     expect(c).toBeCloseTo(C, 4);
     expect(hh).toBeCloseTo(h, 2);
@@ -80,7 +79,7 @@ describe('gamut boundary', () => {
   it.each(['#ff0000', '#00ff00', '#ffff00', '#00ffff', '#ff00ff'])(
     'finds the maximum chroma of %s at its own lightness and hue',
     (hex) => {
-      const [L, C, h] = lch(hex);
+      const [L, C, h] = hexToOklch(hex);
       expect(maxChroma(L, h)).toBeCloseTo(C, 3);
     },
   );
@@ -90,7 +89,7 @@ describe('gamut boundary', () => {
   // at the primary. The ray therefore leaves the gamut at C ≈ 0.266 and only touches pure blue
   // at its tip. The views render every pixel independently, so this shows up as a thin spike.
   it('treats pure blue as a point the constant-hue ray only grazes', () => {
-    const [L, C, h] = lch('#0000ff');
+    const [L, C, h] = hexToOklch('#0000ff');
     const cMax = maxChroma(L, h);
     expect(cMax).toBeGreaterThan(0.26);
     expect(cMax).toBeLessThan(C - 0.04);
@@ -127,7 +126,7 @@ describe('gamut boundary', () => {
   it.each(['#ff0000', '#00ff00', '#ffff00', '#00ffff', '#ff00ff'])(
     'places the cusp of %s at the primary or secondary itself',
     (hex) => {
-      const [L, C, h] = lch(hex);
+      const [L, C, h] = hexToOklch(hex);
       const cusp = findCusp(h);
       expect(cusp.L).toBeCloseTo(L, 2);
       expect(cusp.C).toBeCloseTo(C, 3);
