@@ -4,2113 +4,5435 @@
     "name": "Camouflage Middle Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#513E21"
+    "rgb": "#513E21",
+    "oklch": {
+      "l": 0.3773,
+      "c": 0.051,
+      "h": 76.78
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 23.5,
+      "y": 59.3,
+      "k": 68.2
+    }
   },
   {
     "code": "70.741",
     "name": "Camouflage Black Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#313028"
+    "rgb": "#313028",
+    "oklch": {
+      "l": 0.3075,
+      "c": 0.0139,
+      "h": 101.31
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 2,
+      "y": 18.4,
+      "k": 80.8
+    }
   },
   {
     "code": "70.745",
     "name": "Dark Rose",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#7F5251"
+    "rgb": "#7F5251",
+    "oklch": {
+      "l": 0.4883,
+      "c": 0.0607,
+      "h": 20.91
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 35.4,
+      "y": 36.2,
+      "k": 50.2
+    }
   },
   {
     "code": "70.746",
     "name": "Chestnut Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#613F3A"
+    "rgb": "#613F3A",
+    "oklch": {
+      "l": 0.4054,
+      "c": 0.0489,
+      "h": 28.61
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 35.1,
+      "y": 40.2,
+      "k": 62
+    }
   },
   {
     "code": "70.747",
     "name": "Faded Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#BB594F"
+    "rgb": "#BB594F",
+    "oklch": {
+      "l": 0.5822,
+      "c": 0.1286,
+      "h": 27.64
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 52.4,
+      "y": 57.8,
+      "k": 26.7
+    }
   },
   {
     "code": "70.748",
     "name": "Light Pink",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#E08DA3"
+    "rgb": "#E08DA3",
+    "oklch": {
+      "l": 0.7347,
+      "c": 0.1039,
+      "h": 2.77
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 37.1,
+      "y": 27.2,
+      "k": 12.2
+    }
   },
   {
     "code": "70.749",
     "name": "Dark Purple",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#452734"
+    "rgb": "#452734",
+    "oklch": {
+      "l": 0.3158,
+      "c": 0.049,
+      "h": 352.75
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 43.5,
+      "y": 24.6,
+      "k": 72.9
+    }
   },
   {
     "code": "70.750",
     "name": "Light Violet",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#A793BB"
+    "rgb": "#A793BB",
+    "oklch": {
+      "l": 0.6946,
+      "c": 0.0617,
+      "h": 307.47
+    },
+    "cmyk": {
+      "c": 10.7,
+      "m": 21.4,
+      "y": 0,
+      "k": 26.7
+    }
   },
   {
     "code": "70.751",
     "name": "Black Violet",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#392A31"
+    "rgb": "#392A31",
+    "oklch": {
+      "l": 0.305,
+      "c": 0.025,
+      "h": 349.01
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 26.3,
+      "y": 14,
+      "k": 77.6
+    }
   },
   {
     "code": "70.752",
     "name": "Infantry Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#25202C"
+    "rgb": "#25202C",
+    "oklch": {
+      "l": 0.2545,
+      "c": 0.0233,
+      "h": 303.77
+    },
+    "cmyk": {
+      "c": 15.9,
+      "m": 27.3,
+      "y": 0,
+      "k": 82.7
+    }
   },
   {
     "code": "70.753",
     "name": "Light Blue Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#0A98A5"
+    "rgb": "#0A98A5",
+    "oklch": {
+      "l": 0.6211,
+      "c": 0.1047,
+      "h": 205.64
+    },
+    "cmyk": {
+      "c": 93.9,
+      "m": 7.9,
+      "y": 0,
+      "k": 35.3
+    }
   },
   {
     "code": "70.754",
     "name": "Continental Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#25242B"
+    "rgb": "#25242B",
+    "oklch": {
+      "l": 0.2643,
+      "c": 0.013,
+      "h": 292.04
+    },
+    "cmyk": {
+      "c": 14,
+      "m": 16.3,
+      "y": 0,
+      "k": 83.1
+    }
   },
   {
     "code": "70.755",
     "name": "Light Emerald",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#057C72"
+    "rgb": "#057C72",
+    "oklch": {
+      "l": 0.5277,
+      "c": 0.092,
+      "h": 184.97
+    },
+    "cmyk": {
+      "c": 96,
+      "m": 0,
+      "y": 8.1,
+      "k": 51.4
+    }
   },
   {
     "code": "70.756",
     "name": "Splinter Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#446441"
+    "rgb": "#446441",
+    "oklch": {
+      "l": 0.4683,
+      "c": 0.0668,
+      "h": 142.39
+    },
+    "cmyk": {
+      "c": 32,
+      "m": 0,
+      "y": 35,
+      "k": 60.8
+    }
   },
   {
     "code": "70.757",
     "name": "Pacific Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#587064"
+    "rgb": "#587064",
+    "oklch": {
+      "l": 0.5221,
+      "c": 0.034,
+      "h": 163.3
+    },
+    "cmyk": {
+      "c": 21.4,
+      "m": 0,
+      "y": 10.7,
+      "k": 56.1
+    }
   },
   {
     "code": "70.758",
     "name": "Bright Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#6F8349"
+    "rgb": "#6F8349",
+    "oklch": {
+      "l": 0.5796,
+      "c": 0.0853,
+      "h": 124.56
+    },
+    "cmyk": {
+      "c": 15.3,
+      "m": 0,
+      "y": 44.3,
+      "k": 48.6
+    }
   },
   {
     "code": "70.759",
     "name": "German Tank Crew",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#524B3E"
+    "rgb": "#524B3E",
+    "oklch": {
+      "l": 0.4157,
+      "c": 0.0228,
+      "h": 82.97
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 8.5,
+      "y": 24.4,
+      "k": 67.8
+    }
   },
   {
     "code": "70.760",
     "name": "Light Mud",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#7A755A"
+    "rgb": "#7A755A",
+    "oklch": {
+      "l": 0.5594,
+      "c": 0.0401,
+      "h": 98.76
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 4.1,
+      "y": 26.2,
+      "k": 52.2
+    }
   },
   {
     "code": "70.761",
     "name": "Old Wood",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#816D53"
+    "rgb": "#816D53",
+    "oklch": {
+      "l": 0.5469,
+      "c": 0.0457,
+      "h": 73.9
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 15.5,
+      "y": 35.7,
+      "k": 49.4
+    }
   },
   {
     "code": "70.762",
     "name": "Grey Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#5B4922"
+    "rgb": "#5B4922",
+    "oklch": {
+      "l": 0.4151,
+      "c": 0.0607,
+      "h": 84.79
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 19.8,
+      "y": 62.6,
+      "k": 64.3
+    }
   },
   {
     "code": "70.763",
     "name": "Canvas",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#4B3F1F"
+    "rgb": "#4B3F1F",
+    "oklch": {
+      "l": 0.3722,
+      "c": 0.0507,
+      "h": 89.31
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 16,
+      "y": 58.7,
+      "k": 70.6
+    }
   },
   {
     "code": "70.764",
     "name": "Military Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#937726"
+    "rgb": "#937726",
+    "oklch": {
+      "l": 0.5811,
+      "c": 0.1029,
+      "h": 89.19
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 19,
+      "y": 74.1,
+      "k": 42.4
+    }
   },
   {
     "code": "70.765",
     "name": "Desert Tan",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#B5A386"
+    "rgb": "#B5A386",
+    "oklch": {
+      "l": 0.7234,
+      "c": 0.0454,
+      "h": 79.66
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 9.9,
+      "y": 26,
+      "k": 29
+    }
   },
   {
     "code": "70.766",
     "name": "Cream White",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#E1D2C3"
+    "rgb": "#E1D2C3",
+    "oklch": {
+      "l": 0.8719,
+      "c": 0.0263,
+      "h": 67.47
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 6.7,
+      "y": 13.3,
+      "k": 11.8
+    }
   },
   {
     "code": "70.767",
     "name": "Desert Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#AD8355"
+    "rgb": "#AD8355",
+    "oklch": {
+      "l": 0.6403,
+      "c": 0.0809,
+      "h": 68.08
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 24.3,
+      "y": 50.9,
+      "k": 32.2
+    }
   },
   {
     "code": "70.768",
     "name": "BC Dark Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#76583D"
+    "rgb": "#76583D",
+    "oklch": {
+      "l": 0.4848,
+      "c": 0.0564,
+      "h": 62.87
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 25.4,
+      "y": 48.3,
+      "k": 53.7
+    }
   },
   {
     "code": "70.769",
     "name": "Mustard Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#9E724A"
+    "rgb": "#9E724A",
+    "oklch": {
+      "l": 0.5875,
+      "c": 0.0785,
+      "h": 62.62
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 27.8,
+      "y": 53.2,
+      "k": 38
+    }
   },
   {
     "code": "70.770",
     "name": "New Wood",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#89613B"
+    "rgb": "#89613B",
+    "oklch": {
+      "l": 0.5259,
+      "c": 0.0745,
+      "h": 63.56
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 29.2,
+      "y": 56.9,
+      "k": 46.3
+    }
   },
   {
     "code": "70.771",
     "name": "Dark Rust",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#3D2525"
+    "rgb": "#3D2525",
+    "oklch": {
+      "l": 0.2947,
+      "c": 0.0367,
+      "h": 19.49
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 39.3,
+      "y": 39.3,
+      "k": 76.1
+    }
   },
   {
     "code": "70.772",
     "name": "Medium Grey Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#769C94"
+    "rgb": "#769C94",
+    "oklch": {
+      "l": 0.6622,
+      "c": 0.0434,
+      "h": 180.53
+    },
+    "cmyk": {
+      "c": 24.4,
+      "m": 0,
+      "y": 5.1,
+      "k": 38.8
+    }
   },
   {
     "code": "70.773",
     "name": "Violet Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#5A5A59"
+    "rgb": "#5A5A59",
+    "oklch": {
+      "l": 0.4673,
+      "c": 0.0016,
+      "h": 106.46
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 1.1,
+      "k": 64.7
+    }
   },
   {
     "code": "70.774",
     "name": "Lavender Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#7F6F6E"
+    "rgb": "#7F6F6E",
+    "oklch": {
+      "l": 0.5563,
+      "c": 0.0202,
+      "h": 22.05
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 12.6,
+      "y": 13.4,
+      "k": 50.2
+    }
   },
   {
     "code": "70.802",
     "name": "Sunset Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#BE2A4A"
+    "rgb": "#BE2A4A",
+    "oklch": {
+      "l": 0.5311,
+      "c": 0.1829,
+      "h": 14.39
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 77.9,
+      "y": 61.1,
+      "k": 25.5
+    }
   },
   {
     "code": "70.803",
     "name": "Brown Rose",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#9C6660"
+    "rgb": "#9C6660",
+    "oklch": {
+      "l": 0.5664,
+      "c": 0.071,
+      "h": 26.49
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 34.6,
+      "y": 38.5,
+      "k": 38.8
+    }
   },
   {
     "code": "70.804",
     "name": "Beige Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#B16F4B"
+    "rgb": "#B16F4B",
+    "oklch": {
+      "l": 0.6049,
+      "c": 0.098,
+      "h": 48.79
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 37.3,
+      "y": 57.6,
+      "k": 30.6
+    }
   },
   {
     "code": "70.805",
     "name": "German Orange",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#BB6355"
+    "rgb": "#BB6355",
+    "oklch": {
+      "l": 0.5991,
+      "c": 0.116,
+      "h": 30.29
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 47.1,
+      "y": 54.5,
+      "k": 26.7
+    }
   },
   {
     "code": "70.806",
     "name": "German Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#CDB65E"
+    "rgb": "#CDB65E",
+    "oklch": {
+      "l": 0.7779,
+      "c": 0.1117,
+      "h": 94.99
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 11.2,
+      "y": 54.1,
+      "k": 19.6
+    }
   },
   {
     "code": "70.807",
     "name": "Oxford Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#3D3954"
+    "rgb": "#3D3954",
+    "oklch": {
+      "l": 0.3605,
+      "c": 0.0463,
+      "h": 290.67
+    },
+    "cmyk": {
+      "c": 27.4,
+      "m": 32.1,
+      "y": 0,
+      "k": 67.1
+    }
   },
   {
     "code": "70.808",
     "name": "Blue Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#057986"
+    "rgb": "#057986",
+    "oklch": {
+      "l": 0.5274,
+      "c": 0.0896,
+      "h": 208.03
+    },
+    "cmyk": {
+      "c": 96.3,
+      "m": 9.7,
+      "y": 0,
+      "k": 47.5
+    }
   },
   {
     "code": "70.809",
     "name": "Royal Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#19437E"
+    "rgb": "#19437E",
+    "oklch": {
+      "l": 0.3879,
+      "c": 0.1103,
+      "h": 257.68
+    },
+    "cmyk": {
+      "c": 80.2,
+      "m": 46.8,
+      "y": 0,
+      "k": 50.6
+    }
   },
   {
     "code": "70.810",
     "name": "Royal Purple",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#4B2740"
+    "rgb": "#4B2740",
+    "oklch": {
+      "l": 0.3297,
+      "c": 0.0653,
+      "h": 339.59
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 48,
+      "y": 14.7,
+      "k": 70.6
+    }
   },
   {
     "code": "70.811",
     "name": "Blue Violet",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#58477E"
+    "rgb": "#58477E",
+    "oklch": {
+      "l": 0.4405,
+      "c": 0.0898,
+      "h": 296.79
+    },
+    "cmyk": {
+      "c": 30.2,
+      "m": 43.7,
+      "y": 0,
+      "k": 50.6
+    }
   },
   {
     "code": "70.812",
     "name": "Violet Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#63353F"
+    "rgb": "#63353F",
+    "oklch": {
+      "l": 0.3901,
+      "c": 0.0668,
+      "h": 6.7
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 46.5,
+      "y": 36.4,
+      "k": 61.2
+    }
   },
   {
     "code": "70.814",
     "name": "Burnt Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#753C3B"
+    "rgb": "#753C3B",
+    "oklch": {
+      "l": 0.428,
+      "c": 0.0801,
+      "h": 22.02
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 48.7,
+      "y": 49.6,
+      "k": 54.1
+    }
   },
   {
     "code": "70.815",
     "name": "Basic Skin Tone",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#E9AD8D"
+    "rgb": "#E9AD8D",
+    "oklch": {
+      "l": 0.7958,
+      "c": 0.0831,
+      "h": 49.19
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 25.8,
+      "y": 39.5,
+      "k": 8.6
+    }
   },
   {
     "code": "70.816",
     "name": "Luftwaffe Uniform",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#44414C"
+    "rgb": "#44414C",
+    "oklch": {
+      "l": 0.3824,
+      "c": 0.0189,
+      "h": 297.97
+    },
+    "cmyk": {
+      "c": 10.5,
+      "m": 14.5,
+      "y": 0,
+      "k": 70.2
+    }
   },
   {
     "code": "70.817",
     "name": "Scarlet",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#C13E2E"
+    "rgb": "#C13E2E",
+    "oklch": {
+      "l": 0.5508,
+      "c": 0.17,
+      "h": 30.25
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 67.9,
+      "y": 76.2,
+      "k": 24.3
+    }
   },
   {
     "code": "70.818",
     "name": "Red Leather",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#955439"
+    "rgb": "#955439",
+    "oklch": {
+      "l": 0.5161,
+      "c": 0.0954,
+      "h": 42.86
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 43.6,
+      "y": 61.7,
+      "k": 41.6
+    }
   },
   {
     "code": "70.819",
     "name": "Iraqi Sand",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#B4935E"
+    "rgb": "#B4935E",
+    "oklch": {
+      "l": 0.6816,
+      "c": 0.0808,
+      "h": 78.62
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 18.3,
+      "y": 47.8,
+      "k": 29.4
+    }
   },
   {
     "code": "70.820",
     "name": "Off-White",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#F4EDE6"
+    "rgb": "#F4EDE6",
+    "oklch": {
+      "l": 0.9496,
+      "c": 0.012,
+      "h": 67.68
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 2.9,
+      "y": 5.7,
+      "k": 4.3
+    }
   },
   {
     "code": "70.821",
     "name": "German Beige WWII",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#776A51"
+    "rgb": "#776A51",
+    "oklch": {
+      "l": 0.5297,
+      "c": 0.0405,
+      "h": 83.58
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 10.9,
+      "y": 31.9,
+      "k": 53.3
+    }
   },
   {
     "code": "70.822",
     "name": "Camouflage Black Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#413435"
+    "rgb": "#413435",
+    "oklch": {
+      "l": 0.3396,
+      "c": 0.0187,
+      "h": 12.9
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 20,
+      "y": 18.5,
+      "k": 74.5
+    }
   },
   {
     "code": "70.823",
     "name": "Luftwaffe Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#373F25"
+    "rgb": "#373F25",
+    "oklch": {
+      "l": 0.3527,
+      "c": 0.0436,
+      "h": 122.56
+    },
+    "cmyk": {
+      "c": 12.7,
+      "m": 0,
+      "y": 41.3,
+      "k": 75.3
+    }
   },
   {
     "code": "70.824",
     "name": "Orange Ochre",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#AA8136"
+    "rgb": "#AA8136",
+    "oklch": {
+      "l": 0.6288,
+      "c": 0.1047,
+      "h": 79.78
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 24.1,
+      "y": 68.2,
+      "k": 33.3
+    }
   },
   {
     "code": "70.825",
     "name": "Pale Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#9F8273"
+    "rgb": "#9F8273",
+    "oklch": {
+      "l": 0.6297,
+      "c": 0.0421,
+      "h": 48.86
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 18.2,
+      "y": 27.7,
+      "k": 37.6
+    }
   },
   {
     "code": "70.826",
     "name": "Medium Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#5B473C"
+    "rgb": "#5B473C",
+    "oklch": {
+      "l": 0.4158,
+      "c": 0.0328,
+      "h": 50.27
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 22,
+      "y": 34.1,
+      "k": 64.3
+    }
   },
   {
     "code": "70.827",
     "name": "Lime Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#7C9434"
+    "rgb": "#7C9434",
+    "oklch": {
+      "l": 0.628,
+      "c": 0.125,
+      "h": 122.04
+    },
+    "cmyk": {
+      "c": 16.2,
+      "m": 0,
+      "y": 64.9,
+      "k": 42
+    }
   },
   {
     "code": "70.828",
     "name": "Mahogany Ink",
     "range": "Model Color",
     "type": "ink",
-    "rgb": "#664540"
+    "rgb": "#664540",
+    "oklch": {
+      "l": 0.4259,
+      "c": 0.0468,
+      "h": 28.74
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 32.4,
+      "y": 37.3,
+      "k": 60
+    }
   },
   {
     "code": "70.829",
     "name": "Amaranth Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#D24E31"
+    "rgb": "#D24E31",
+    "oklch": {
+      "l": 0.5979,
+      "c": 0.1725,
+      "h": 33.96
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 62.9,
+      "y": 76.7,
+      "k": 17.6
+    }
   },
   {
     "code": "70.830",
     "name": "German Fieldgrey WWII",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#57523A"
+    "rgb": "#57523A",
+    "oklch": {
+      "l": 0.4366,
+      "c": 0.0376,
+      "h": 97.76
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 5.7,
+      "y": 33.3,
+      "k": 65.9
+    }
   },
   {
     "code": "70.833",
     "name": "Fern Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#455734"
+    "rgb": "#455734",
+    "oklch": {
+      "l": 0.4318,
+      "c": 0.0591,
+      "h": 130.67
+    },
+    "cmyk": {
+      "c": 20.7,
+      "m": 0,
+      "y": 40.2,
+      "k": 65.9
+    }
   },
   {
     "code": "70.835",
     "name": "Salmon Rose",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#E18E7C"
+    "rgb": "#E18E7C",
+    "oklch": {
+      "l": 0.7278,
+      "c": 0.1052,
+      "h": 32.93
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 36.9,
+      "y": 44.9,
+      "k": 11.8
+    }
   },
   {
     "code": "70.836",
     "name": "London Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#696362"
+    "rgb": "#696362",
+    "oklch": {
+      "l": 0.5049,
+      "c": 0.0078,
+      "h": 28.87
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 5.7,
+      "y": 6.7,
+      "k": 58.8
+    }
   },
   {
     "code": "70.837",
     "name": "Pale Sand",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#E3C28D"
+    "rgb": "#E3C28D",
+    "oklch": {
+      "l": 0.8301,
+      "c": 0.0785,
+      "h": 79.15
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 14.5,
+      "y": 37.9,
+      "k": 11
+    }
   },
   {
     "code": "70.838",
     "name": "Emerald",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#00624A"
+    "rgb": "#00624A",
+    "oklch": {
+      "l": 0.4409,
+      "c": 0.0885,
+      "h": 168.78
+    },
+    "cmyk": {
+      "c": 100,
+      "m": 0,
+      "y": 24.5,
+      "k": 61.6
+    }
   },
   {
     "code": "70.840",
     "name": "Light Turquoise",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#00688C"
+    "rgb": "#00688C",
+    "oklch": {
+      "l": 0.4852,
+      "c": 0.0978,
+      "h": 231.03
+    },
+    "cmyk": {
+      "c": 100,
+      "m": 25.7,
+      "y": 0,
+      "k": 45.1
+    }
   },
   {
     "code": "70.841",
     "name": "Andrea Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#0071AD"
+    "rgb": "#0071AD",
+    "oklch": {
+      "l": 0.5265,
+      "c": 0.1264,
+      "h": 242.62
+    },
+    "cmyk": {
+      "c": 100,
+      "m": 34.7,
+      "y": 0,
+      "k": 32.2
+    }
   },
   {
     "code": "70.843",
     "name": "Cork Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#A0704E"
+    "rgb": "#A0704E",
+    "oklch": {
+      "l": 0.5866,
+      "c": 0.0777,
+      "h": 55.88
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 30,
+      "y": 51.2,
+      "k": 37.3
+    }
   },
   {
     "code": "70.844",
     "name": "Deep Sky Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#4D96C4"
+    "rgb": "#4D96C4",
+    "oklch": {
+      "l": 0.6452,
+      "c": 0.1005,
+      "h": 238.65
+    },
+    "cmyk": {
+      "c": 60.7,
+      "m": 23.5,
+      "y": 0,
+      "k": 23.1
+    }
   },
   {
     "code": "70.845",
     "name": "Sunny Skin Tone",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#EC9745"
+    "rgb": "#EC9745",
+    "oklch": {
+      "l": 0.7485,
+      "c": 0.14,
+      "h": 61.56
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 36,
+      "y": 70.8,
+      "k": 7.5
+    }
   },
   {
     "code": "70.846",
     "name": "Mahogany Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#76524B"
+    "rgb": "#76524B",
+    "oklch": {
+      "l": 0.4755,
+      "c": 0.05,
+      "h": 31.29
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 30.5,
+      "y": 36.4,
+      "k": 53.7
+    }
   },
   {
     "code": "70.847",
     "name": "Dark Sand",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#CBA665"
+    "rgb": "#CBA665",
+    "oklch": {
+      "l": 0.7444,
+      "c": 0.094,
+      "h": 80.62
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 18.2,
+      "y": 50.2,
+      "k": 20.4
+    }
   },
   {
     "code": "70.850",
     "name": "Medium Olive",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#404E31"
+    "rgb": "#404E31",
+    "oklch": {
+      "l": 0.4033,
+      "c": 0.0496,
+      "h": 129.35
+    },
+    "cmyk": {
+      "c": 17.9,
+      "m": 0,
+      "y": 37.2,
+      "k": 69.4
+    }
   },
   {
     "code": "70.851",
     "name": "Bright Orange",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#DE5A20"
+    "rgb": "#DE5A20",
+    "oklch": {
+      "l": 0.6307,
+      "c": 0.1781,
+      "h": 40.98
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 59.5,
+      "y": 85.6,
+      "k": 12.9
+    }
   },
   {
     "code": "70.856",
     "name": "Ochre Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#AA793E"
+    "rgb": "#AA793E",
+    "oklch": {
+      "l": 0.6136,
+      "c": 0.0974,
+      "h": 69.29
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 28.8,
+      "y": 63.5,
+      "k": 33.3
+    }
   },
   {
     "code": "70.858",
     "name": "Ice Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#ECCF70"
+    "rgb": "#ECCF70",
+    "oklch": {
+      "l": 0.8597,
+      "c": 0.1195,
+      "h": 92.77
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 12.3,
+      "y": 52.5,
+      "k": 7.5
+    }
   },
   {
     "code": "70.859",
     "name": "Black Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#552F2B"
+    "rgb": "#552F2B",
+    "oklch": {
+      "l": 0.3523,
+      "c": 0.0565,
+      "h": 26.71
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 44.7,
+      "y": 49.4,
+      "k": 66.7
+    }
   },
   {
     "code": "70.860",
     "name": "Medium Flesh Tone",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#B0793F"
+    "rgb": "#B0793F",
+    "oklch": {
+      "l": 0.6208,
+      "c": 0.1013,
+      "h": 65.43
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 31.3,
+      "y": 64.2,
+      "k": 31
+    }
   },
   {
     "code": "70.861",
     "name": "Gloss Black",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#241E1F"
+    "rgb": "#241E1F",
+    "oklch": {
+      "l": 0.2423,
+      "c": 0.0094,
+      "h": 6.45
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 16.7,
+      "y": 13.9,
+      "k": 85.9
+    }
   },
   {
     "code": "70.862",
     "name": "Black Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#302722"
+    "rgb": "#302722",
+    "oklch": {
+      "l": 0.2812,
+      "c": 0.0163,
+      "h": 50.77
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 18.7,
+      "y": 29.2,
+      "k": 81.2
+    }
   },
   {
     "code": "70.866",
     "name": "Grey Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#423F3D"
+    "rgb": "#423F3D",
+    "oklch": {
+      "l": 0.37,
+      "c": 0.0053,
+      "h": 56.23
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 4.5,
+      "y": 7.6,
+      "k": 74.1
+    }
   },
   {
     "code": "70.867",
     "name": "Dark Blue Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#424346"
+    "rgb": "#424346",
+    "oklch": {
+      "l": 0.383,
+      "c": 0.0052,
+      "h": 271.28
+    },
+    "cmyk": {
+      "c": 5.7,
+      "m": 4.3,
+      "y": 0,
+      "k": 72.5
+    }
   },
   {
     "code": "70.868",
     "name": "Dark Sea Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#4B4546"
+    "rgb": "#4B4546",
+    "oklch": {
+      "l": 0.3967,
+      "c": 0.0083,
+      "h": 5.99
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 8,
+      "y": 6.7,
+      "k": 70.6
+    }
   },
   {
     "code": "70.869",
     "name": "Basalt Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#5B585D"
+    "rgb": "#5B585D",
+    "oklch": {
+      "l": 0.4649,
+      "c": 0.0088,
+      "h": 312.22
+    },
+    "cmyk": {
+      "c": 2.2,
+      "m": 5.4,
+      "y": 0,
+      "k": 63.5
+    }
   },
   {
     "code": "70.870",
     "name": "Medium Sea Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#7D7B7B"
+    "rgb": "#7D7B7B",
+    "oklch": {
+      "l": 0.5847,
+      "c": 0.0024,
+      "h": 17.23
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 1.6,
+      "y": 1.6,
+      "k": 51
+    }
   },
   {
     "code": "70.871",
     "name": "Leather Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#594435"
+    "rgb": "#594435",
+    "oklch": {
+      "l": 0.4049,
+      "c": 0.0377,
+      "h": 56.96
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 23.6,
+      "y": 40.4,
+      "k": 65.1
+    }
   },
   {
     "code": "70.872",
     "name": "Chocolate Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#59433D"
+    "rgb": "#59433D",
+    "oklch": {
+      "l": 0.4048,
+      "c": 0.0323,
+      "h": 35.77
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 24.7,
+      "y": 31.5,
+      "k": 65.1
+    }
   },
   {
     "code": "70.873",
     "name": "US Field Drab",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#816746"
+    "rgb": "#816746",
+    "oklch": {
+      "l": 0.5312,
+      "c": 0.058,
+      "h": 72.69
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 20.2,
+      "y": 45.7,
+      "k": 49.4
+    }
   },
   {
     "code": "70.874",
     "name": "Tan Earth",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#987658"
+    "rgb": "#987658",
+    "oklch": {
+      "l": 0.5915,
+      "c": 0.0605,
+      "h": 62.66
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 22.4,
+      "y": 42.1,
+      "k": 40.4
+    }
   },
   {
     "code": "70.875",
     "name": "Beige Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#815F44"
+    "rgb": "#815F44",
+    "oklch": {
+      "l": 0.5139,
+      "c": 0.0596,
+      "h": 59.38
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 26.4,
+      "y": 47.3,
+      "k": 49.4
+    }
   },
   {
     "code": "70.876",
     "name": "Brown Sand",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#926144"
+    "rgb": "#926144",
+    "oklch": {
+      "l": 0.5384,
+      "c": 0.0767,
+      "h": 51.1
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 33.6,
+      "y": 53.4,
+      "k": 42.7
+    }
   },
   {
     "code": "70.877",
     "name": "Gold Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#BF863C"
+    "rgb": "#BF863C",
+    "oklch": {
+      "l": 0.6631,
+      "c": 0.1137,
+      "h": 70.5
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 29.8,
+      "y": 68.6,
+      "k": 25.1
+    }
   },
   {
     "code": "70.879",
     "name": "Green Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#816C31"
+    "rgb": "#816C31",
+    "oklch": {
+      "l": 0.5388,
+      "c": 0.0822,
+      "h": 89.83
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 16.3,
+      "y": 62,
+      "k": 49.4
+    }
   },
   {
     "code": "70.880",
     "name": "Khaki Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#7C6338"
+    "rgb": "#7C6338",
+    "oklch": {
+      "l": 0.5146,
+      "c": 0.068,
+      "h": 79.91
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 20.2,
+      "y": 54.8,
+      "k": 51.4
+    }
   },
   {
     "code": "70.881",
     "name": "Green Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#6F653C"
+    "rgb": "#6F653C",
+    "oklch": {
+      "l": 0.506,
+      "c": 0.0601,
+      "h": 96.08
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 9,
+      "y": 45.9,
+      "k": 56.5
+    }
   },
   {
     "code": "70.882",
     "name": "Middle Stone",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#937F40"
+    "rgb": "#937F40",
+    "oklch": {
+      "l": 0.6013,
+      "c": 0.0862,
+      "h": 92.06
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 13.6,
+      "y": 56.5,
+      "k": 42.4
+    }
   },
   {
     "code": "70.883",
     "name": "Silver Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#D7CFC6"
+    "rgb": "#D7CFC6",
+    "oklch": {
+      "l": 0.8584,
+      "c": 0.0152,
+      "h": 70.87
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 3.7,
+      "y": 7.9,
+      "k": 15.7
+    }
   },
   {
     "code": "70.884",
     "name": "Stone Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#8A7C64"
+    "rgb": "#8A7C64",
+    "oklch": {
+      "l": 0.5925,
+      "c": 0.0389,
+      "h": 81.09
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 10.1,
+      "y": 27.5,
+      "k": 45.9
+    }
   },
   {
     "code": "70.885",
     "name": "Pastel Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#94976F"
+    "rgb": "#94976F",
+    "oklch": {
+      "l": 0.6635,
+      "c": 0.0563,
+      "h": 111.41
+    },
+    "cmyk": {
+      "c": 2,
+      "m": 0,
+      "y": 26.5,
+      "k": 40.8
+    }
   },
   {
     "code": "70.886",
     "name": "Green Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#65634F"
+    "rgb": "#65634F",
+    "oklch": {
+      "l": 0.4957,
+      "c": 0.0306,
+      "h": 102.71
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 2,
+      "y": 21.8,
+      "k": 60.4
+    }
   },
   {
     "code": "70.887",
     "name": "US Olive Drab",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#57523C"
+    "rgb": "#57523C",
+    "oklch": {
+      "l": 0.4371,
+      "c": 0.0347,
+      "h": 96.81
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 5.7,
+      "y": 31,
+      "k": 65.9
+    }
   },
   {
     "code": "70.888",
     "name": "Olive Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#42412D"
+    "rgb": "#42412D",
+    "oklch": {
+      "l": 0.3703,
+      "c": 0.0323,
+      "h": 105.46
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 1.5,
+      "y": 31.8,
+      "k": 74.1
+    }
   },
   {
     "code": "70.889",
     "name": "Olive Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#3F3128"
+    "rgb": "#3F3128",
+    "oklch": {
+      "l": 0.326,
+      "c": 0.0256,
+      "h": 54.34
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 22.2,
+      "y": 36.5,
+      "k": 75.3
+    }
   },
   {
     "code": "70.890",
     "name": "Refractive Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#454934"
+    "rgb": "#454934",
+    "oklch": {
+      "l": 0.3954,
+      "c": 0.0341,
+      "h": 116.75
+    },
+    "cmyk": {
+      "c": 5.5,
+      "m": 0,
+      "y": 28.8,
+      "k": 71.4
+    }
   },
   {
     "code": "70.891",
     "name": "Intermediate Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#506642"
+    "rgb": "#506642",
+    "oklch": {
+      "l": 0.4822,
+      "c": 0.0614,
+      "h": 133.8
+    },
+    "cmyk": {
+      "c": 21.6,
+      "m": 0,
+      "y": 35.3,
+      "k": 60
+    }
   },
   {
     "code": "70.892",
     "name": "Yellow Olive",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#383B31"
+    "rgb": "#383B31",
+    "oklch": {
+      "l": 0.3461,
+      "c": 0.0174,
+      "h": 120.89
+    },
+    "cmyk": {
+      "c": 5.1,
+      "m": 0,
+      "y": 16.9,
+      "k": 76.9
+    }
   },
   {
     "code": "70.893",
     "name": "US Dark Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#4B4A38"
+    "rgb": "#4B4A38",
+    "oklch": {
+      "l": 0.4046,
+      "c": 0.0288,
+      "h": 104.97
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 1.3,
+      "y": 25.3,
+      "k": 70.6
+    }
   },
   {
     "code": "70.894",
     "name": "Camouflage Olive Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#3C3B2F"
+    "rgb": "#3C3B2F",
+    "oklch": {
+      "l": 0.3495,
+      "c": 0.0201,
+      "h": 103.45
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 1.7,
+      "y": 21.7,
+      "k": 76.5
+    }
   },
   {
     "code": "70.895",
     "name": "Gunship Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#4D5841"
+    "rgb": "#4D5841",
+    "oklch": {
+      "l": 0.4439,
+      "c": 0.0389,
+      "h": 128.68
+    },
+    "cmyk": {
+      "c": 12.5,
+      "m": 0,
+      "y": 26.1,
+      "k": 65.5
+    }
   },
   {
     "code": "70.896",
     "name": "Extra Dark Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#2A2A14"
+    "rgb": "#2A2A14",
+    "oklch": {
+      "l": 0.2787,
+      "c": 0.0366,
+      "h": 108.55
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 52.4,
+      "k": 83.5
+    }
   },
   {
     "code": "70.897",
     "name": "Bronze Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#313A28"
+    "rgb": "#313A28",
+    "oklch": {
+      "l": 0.3344,
+      "c": 0.0328,
+      "h": 129.63
+    },
+    "cmyk": {
+      "c": 15.5,
+      "m": 0,
+      "y": 31,
+      "k": 77.3
+    }
   },
   {
     "code": "70.898",
     "name": "Dark Sea Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#262D38"
+    "rgb": "#262D38",
+    "oklch": {
+      "l": 0.2952,
+      "c": 0.0224,
+      "h": 259.37
+    },
+    "cmyk": {
+      "c": 32.1,
+      "m": 19.6,
+      "y": 0,
+      "k": 78
+    }
   },
   {
     "code": "70.899",
     "name": "Dark Prussian Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#37273F"
+    "rgb": "#37273F",
+    "oklch": {
+      "l": 0.3022,
+      "c": 0.0473,
+      "h": 314.04
+    },
+    "cmyk": {
+      "c": 12.7,
+      "m": 38.1,
+      "y": 0,
+      "k": 75.3
+    }
   },
   {
     "code": "70.901",
     "name": "Pastel Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#607B91"
+    "rgb": "#607B91",
+    "oklch": {
+      "l": 0.5701,
+      "c": 0.0463,
+      "h": 243.24
+    },
+    "cmyk": {
+      "c": 33.8,
+      "m": 15.2,
+      "y": 0,
+      "k": 43.1
+    }
   },
   {
     "code": "70.902",
     "name": "Azure",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#5B6B9E"
+    "rgb": "#5B6B9E",
+    "oklch": {
+      "l": 0.5365,
+      "c": 0.0826,
+      "h": 270.15
+    },
+    "cmyk": {
+      "c": 42.4,
+      "m": 32.3,
+      "y": 0,
+      "k": 38
+    }
   },
   {
     "code": "70.905",
     "name": "Blue Grey Pale",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#808586"
+    "rgb": "#808586",
+    "oklch": {
+      "l": 0.6128,
+      "c": 0.0061,
+      "h": 211.04
+    },
+    "cmyk": {
+      "c": 4.5,
+      "m": 0.7,
+      "y": 0,
+      "k": 47.5
+    }
   },
   {
     "code": "70.906",
     "name": "Pale Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#90A3A7"
+    "rgb": "#90A3A7",
+    "oklch": {
+      "l": 0.7019,
+      "c": 0.0222,
+      "h": 211.79
+    },
+    "cmyk": {
+      "c": 13.8,
+      "m": 2.4,
+      "y": 0,
+      "k": 34.5
+    }
   },
   {
     "code": "70.907",
     "name": "Pale Grey Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#A8B5B5"
+    "rgb": "#A8B5B5",
+    "oklch": {
+      "l": 0.7629,
+      "c": 0.0145,
+      "h": 196.85
+    },
+    "cmyk": {
+      "c": 7.2,
+      "m": 0,
+      "y": 0,
+      "k": 29
+    }
   },
   {
     "code": "70.908",
     "name": "Carmine Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#97211E"
+    "rgb": "#97211E",
+    "oklch": {
+      "l": 0.445,
+      "c": 0.1545,
+      "h": 27.25
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 78.1,
+      "y": 80.1,
+      "k": 40.8
+    }
   },
   {
     "code": "70.909",
     "name": "Vermilion",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#C42A29"
+    "rgb": "#C42A29",
+    "oklch": {
+      "l": 0.5366,
+      "c": 0.1903,
+      "h": 26.77
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 78.6,
+      "y": 79.1,
+      "k": 23.1
+    }
   },
   {
     "code": "70.911",
     "name": "Light Orange",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#EE7225"
+    "rgb": "#EE7225",
+    "oklch": {
+      "l": 0.6883,
+      "c": 0.174,
+      "h": 47.37
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 52.1,
+      "y": 84.5,
+      "k": 6.7
+    }
   },
   {
     "code": "70.913",
     "name": "Yellow Ochre",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#DEAA46"
+    "rgb": "#DEAA46",
+    "oklch": {
+      "l": 0.7681,
+      "c": 0.1302,
+      "h": 80.8
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 23.4,
+      "y": 68.5,
+      "k": 12.9
+    }
   },
   {
     "code": "70.914",
     "name": "Green Ochre",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#A07F37"
+    "rgb": "#A07F37",
+    "oklch": {
+      "l": 0.6138,
+      "c": 0.0986,
+      "h": 84.3
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 20.6,
+      "y": 65.6,
+      "k": 37.3
+    }
   },
   {
     "code": "70.915",
     "name": "Deep Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#F0C709"
+    "rgb": "#F0C709",
+    "oklch": {
+      "l": 0.8407,
+      "c": 0.1712,
+      "h": 93.71
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 17.1,
+      "y": 96.3,
+      "k": 5.9
+    }
   },
   {
     "code": "70.916",
     "name": "Sand Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#EABF54"
+    "rgb": "#EABF54",
+    "oklch": {
+      "l": 0.8228,
+      "c": 0.1331,
+      "h": 87.08
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 18.4,
+      "y": 64.1,
+      "k": 8.2
+    }
   },
   {
     "code": "70.917",
     "name": "Beige",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#E0BE6D"
+    "rgb": "#E0BE6D",
+    "oklch": {
+      "l": 0.8141,
+      "c": 0.1076,
+      "h": 87.22
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 15.2,
+      "y": 51.3,
+      "k": 12.2
+    }
   },
   {
     "code": "70.918",
     "name": "Ivory",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#EAE2D2"
+    "rgb": "#EAE2D2",
+    "oklch": {
+      "l": 0.9148,
+      "c": 0.0231,
+      "h": 84.59
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 3.4,
+      "y": 10.3,
+      "k": 8.2
+    }
   },
   {
     "code": "70.919",
     "name": "Cold White",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#F6F5F9"
+    "rgb": "#F6F5F9",
+    "oklch": {
+      "l": 0.972,
+      "c": 0.0054,
+      "h": 297.73
+    },
+    "cmyk": {
+      "c": 1.2,
+      "m": 1.6,
+      "y": 0,
+      "k": 2.4
+    }
   },
   {
     "code": "70.920",
     "name": "German Uniform",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#434E42"
+    "rgb": "#434E42",
+    "oklch": {
+      "l": 0.4102,
+      "c": 0.0242,
+      "h": 142.86
+    },
+    "cmyk": {
+      "c": 14.1,
+      "m": 0,
+      "y": 15.4,
+      "k": 69.4
+    }
   },
   {
     "code": "70.921",
     "name": "English Uniform",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#6F532C"
+    "rgb": "#6F532C",
+    "oklch": {
+      "l": 0.4627,
+      "c": 0.0664,
+      "h": 74.01
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 25.2,
+      "y": 60.4,
+      "k": 56.5
+    }
   },
   {
     "code": "70.922",
     "name": "Uniform Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#49552F"
+    "rgb": "#49552F",
+    "oklch": {
+      "l": 0.4288,
+      "c": 0.0601,
+      "h": 123.24
+    },
+    "cmyk": {
+      "c": 14.1,
+      "m": 0,
+      "y": 44.7,
+      "k": 66.7
+    }
   },
   {
     "code": "70.923",
     "name": "Japanese Uniform WWII",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#9F802A"
+    "rgb": "#9F802A",
+    "oklch": {
+      "l": 0.6136,
+      "c": 0.1084,
+      "h": 88.39
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 19.5,
+      "y": 73.6,
+      "k": 37.6
+    }
   },
   {
     "code": "70.924",
     "name": "Russian Uniform WWII",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#555335"
+    "rgb": "#555335",
+    "oklch": {
+      "l": 0.436,
+      "c": 0.0458,
+      "h": 104.88
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 2.4,
+      "y": 37.6,
+      "k": 66.7
+    }
   },
   {
     "code": "70.925",
     "name": "Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#372D4B"
+    "rgb": "#372D4B",
+    "oklch": {
+      "l": 0.3221,
+      "c": 0.0536,
+      "h": 298.7
+    },
+    "cmyk": {
+      "c": 26.7,
+      "m": 40,
+      "y": 0,
+      "k": 70.6
+    }
   },
   {
     "code": "70.926",
     "name": "Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#7A2826"
+    "rgb": "#7A2826",
+    "oklch": {
+      "l": 0.4007,
+      "c": 0.1149,
+      "h": 25.16
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 67.2,
+      "y": 68.9,
+      "k": 52.2
+    }
   },
   {
     "code": "70.927",
     "name": "Dark Flesh",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#D2933A"
+    "rgb": "#D2933A",
+    "oklch": {
+      "l": 0.7097,
+      "c": 0.1276,
+      "h": 72.06
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 30,
+      "y": 72.4,
+      "k": 17.6
+    }
   },
   {
     "code": "70.928",
     "name": "Light Flesh",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#F3D4B8"
+    "rgb": "#F3D4B8",
+    "oklch": {
+      "l": 0.8887,
+      "c": 0.051,
+      "h": 64.2
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 12.8,
+      "y": 24.3,
+      "k": 4.7
+    }
   },
   {
     "code": "70.929",
     "name": "Light Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#A05B31"
+    "rgb": "#A05B31",
+    "oklch": {
+      "l": 0.5426,
+      "c": 0.1067,
+      "h": 50.21
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 43.1,
+      "y": 69.4,
+      "k": 37.3
+    }
   },
   {
     "code": "70.930",
     "name": "Dark Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#273462"
+    "rgb": "#273462",
+    "oklch": {
+      "l": 0.3389,
+      "c": 0.0825,
+      "h": 269.71
+    },
+    "cmyk": {
+      "c": 60.2,
+      "m": 46.9,
+      "y": 0,
+      "k": 61.6
+    }
   },
   {
     "code": "70.939",
     "name": "Smoke Ink",
     "range": "Model Color",
     "type": "ink",
-    "rgb": "#5D4944"
+    "rgb": "#5D4944",
+    "oklch": {
+      "l": 0.4248,
+      "c": 0.0287,
+      "h": 34.39
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 21.5,
+      "y": 26.9,
+      "k": 63.5
+    }
   },
   {
     "code": "70.940",
     "name": "Saddle Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#8B645B"
+    "rgb": "#8B645B",
+    "oklch": {
+      "l": 0.541,
+      "c": 0.0529,
+      "h": 33.39
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 28.1,
+      "y": 34.5,
+      "k": 45.5
+    }
   },
   {
     "code": "70.941",
     "name": "Burnt Umber",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#513B30"
+    "rgb": "#513B30",
+    "oklch": {
+      "l": 0.3736,
+      "c": 0.0362,
+      "h": 47.73
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 27.2,
+      "y": 40.7,
+      "k": 68.2
+    }
   },
   {
     "code": "70.943",
     "name": "Grey Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#596E84"
+    "rgb": "#596E84",
+    "oklch": {
+      "l": 0.5297,
+      "c": 0.0429,
+      "h": 249.84
+    },
+    "cmyk": {
+      "c": 32.6,
+      "m": 16.7,
+      "y": 0,
+      "k": 48.2
+    }
   },
   {
     "code": "70.944",
     "name": "Old Rose",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#BC6E6F"
+    "rgb": "#BC6E6F",
+    "oklch": {
+      "l": 0.6245,
+      "c": 0.0994,
+      "h": 19.47
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 41.5,
+      "y": 41,
+      "k": 26.3
+    }
   },
   {
     "code": "70.945",
     "name": "Magenta",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#903055"
+    "rgb": "#903055",
+    "oklch": {
+      "l": 0.4606,
+      "c": 0.1338,
+      "h": 0.05
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 66.7,
+      "y": 41,
+      "k": 43.5
+    }
   },
   {
     "code": "70.946",
     "name": "Dark Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#692F25"
+    "rgb": "#692F25",
+    "oklch": {
+      "l": 0.3821,
+      "c": 0.0856,
+      "h": 31.39
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 55.2,
+      "y": 64.8,
+      "k": 58.8
+    }
   },
   {
     "code": "70.947",
     "name": "Dark Vermilion",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#B52A27"
+    "rgb": "#B52A27",
+    "oklch": {
+      "l": 0.5092,
+      "c": 0.1761,
+      "h": 27.04
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 76.8,
+      "y": 78.5,
+      "k": 29
+    }
   },
   {
     "code": "70.948",
     "name": "Golden Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#F7A833"
+    "rgb": "#F7A833",
+    "oklch": {
+      "l": 0.7904,
+      "c": 0.1539,
+      "h": 71.61
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 32,
+      "y": 79.4,
+      "k": 3.1
+    }
   },
   {
     "code": "70.949",
     "name": "Light Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#F7D345"
+    "rgb": "#F7D345",
+    "oklch": {
+      "l": 0.8736,
+      "c": 0.1576,
+      "h": 94.35
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 14.6,
+      "y": 72.1,
+      "k": 3.1
+    }
   },
   {
     "code": "70.950",
     "name": "Black",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#231C1D"
+    "rgb": "#231C1D",
+    "oklch": {
+      "l": 0.2351,
+      "c": 0.0111,
+      "h": 8.25
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 20,
+      "y": 17.1,
+      "k": 86.3
+    }
   },
   {
     "code": "70.951",
     "name": "White",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#FFFFFF"
+    "rgb": "#FFFFFF",
+    "oklch": {
+      "l": 1,
+      "c": 0,
+      "h": null
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 0,
+      "k": 0
+    }
   },
   {
     "code": "70.952",
     "name": "Lemon Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#E5D20C"
+    "rgb": "#E5D20C",
+    "oklch": {
+      "l": 0.8527,
+      "c": 0.1776,
+      "h": 102.8
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 8.3,
+      "y": 94.8,
+      "k": 10.2
+    }
   },
   {
     "code": "70.953",
     "name": "Flat Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#F5BA34"
+    "rgb": "#F5BA34",
+    "oklch": {
+      "l": 0.8218,
+      "c": 0.1546,
+      "h": 82.92
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 24.1,
+      "y": 78.8,
+      "k": 3.9
+    }
   },
   {
     "code": "70.954",
     "name": "Yellow Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#DEDD21"
+    "rgb": "#DEDD21",
+    "oklch": {
+      "l": 0.8703,
+      "c": 0.1831,
+      "h": 109.33
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0.5,
+      "y": 85.1,
+      "k": 12.9
+    }
   },
   {
     "code": "70.955",
     "name": "Flat Flesh",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#DF9A59"
+    "rgb": "#DF9A59",
+    "oklch": {
+      "l": 0.741,
+      "c": 0.1162,
+      "h": 62.69
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 30.9,
+      "y": 60.1,
+      "k": 12.5
+    }
   },
   {
     "code": "70.956",
     "name": "Clear Orange",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#CC4626"
+    "rgb": "#CC4626",
+    "oklch": {
+      "l": 0.5775,
+      "c": 0.1757,
+      "h": 34.54
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 65.7,
+      "y": 81.4,
+      "k": 20
+    }
   },
   {
     "code": "70.957",
     "name": "Flat Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#A12B28"
+    "rgb": "#A12B28",
+    "oklch": {
+      "l": 0.4741,
+      "c": 0.1549,
+      "h": 26.52
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 73.3,
+      "y": 75.2,
+      "k": 36.9
+    }
   },
   {
     "code": "70.958",
     "name": "Pink",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#B14E7C"
+    "rgb": "#B14E7C",
+    "oklch": {
+      "l": 0.5638,
+      "c": 0.1384,
+      "h": 353.38
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 55.9,
+      "y": 29.9,
+      "k": 30.6
+    }
   },
   {
     "code": "70.959",
     "name": "Purple",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#533153"
+    "rgb": "#533153",
+    "oklch": {
+      "l": 0.3686,
+      "c": 0.0715,
+      "h": 326.91
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 41,
+      "y": 0,
+      "k": 67.5
+    }
   },
   {
     "code": "70.960",
     "name": "Violet",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#3B2C4C"
+    "rgb": "#3B2C4C",
+    "oklch": {
+      "l": 0.325,
+      "c": 0.0583,
+      "h": 304.93
+    },
+    "cmyk": {
+      "c": 22.4,
+      "m": 42.1,
+      "y": 0,
+      "k": 70.2
+    }
   },
   {
     "code": "70.961",
     "name": "Sky Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#74B7D0"
+    "rgb": "#74B7D0",
+    "oklch": {
+      "l": 0.7438,
+      "c": 0.0769,
+      "h": 223.74
+    },
+    "cmyk": {
+      "c": 44.2,
+      "m": 12,
+      "y": 0,
+      "k": 18.4
+    }
   },
   {
     "code": "70.962",
     "name": "Flat Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#3E4874"
+    "rgb": "#3E4874",
+    "oklch": {
+      "l": 0.4137,
+      "c": 0.0748,
+      "h": 273.01
+    },
+    "cmyk": {
+      "c": 46.6,
+      "m": 37.9,
+      "y": 0,
+      "k": 54.5
+    }
   },
   {
     "code": "70.963",
     "name": "Medium Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#15416E"
+    "rgb": "#15416E",
+    "oklch": {
+      "l": 0.3702,
+      "c": 0.091,
+      "h": 252.1
+    },
+    "cmyk": {
+      "c": 80.9,
+      "m": 40.9,
+      "y": 0,
+      "k": 56.9
+    }
   },
   {
     "code": "70.964",
     "name": "Field Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#4C5257"
+    "rgb": "#4C5257",
+    "oklch": {
+      "l": 0.435,
+      "c": 0.0113,
+      "h": 243.05
+    },
+    "cmyk": {
+      "c": 12.6,
+      "m": 5.7,
+      "y": 0,
+      "k": 65.9
+    }
   },
   {
     "code": "70.965",
     "name": "Prussian Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#38415D"
+    "rgb": "#38415D",
+    "oklch": {
+      "l": 0.3797,
+      "c": 0.0495,
+      "h": 270.23
+    },
+    "cmyk": {
+      "c": 39.8,
+      "m": 30.1,
+      "y": 0,
+      "k": 63.5
+    }
   },
   {
     "code": "70.966",
     "name": "Turquoise",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#0C425B"
+    "rgb": "#0C425B",
+    "oklch": {
+      "l": 0.3584,
+      "c": 0.0685,
+      "h": 234.2
+    },
+    "cmyk": {
+      "c": 86.8,
+      "m": 27.5,
+      "y": 0,
+      "k": 64.3
+    }
   },
   {
     "code": "70.967",
     "name": "Olive Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#506237"
+    "rgb": "#506237",
+    "oklch": {
+      "l": 0.4697,
+      "c": 0.0684,
+      "h": 127.37
+    },
+    "cmyk": {
+      "c": 18.4,
+      "m": 0,
+      "y": 43.9,
+      "k": 61.6
+    }
   },
   {
     "code": "70.968",
     "name": "Flat Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#354B2D"
+    "rgb": "#354B2D",
+    "oklch": {
+      "l": 0.3857,
+      "c": 0.0561,
+      "h": 137.63
+    },
+    "cmyk": {
+      "c": 29.3,
+      "m": 0,
+      "y": 40,
+      "k": 70.6
+    }
   },
   {
     "code": "70.969",
     "name": "Park Green Flat",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#1A634A"
+    "rgb": "#1A634A",
+    "oklch": {
+      "l": 0.4483,
+      "c": 0.0821,
+      "h": 165.8
+    },
+    "cmyk": {
+      "c": 73.7,
+      "m": 0,
+      "y": 25.3,
+      "k": 61.2
+    }
   },
   {
     "code": "70.970",
     "name": "Deep Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#194C2F"
+    "rgb": "#194C2F",
+    "oklch": {
+      "l": 0.3736,
+      "c": 0.074,
+      "h": 155.2
+    },
+    "cmyk": {
+      "c": 67.1,
+      "m": 0,
+      "y": 38.2,
+      "k": 70.2
+    }
   },
   {
     "code": "70.971",
     "name": "Light Green Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#B4B5AB"
+    "rgb": "#B4B5AB",
+    "oklch": {
+      "l": 0.7694,
+      "c": 0.014,
+      "h": 111.35
+    },
+    "cmyk": {
+      "c": 0.6,
+      "m": 0,
+      "y": 5.5,
+      "k": 29
+    }
   },
   {
     "code": "70.972",
     "name": "Light Green Blue",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#86968E"
+    "rgb": "#86968E",
+    "oklch": {
+      "l": 0.6579,
+      "c": 0.0218,
+      "h": 164.25
+    },
+    "cmyk": {
+      "c": 10.7,
+      "m": 0,
+      "y": 5.3,
+      "k": 41.2
+    }
   },
   {
     "code": "70.974",
     "name": "Green Sky",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#799165"
+    "rgb": "#799165",
+    "oklch": {
+      "l": 0.6261,
+      "c": 0.0692,
+      "h": 131.41
+    },
+    "cmyk": {
+      "c": 16.6,
+      "m": 0,
+      "y": 30.3,
+      "k": 43.1
+    }
   },
   {
     "code": "70.975",
     "name": "Military Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#434234"
+    "rgb": "#434234",
+    "oklch": {
+      "l": 0.3757,
+      "c": 0.0229,
+      "h": 104.06
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 1.5,
+      "y": 22.4,
+      "k": 73.7
+    }
   },
   {
     "code": "70.976",
     "name": "Buff",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#D6B04D"
+    "rgb": "#D6B04D",
+    "oklch": {
+      "l": 0.7724,
+      "c": 0.1245,
+      "h": 88.04
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 17.8,
+      "y": 64,
+      "k": 16.1
+    }
   },
   {
     "code": "70.977",
     "name": "Desert Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#B58547"
+    "rgb": "#B58547",
+    "oklch": {
+      "l": 0.6511,
+      "c": 0.0988,
+      "h": 71.58
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 26.5,
+      "y": 60.8,
+      "k": 29
+    }
   },
   {
     "code": "70.978",
     "name": "Dark Yellow",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#908739"
+    "rgb": "#908739",
+    "oklch": {
+      "l": 0.6152,
+      "c": 0.0998,
+      "h": 102.76
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 6.2,
+      "y": 60.4,
+      "k": 43.5
+    }
   },
   {
     "code": "70.979",
     "name": "Camouflage Dark Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#263122"
+    "rgb": "#263122",
+    "oklch": {
+      "l": 0.298,
+      "c": 0.0304,
+      "h": 137.46
+    },
+    "cmyk": {
+      "c": 22.4,
+      "m": 0,
+      "y": 30.6,
+      "k": 80.8
+    }
   },
   {
     "code": "70.980",
     "name": "Black Green",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#27352A"
+    "rgb": "#27352A",
+    "oklch": {
+      "l": 0.3125,
+      "c": 0.027,
+      "h": 151.09
+    },
+    "cmyk": {
+      "c": 26.4,
+      "m": 0,
+      "y": 20.8,
+      "k": 79.2
+    }
   },
   {
     "code": "70.981",
     "name": "Orange Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#AC633A"
+    "rgb": "#AC633A",
+    "oklch": {
+      "l": 0.5743,
+      "c": 0.1096,
+      "h": 48.69
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 42.4,
+      "y": 66.3,
+      "k": 32.5
+    }
   },
   {
     "code": "70.982",
     "name": "Cavalry Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#854438"
+    "rgb": "#854438",
+    "oklch": {
+      "l": 0.4649,
+      "c": 0.0918,
+      "h": 31.7
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 48.9,
+      "y": 57.9,
+      "k": 47.8
+    }
   },
   {
     "code": "70.983",
     "name": "Flat Earth",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#674529"
+    "rgb": "#674529",
+    "oklch": {
+      "l": 0.4221,
+      "c": 0.0627,
+      "h": 59.4
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 33,
+      "y": 60.2,
+      "k": 59.6
+    }
   },
   {
     "code": "70.984",
     "name": "Flat Brown",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#6F4037"
+    "rgb": "#6F4037",
+    "oklch": {
+      "l": 0.4257,
+      "c": 0.0678,
+      "h": 31.65
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 42.3,
+      "y": 50.5,
+      "k": 56.5
+    }
   },
   {
     "code": "70.985",
     "name": "Hull Red",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#5D3938"
+    "rgb": "#5D3938",
+    "oklch": {
+      "l": 0.3872,
+      "c": 0.0516,
+      "h": 21.44
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 38.7,
+      "y": 39.8,
+      "k": 63.5
+    }
   },
   {
     "code": "70.986",
     "name": "Deck Tan",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#AAA390"
+    "rgb": "#AAA390",
+    "oklch": {
+      "l": 0.7161,
+      "c": 0.028,
+      "h": 90.15
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 4.1,
+      "y": 15.3,
+      "k": 33.3
+    }
   },
   {
     "code": "70.987",
     "name": "Medium Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#867259"
+    "rgb": "#867259",
+    "oklch": {
+      "l": 0.5643,
+      "c": 0.0443,
+      "h": 72.93
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 14.9,
+      "y": 33.6,
+      "k": 47.5
+    }
   },
   {
     "code": "70.988",
     "name": "Khaki",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#6F5E3B"
+    "rgb": "#6F5E3B",
+    "oklch": {
+      "l": 0.4898,
+      "c": 0.0553,
+      "h": 84.58
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 15.3,
+      "y": 46.8,
+      "k": 56.5
+    }
   },
   {
     "code": "70.989",
     "name": "Sky Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#A8AAAC"
+    "rgb": "#A8AAAC",
+    "oklch": {
+      "l": 0.737,
+      "c": 0.0037,
+      "h": 247.87
+    },
+    "cmyk": {
+      "c": 2.3,
+      "m": 1.2,
+      "y": 0,
+      "k": 32.5
+    }
   },
   {
     "code": "70.990",
     "name": "Light Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#8E9294"
+    "rgb": "#8E9294",
+    "oklch": {
+      "l": 0.6573,
+      "c": 0.0056,
+      "h": 228.86
+    },
+    "cmyk": {
+      "c": 4.1,
+      "m": 1.4,
+      "y": 0,
+      "k": 42
+    }
   },
   {
     "code": "70.991",
     "name": "Dark Sea Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#6C6B6A"
+    "rgb": "#6C6B6A",
+    "oklch": {
+      "l": 0.5284,
+      "c": 0.002,
+      "h": 67.78
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0.9,
+      "y": 1.9,
+      "k": 57.6
+    }
   },
   {
     "code": "70.992",
     "name": "Neutral Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#61615F"
+    "rgb": "#61615F",
+    "oklch": {
+      "l": 0.492,
+      "c": 0.0031,
+      "h": 106.51
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 2.1,
+      "k": 62
+    }
   },
   {
     "code": "70.993",
     "name": "White Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#E4DFDE"
+    "rgb": "#E4DFDE",
+    "oklch": {
+      "l": 0.9073,
+      "c": 0.0056,
+      "h": 31.05
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 2.2,
+      "y": 2.6,
+      "k": 10.6
+    }
   },
   {
     "code": "70.994",
     "name": "Dark Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#312E34"
+    "rgb": "#312E34",
+    "oklch": {
+      "l": 0.3067,
+      "c": 0.0114,
+      "h": 308.05
+    },
+    "cmyk": {
+      "c": 5.8,
+      "m": 11.5,
+      "y": 0,
+      "k": 79.6
+    }
   },
   {
     "code": "70.995",
     "name": "German Grey",
     "range": "Model Color",
     "type": "opaque",
-    "rgb": "#2E2E2C"
+    "rgb": "#2E2E2C",
+    "oklch": {
+      "l": 0.3004,
+      "c": 0.0035,
+      "h": 106.61
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 4.3,
+      "k": 82
+    }
   },
   {
     "code": "72.001",
     "name": "Dead White",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#FFFFFF"
+    "rgb": "#FFFFFF",
+    "oklch": {
+      "l": 1,
+      "c": 0,
+      "h": null
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 0,
+      "k": 0
+    }
   },
   {
     "code": "72.003",
     "name": "Pale Flesh",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#CE9A7B"
+    "rgb": "#CE9A7B",
+    "oklch": {
+      "l": 0.728,
+      "c": 0.0759,
+      "h": 51.97
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 25.2,
+      "y": 40.3,
+      "k": 19.2
+    }
   },
   {
     "code": "72.004",
     "name": "Elf Skin Tone",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#C47E52"
+    "rgb": "#C47E52",
+    "oklch": {
+      "l": 0.6569,
+      "c": 0.1054,
+      "h": 52.12
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 35.7,
+      "y": 58.2,
+      "k": 23.1
+    }
   },
   {
     "code": "72.005",
     "name": "Moon Yellow",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#EFB705"
+    "rgb": "#EFB705",
+    "oklch": {
+      "l": 0.8082,
+      "c": 0.1647,
+      "h": 86.18
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 23.4,
+      "y": 97.9,
+      "k": 6.3
+    }
   },
   {
     "code": "72.006",
     "name": "Sun Yellow",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#F4940C"
+    "rgb": "#F4940C",
+    "oklch": {
+      "l": 0.7499,
+      "c": 0.1661,
+      "h": 65
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 39.3,
+      "y": 95.1,
+      "k": 4.3
+    }
   },
   {
     "code": "72.007",
     "name": "Gold Yellow",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#E7770F"
+    "rgb": "#E7770F",
+    "oklch": {
+      "l": 0.6852,
+      "c": 0.1685,
+      "h": 53.8
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 48.5,
+      "y": 93.5,
+      "k": 9.4
+    }
   },
   {
     "code": "72.008",
     "name": "Orange Fire",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#E9531D"
+    "rgb": "#E9531D",
+    "oklch": {
+      "l": 0.6392,
+      "c": 0.1954,
+      "h": 37.9
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 64.4,
+      "y": 87.6,
+      "k": 8.6
+    }
   },
   {
     "code": "72.009",
     "name": "Hot Orange",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#D8311D"
+    "rgb": "#D8311D",
+    "oklch": {
+      "l": 0.5769,
+      "c": 0.2056,
+      "h": 30.7
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 77.3,
+      "y": 86.6,
+      "k": 15.3
+    }
   },
   {
     "code": "72.010",
     "name": "Bloody Red",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#AA1E19"
+    "rgb": "#AA1E19",
+    "oklch": {
+      "l": 0.4781,
+      "c": 0.1758,
+      "h": 28.34
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 82.4,
+      "y": 85.3,
+      "k": 33.3
+    }
   },
   {
     "code": "72.011",
     "name": "Gory Red",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#611715"
+    "rgb": "#611715",
+    "oklch": {
+      "l": 0.3305,
+      "c": 0.1066,
+      "h": 26.46
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 76.3,
+      "y": 78.4,
+      "k": 62
+    }
   },
   {
     "code": "72.012",
     "name": "Scarlet Red",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#581A22"
+    "rgb": "#581A22",
+    "oklch": {
+      "l": 0.3196,
+      "c": 0.0912,
+      "h": 16.42
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 70.5,
+      "y": 61.4,
+      "k": 65.5
+    }
   },
   {
     "code": "72.013",
     "name": "Squid Pink",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#CB6F9E"
+    "rgb": "#CB6F9E",
+    "oklch": {
+      "l": 0.6593,
+      "c": 0.1283,
+      "h": 349.25
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 45.3,
+      "y": 22.2,
+      "k": 20.4
+    }
   },
   {
     "code": "72.014",
     "name": "Warlord Purple",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#7D223F"
+    "rgb": "#7D223F",
+    "oklch": {
+      "l": 0.4049,
+      "c": 0.1264,
+      "h": 5.55
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 72.8,
+      "y": 49.6,
+      "k": 51
+    }
   },
   {
     "code": "72.015",
     "name": "Hexed Lichen",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#341939"
+    "rgb": "#341939",
+    "oklch": {
+      "l": 0.2663,
+      "c": 0.0671,
+      "h": 321.19
+    },
+    "cmyk": {
+      "c": 8.8,
+      "m": 56.1,
+      "y": 0,
+      "k": 77.6
+    }
   },
   {
     "code": "72.016",
     "name": "Royal Purple",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#241930"
+    "rgb": "#241930",
+    "oklch": {
+      "l": 0.2387,
+      "c": 0.0452,
+      "h": 305.24
+    },
+    "cmyk": {
+      "c": 25,
+      "m": 47.9,
+      "y": 0,
+      "k": 81.2
+    }
   },
   {
     "code": "72.019",
     "name": "Night Blue",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#0F0F1C"
+    "rgb": "#0F0F1C",
+    "oklch": {
+      "l": 0.1756,
+      "c": 0.0267,
+      "h": 283.31
+    },
+    "cmyk": {
+      "c": 46.4,
+      "m": 46.4,
+      "y": 0,
+      "k": 89
+    }
   },
   {
     "code": "72.020",
     "name": "Imperial Blue",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#122133"
+    "rgb": "#122133",
+    "oklch": {
+      "l": 0.244,
+      "c": 0.0403,
+      "h": 253.76
+    },
+    "cmyk": {
+      "c": 64.7,
+      "m": 35.3,
+      "y": 0,
+      "k": 80
+    }
   },
   {
     "code": "72.021",
     "name": "Magic Blue",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#103D7D"
+    "rgb": "#103D7D",
+    "oklch": {
+      "l": 0.3701,
+      "c": 0.119,
+      "h": 258.31
+    },
+    "cmyk": {
+      "c": 87.2,
+      "m": 51.2,
+      "y": 0,
+      "k": 51
+    }
   },
   {
     "code": "72.022",
     "name": "Ultramarine Blue",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#1A224B"
+    "rgb": "#1A224B",
+    "oklch": {
+      "l": 0.2697,
+      "c": 0.0762,
+      "h": 272.05
+    },
+    "cmyk": {
+      "c": 65.3,
+      "m": 54.7,
+      "y": 0,
+      "k": 70.6
+    }
   },
   {
     "code": "72.023",
     "name": "Electric Blue",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#016C87"
+    "rgb": "#016C87",
+    "oklch": {
+      "l": 0.4931,
+      "c": 0.0916,
+      "h": 223.01
+    },
+    "cmyk": {
+      "c": 99.3,
+      "m": 20,
+      "y": 0,
+      "k": 47.1
+    }
   },
   {
     "code": "72.024",
     "name": "Turquoise",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#004145"
+    "rgb": "#004145",
+    "oklch": {
+      "l": 0.3416,
+      "c": 0.0581,
+      "h": 201.72
+    },
+    "cmyk": {
+      "c": 100,
+      "m": 5.8,
+      "y": 0,
+      "k": 72.9
+    }
   },
   {
     "code": "72.025",
     "name": "Foul Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#156E53"
+    "rgb": "#156E53",
+    "oklch": {
+      "l": 0.481,
+      "c": 0.0914,
+      "h": 167.15
+    },
+    "cmyk": {
+      "c": 80.9,
+      "m": 0,
+      "y": 24.5,
+      "k": 56.9
+    }
   },
   {
     "code": "72.026",
     "name": "Jade Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#024938"
+    "rgb": "#024938",
+    "oklch": {
+      "l": 0.3612,
+      "c": 0.0702,
+      "h": 170.45
+    },
+    "cmyk": {
+      "c": 97.3,
+      "m": 0,
+      "y": 23.3,
+      "k": 71.4
+    }
   },
   {
     "code": "72.027",
     "name": "Scurvy Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#023426"
+    "rgb": "#023426",
+    "oklch": {
+      "l": 0.2895,
+      "c": 0.0567,
+      "h": 168.54
+    },
+    "cmyk": {
+      "c": 96.2,
+      "m": 0,
+      "y": 26.9,
+      "k": 79.6
+    }
   },
   {
     "code": "72.028",
     "name": "Dark Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#122418"
+    "rgb": "#122418",
+    "oklch": {
+      "l": 0.2403,
+      "c": 0.0333,
+      "h": 153.98
+    },
+    "cmyk": {
+      "c": 50,
+      "m": 0,
+      "y": 33.3,
+      "k": 85.9
+    }
   },
   {
     "code": "72.029",
     "name": "Sick Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#3B5B33"
+    "rgb": "#3B5B33",
+    "oklch": {
+      "l": 0.4352,
+      "c": 0.0736,
+      "h": 139.5
+    },
+    "cmyk": {
+      "c": 35.2,
+      "m": 0,
+      "y": 44,
+      "k": 64.3
+    }
   },
   {
     "code": "72.030",
     "name": "Goblin Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#44502A"
+    "rgb": "#44502A",
+    "oklch": {
+      "l": 0.4105,
+      "c": 0.0604,
+      "h": 123.39
+    },
+    "cmyk": {
+      "c": 15,
+      "m": 0,
+      "y": 47.5,
+      "k": 68.6
+    }
   },
   {
     "code": "72.031",
     "name": "Camouflage Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#6E6128"
+    "rgb": "#6E6128",
+    "oklch": {
+      "l": 0.4927,
+      "c": 0.0781,
+      "h": 96.54
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 11.8,
+      "y": 63.6,
+      "k": 56.9
+    }
   },
   {
     "code": "72.032",
     "name": "Scorpy Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#417A33"
+    "rgb": "#417A33",
+    "oklch": {
+      "l": 0.5233,
+      "c": 0.1198,
+      "h": 139.74
+    },
+    "cmyk": {
+      "c": 46.7,
+      "m": 0,
+      "y": 58.2,
+      "k": 52.2
+    }
   },
   {
     "code": "72.034",
     "name": "Bone White",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#D4CAA9"
+    "rgb": "#D4CAA9",
+    "oklch": {
+      "l": 0.8386,
+      "c": 0.0456,
+      "h": 93.14
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 4.7,
+      "y": 20.3,
+      "k": 16.9
+    }
   },
   {
     "code": "72.035",
     "name": "Dead Flesh",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#937F3B"
+    "rgb": "#937F3B",
+    "oklch": {
+      "l": 0.6006,
+      "c": 0.0911,
+      "h": 93.1
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 13.6,
+      "y": 59.9,
+      "k": 42.4
+    }
   },
   {
     "code": "72.036",
     "name": "Bronze Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#995A1B"
+    "rgb": "#995A1B",
+    "oklch": {
+      "l": 0.529,
+      "c": 0.1109,
+      "h": 60.39
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 41.2,
+      "y": 82.4,
+      "k": 40
+    }
   },
   {
     "code": "72.038",
     "name": "Scrofulous Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#A85E17"
+    "rgb": "#A85E17",
+    "oklch": {
+      "l": 0.5566,
+      "c": 0.124,
+      "h": 57.93
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 44,
+      "y": 86.3,
+      "k": 34.1
+    }
   },
   {
     "code": "72.039",
     "name": "Plague Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#8F5E24"
+    "rgb": "#8F5E24",
+    "oklch": {
+      "l": 0.5243,
+      "c": 0.0967,
+      "h": 67.03
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 34.3,
+      "y": 74.8,
+      "k": 43.9
+    }
   },
   {
     "code": "72.040",
     "name": "Leather Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#4E3412"
+    "rgb": "#4E3412",
+    "oklch": {
+      "l": 0.3483,
+      "c": 0.0609,
+      "h": 70.45
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 33.3,
+      "y": 76.9,
+      "k": 69.4
+    }
   },
   {
     "code": "72.042",
     "name": "Parasite Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#6F3C1A"
+    "rgb": "#6F3C1A",
+    "oklch": {
+      "l": 0.4131,
+      "c": 0.0856,
+      "h": 51.67
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 45.9,
+      "y": 76.6,
+      "k": 56.5
+    }
   },
   {
     "code": "72.043",
     "name": "Beasty Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#55381C"
+    "rgb": "#55381C",
+    "oklch": {
+      "l": 0.3681,
+      "c": 0.0587,
+      "h": 63.23
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 34.1,
+      "y": 67.1,
+      "k": 66.7
+    }
   },
   {
     "code": "72.044",
     "name": "Dark Flesh Tone",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#411F15"
+    "rgb": "#411F15",
+    "oklch": {
+      "l": 0.2842,
+      "c": 0.0558,
+      "h": 37.22
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 52.3,
+      "y": 67.7,
+      "k": 74.5
+    }
   },
   {
     "code": "72.045",
     "name": "Charred Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#281A14"
+    "rgb": "#281A14",
+    "oklch": {
+      "l": 0.2337,
+      "c": 0.0252,
+      "h": 44.16
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 35,
+      "y": 50,
+      "k": 84.3
+    }
   },
   {
     "code": "72.047",
     "name": "Wolf Grey",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#95B4BB"
+    "rgb": "#95B4BB",
+    "oklch": {
+      "l": 0.7491,
+      "c": 0.0352,
+      "h": 212.92
+    },
+    "cmyk": {
+      "c": 20.3,
+      "m": 3.7,
+      "y": 0,
+      "k": 26.7
+    }
   },
   {
     "code": "72.048",
     "name": "Sombre Grey",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#373E45"
+    "rgb": "#373E45",
+    "oklch": {
+      "l": 0.3601,
+      "c": 0.0153,
+      "h": 248.25
+    },
+    "cmyk": {
+      "c": 20.3,
+      "m": 10.1,
+      "y": 0,
+      "k": 72.9
+    }
   },
   {
     "code": "72.049",
     "name": "Stonewall Grey",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#615D5B"
+    "rgb": "#615D5B",
+    "oklch": {
+      "l": 0.4814,
+      "c": 0.0061,
+      "h": 48.6
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 4.1,
+      "y": 6.2,
+      "k": 62
+    }
   },
   {
     "code": "72.050",
     "name": "Neutral Grey",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#474744"
+    "rgb": "#474744",
+    "oklch": {
+      "l": 0.3969,
+      "c": 0.0049,
+      "h": 106.62
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 4.2,
+      "k": 72.2
+    }
   },
   {
     "code": "72.051",
     "name": "Black",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#010000"
+    "rgb": "#010000",
+    "oklch": {
+      "l": 0.0422,
+      "c": 0.0173,
+      "h": 29.23
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 100,
+      "y": 100,
+      "k": 99.6
+    }
   },
   {
     "code": "72.061",
     "name": "Khaki",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#776247"
+    "rgb": "#776247",
+    "oklch": {
+      "l": 0.5097,
+      "c": 0.0482,
+      "h": 73.39
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 17.6,
+      "y": 40.3,
+      "k": 53.3
+    }
   },
   {
     "code": "72.062",
     "name": "Earth",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#563D25"
+    "rgb": "#563D25",
+    "oklch": {
+      "l": 0.382,
+      "c": 0.0509,
+      "h": 64.15
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 29.1,
+      "y": 57,
+      "k": 66.3
+    }
   },
   {
     "code": "72.063",
     "name": "Desert Yellow",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#7B5B2C"
+    "rgb": "#7B5B2C",
+    "oklch": {
+      "l": 0.4943,
+      "c": 0.0762,
+      "h": 74.91
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 26,
+      "y": 64.2,
+      "k": 51.8
+    }
   },
   {
     "code": "72.066",
     "name": "Tan",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#7D4C3F"
+    "rgb": "#7D4C3F",
+    "oklch": {
+      "l": 0.4697,
+      "c": 0.0703,
+      "h": 35.63
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 39.2,
+      "y": 49.6,
+      "k": 51
+    }
   },
   {
     "code": "72.067",
     "name": "Cayman Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#41391A"
+    "rgb": "#41391A",
+    "oklch": {
+      "l": 0.3451,
+      "c": 0.0484,
+      "h": 95.2
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 12.3,
+      "y": 60,
+      "k": 74.5
+    }
   },
   {
     "code": "72.071",
     "name": "Barbarian Skin",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#775A3F"
+    "rgb": "#775A3F",
+    "oklch": {
+      "l": 0.4907,
+      "c": 0.0553,
+      "h": 63.92
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 24.4,
+      "y": 47.1,
+      "k": 53.3
+    }
   },
   {
     "code": "72.076",
     "name": "Alien Purple",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#54417C"
+    "rgb": "#54417C",
+    "oklch": {
+      "l": 0.4235,
+      "c": 0.0968,
+      "h": 296.92
+    },
+    "cmyk": {
+      "c": 32.3,
+      "m": 47.6,
+      "y": 0,
+      "k": 51.4
+    }
   },
   {
     "code": "72.082",
     "name": "White",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#FFFFFF"
+    "rgb": "#FFFFFF",
+    "oklch": {
+      "l": 1,
+      "c": 0,
+      "h": null
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 0,
+      "k": 0
+    }
   },
   {
     "code": "72.083",
     "name": "Magenta",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#9B2242"
+    "rgb": "#9B2242",
+    "oklch": {
+      "l": 0.4599,
+      "c": 0.1565,
+      "h": 10.95
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 78.1,
+      "y": 57.4,
+      "k": 39.2
+    }
   },
   {
     "code": "72.084",
     "name": "Dark Turquoise",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#083E3D"
+    "rgb": "#083E3D",
+    "oklch": {
+      "l": 0.331,
+      "c": 0.0527,
+      "h": 192.99
+    },
+    "cmyk": {
+      "c": 87.1,
+      "m": 0,
+      "y": 1.6,
+      "k": 75.7
+    }
   },
   {
     "code": "72.085",
     "name": "Yellow",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#E99C12"
+    "rgb": "#E99C12",
+    "oklch": {
+      "l": 0.7509,
+      "c": 0.1566,
+      "h": 73.12
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 33,
+      "y": 92.3,
+      "k": 8.6
+    }
   },
   {
     "code": "72.086",
     "name": "Red",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#A71521"
+    "rgb": "#A71521",
+    "oklch": {
+      "l": 0.4676,
+      "c": 0.1775,
+      "h": 24.58
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 87.4,
+      "y": 80.2,
+      "k": 34.5
+    }
   },
   {
     "code": "72.087",
     "name": "Violet",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#49315E"
+    "rgb": "#49315E",
+    "oklch": {
+      "l": 0.3621,
+      "c": 0.08,
+      "h": 307.45
+    },
+    "cmyk": {
+      "c": 22.3,
+      "m": 47.9,
+      "y": 0,
+      "k": 63.1
+    }
   },
   {
     "code": "72.088",
     "name": "Blue",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#113768"
+    "rgb": "#113768",
+    "oklch": {
+      "l": 0.3395,
+      "c": 0.0958,
+      "h": 256.46
+    },
+    "cmyk": {
+      "c": 83.7,
+      "m": 47.1,
+      "y": 0,
+      "k": 59.2
+    }
   },
   {
     "code": "72.089",
     "name": "Green",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#087033"
+    "rgb": "#087033",
+    "oklch": {
+      "l": 0.4777,
+      "c": 0.1279,
+      "h": 150.19
+    },
+    "cmyk": {
+      "c": 92.9,
+      "m": 0,
+      "y": 54.5,
+      "k": 56.1
+    }
   },
   {
     "code": "72.090",
     "name": "Black Green",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#253B2B"
+    "rgb": "#253B2B",
+    "oklch": {
+      "l": 0.3285,
+      "c": 0.0397,
+      "h": 152.34
+    },
+    "cmyk": {
+      "c": 37.3,
+      "m": 0,
+      "y": 27.1,
+      "k": 76.9
+    }
   },
   {
     "code": "72.091",
     "name": "Sepia",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#342613"
+    "rgb": "#342613",
+    "oklch": {
+      "l": 0.28,
+      "c": 0.0375,
+      "h": 73.72
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 26.9,
+      "y": 63.5,
+      "k": 79.6
+    }
   },
   {
     "code": "72.093",
     "name": "Skin",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#452018"
+    "rgb": "#452018",
+    "oklch": {
+      "l": 0.2934,
+      "c": 0.059,
+      "h": 33.38
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 53.6,
+      "y": 65.2,
+      "k": 72.9
+    }
   },
   {
     "code": "72.094",
     "name": "Black",
     "range": "Game Color",
     "type": "ink",
-    "rgb": "#010000"
+    "rgb": "#010000",
+    "oklch": {
+      "l": 0.0422,
+      "c": 0.0173,
+      "h": 29.23
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 100,
+      "y": 100,
+      "k": 99.6
+    }
   },
   {
     "code": "72.095",
     "name": "Glacier Blue",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#B7D0EC"
+    "rgb": "#B7D0EC",
+    "oklch": {
+      "l": 0.8481,
+      "c": 0.0476,
+      "h": 251.34
+    },
+    "cmyk": {
+      "c": 22.5,
+      "m": 11.9,
+      "y": 0,
+      "k": 7.5
+    }
   },
   {
     "code": "72.096",
     "name": "Verdigris",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#85C7A9"
+    "rgb": "#85C7A9",
+    "oklch": {
+      "l": 0.7768,
+      "c": 0.0801,
+      "h": 164.3
+    },
+    "cmyk": {
+      "c": 33.2,
+      "m": 0,
+      "y": 15.1,
+      "k": 22
+    }
   },
   {
     "code": "72.098",
     "name": "Elfic Flesh",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#F0D6A3"
+    "rgb": "#F0D6A3",
+    "oklch": {
+      "l": 0.8855,
+      "c": 0.0721,
+      "h": 83.96
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 10.8,
+      "y": 32.1,
+      "k": 5.9
+    }
   },
   {
     "code": "72.099",
     "name": "Skin Tone",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#F7B283"
+    "rgb": "#F7B283",
+    "oklch": {
+      "l": 0.8179,
+      "c": 0.1017,
+      "h": 55.05
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 27.9,
+      "y": 47,
+      "k": 3.1
+    }
   },
   {
     "code": "72.100",
     "name": "Rosy Flesh",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#E27262"
+    "rgb": "#E27262",
+    "oklch": {
+      "l": 0.6786,
+      "c": 0.1426,
+      "h": 29.66
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 49.6,
+      "y": 56.6,
+      "k": 11.4
+    }
   },
   {
     "code": "72.101",
     "name": "Off-White",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#FDEFB7"
+    "rgb": "#FDEFB7",
+    "oklch": {
+      "l": 0.9499,
+      "c": 0.0732,
+      "h": 95.72
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 5.5,
+      "y": 27.7,
+      "k": 0.8
+    }
   },
   {
     "code": "72.102",
     "name": "Steel Grey",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#4A5A62"
+    "rgb": "#4A5A62",
+    "oklch": {
+      "l": 0.457,
+      "c": 0.0237,
+      "h": 229.56
+    },
+    "cmyk": {
+      "c": 24.5,
+      "m": 8.2,
+      "y": 0,
+      "k": 61.6
+    }
   },
   {
     "code": "72.103",
     "name": "Fluorescent Yellow",
     "range": "Game Color",
     "type": "fluorescent",
-    "rgb": "#FAEB3D"
+    "rgb": "#FAEB3D",
+    "oklch": {
+      "l": 0.9242,
+      "c": 0.1797,
+      "h": 104.24
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 6,
+      "y": 75.6,
+      "k": 2
+    }
   },
   {
     "code": "72.104",
     "name": "Fluorescent Green",
     "range": "Game Color",
     "type": "fluorescent",
-    "rgb": "#5AB030"
+    "rgb": "#5AB030",
+    "oklch": {
+      "l": 0.678,
+      "c": 0.1816,
+      "h": 137.43
+    },
+    "cmyk": {
+      "c": 48.9,
+      "m": 0,
+      "y": 72.7,
+      "k": 31
+    }
   },
   {
     "code": "72.106",
     "name": "Scarlet Blood",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#AC1F1D"
+    "rgb": "#AC1F1D",
+    "oklch": {
+      "l": 0.4829,
+      "c": 0.1766,
+      "h": 27.52
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 82,
+      "y": 83.1,
+      "k": 32.5
+    }
   },
   {
     "code": "72.107",
     "name": "Athena Skin",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#B36354"
+    "rgb": "#B36354",
+    "oklch": {
+      "l": 0.588,
+      "c": 0.1066,
+      "h": 31.67
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 44.7,
+      "y": 53.1,
+      "k": 29.8
+    }
   },
   {
     "code": "72.108",
     "name": "Succubus Skin",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#73413B"
+    "rgb": "#73413B",
+    "oklch": {
+      "l": 0.4342,
+      "c": 0.0708,
+      "h": 27.62
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 43.5,
+      "y": 48.7,
+      "k": 54.9
+    }
   },
   {
     "code": "72.109",
     "name": "Toxic Yellow",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#E2C339"
+    "rgb": "#E2C339",
+    "oklch": {
+      "l": 0.8208,
+      "c": 0.1518,
+      "h": 95.85
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 13.7,
+      "y": 74.8,
+      "k": 11.4
+    }
   },
   {
     "code": "72.110",
     "name": "Sunset Orange",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#F08231"
+    "rgb": "#F08231",
+    "oklch": {
+      "l": 0.7165,
+      "c": 0.1618,
+      "h": 52.46
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 45.8,
+      "y": 79.6,
+      "k": 5.9
+    }
   },
   {
     "code": "72.111",
     "name": "Nocturnal Red",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#391919"
+    "rgb": "#391919",
+    "oklch": {
+      "l": 0.2599,
+      "c": 0.0508,
+      "h": 21.17
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 56.1,
+      "y": 56.1,
+      "k": 77.6
+    }
   },
   {
     "code": "72.112",
     "name": "Evil Red",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#341B23"
+    "rgb": "#341B23",
+    "oklch": {
+      "l": 0.2591,
+      "c": 0.0412,
+      "h": 359.79
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 48.1,
+      "y": 32.7,
+      "k": 79.6
+    }
   },
   {
     "code": "72.113",
     "name": "Deep Magenta",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#4B1B2F"
+    "rgb": "#4B1B2F",
+    "oklch": {
+      "l": 0.3018,
+      "c": 0.0767,
+      "h": 356.66
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 64,
+      "y": 37.3,
+      "k": 70.6
+    }
   },
   {
     "code": "72.114",
     "name": "Lustful Purple",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#7D5F92"
+    "rgb": "#7D5F92",
+    "oklch": {
+      "l": 0.5357,
+      "c": 0.0849,
+      "h": 310.63
+    },
+    "cmyk": {
+      "c": 14.4,
+      "m": 34.9,
+      "y": 0,
+      "k": 42.7
+    }
   },
   {
     "code": "72.115",
     "name": "Grunge Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#69361C"
+    "rgb": "#69361C",
+    "oklch": {
+      "l": 0.393,
+      "c": 0.0822,
+      "h": 46.2
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 48.6,
+      "y": 73.3,
+      "k": 58.8
+    }
   },
   {
     "code": "72.116",
     "name": "Midnight Purple",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#241531"
+    "rgb": "#241531",
+    "oklch": {
+      "l": 0.2306,
+      "c": 0.0554,
+      "h": 307.32
+    },
+    "cmyk": {
+      "c": 26.5,
+      "m": 57.1,
+      "y": 0,
+      "k": 80.8
+    }
   },
   {
     "code": "72.117",
     "name": "Elfic Blue",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#3D5474"
+    "rgb": "#3D5474",
+    "oklch": {
+      "l": 0.4413,
+      "c": 0.0602,
+      "h": 256.75
+    },
+    "cmyk": {
+      "c": 47.4,
+      "m": 27.6,
+      "y": 0,
+      "k": 54.5
+    }
   },
   {
     "code": "72.118",
     "name": "Sunrise Blue",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#5FB8E0"
+    "rgb": "#5FB8E0",
+    "oklch": {
+      "l": 0.7431,
+      "c": 0.1029,
+      "h": 229.61
+    },
+    "cmyk": {
+      "c": 57.6,
+      "m": 17.9,
+      "y": 0,
+      "k": 12.2
+    }
   },
   {
     "code": "72.119",
     "name": "Aquamarine",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#007473"
+    "rgb": "#007473",
+    "oklch": {
+      "l": 0.5057,
+      "c": 0.0865,
+      "h": 193.71
+    },
+    "cmyk": {
+      "c": 100,
+      "m": 0,
+      "y": 0.9,
+      "k": 54.5
+    }
   },
   {
     "code": "72.120",
     "name": "Abyssal Turquoise",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#122432"
+    "rgb": "#122432",
+    "oklch": {
+      "l": 0.2519,
+      "c": 0.0358,
+      "h": 243.34
+    },
+    "cmyk": {
+      "c": 64,
+      "m": 28,
+      "y": 0,
+      "k": 80.4
+    }
   },
   {
     "code": "72.121",
     "name": "Ghost Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#5AB889"
+    "rgb": "#5AB889",
+    "oklch": {
+      "l": 0.7122,
+      "c": 0.1142,
+      "h": 159.71
+    },
+    "cmyk": {
+      "c": 51.1,
+      "m": 0,
+      "y": 25.5,
+      "k": 27.8
+    }
   },
   {
     "code": "72.122",
     "name": "Bile Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#D5D90E"
+    "rgb": "#D5D90E",
+    "oklch": {
+      "l": 0.8539,
+      "c": 0.186,
+      "h": 111.11
+    },
+    "cmyk": {
+      "c": 1.8,
+      "m": 0,
+      "y": 93.5,
+      "k": 14.9
+    }
   },
   {
     "code": "72.123",
     "name": "Angel Green",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#233822"
+    "rgb": "#233822",
+    "oklch": {
+      "l": 0.316,
+      "c": 0.0469,
+      "h": 143.32
+    },
+    "cmyk": {
+      "c": 37.5,
+      "m": 0,
+      "y": 39.3,
+      "k": 78
+    }
   },
   {
     "code": "72.124",
     "name": "Gorgon Brown",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#3E2317"
+    "rgb": "#3E2317",
+    "oklch": {
+      "l": 0.2882,
+      "c": 0.0464,
+      "h": 44.45
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 43.5,
+      "y": 62.9,
+      "k": 75.7
+    }
   },
   {
     "code": "72.145",
     "name": "Dirty Grey",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#493E20"
+    "rgb": "#493E20",
+    "oklch": {
+      "l": 0.3677,
+      "c": 0.048,
+      "h": 89.83
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 15.1,
+      "y": 56.2,
+      "k": 71.4
+    }
   },
   {
     "code": "72.148",
     "name": "Warm Grey",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#80655E"
+    "rgb": "#80655E",
+    "oklch": {
+      "l": 0.5315,
+      "c": 0.0367,
+      "h": 34.95
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 21.1,
+      "y": 26.6,
+      "k": 49.8
+    }
   },
   {
     "code": "72.155",
     "name": "Charcoal",
     "range": "Game Color",
     "type": "opaque",
-    "rgb": "#19170F"
+    "rgb": "#19170F",
+    "oklch": {
+      "l": 0.2041,
+      "c": 0.0154,
+      "h": 95.71
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 8,
+      "y": 40,
+      "k": 90.2
+    }
   },
   {
     "code": "72.156",
     "name": "Fluorescent Orange",
     "range": "Game Color",
     "type": "fluorescent",
-    "rgb": "#E63B11"
+    "rgb": "#E63B11",
+    "oklch": {
+      "l": 0.6091,
+      "c": 0.2126,
+      "h": 33.69
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 74.3,
+      "y": 92.6,
+      "k": 9.8
+    }
   },
   {
     "code": "72.157",
     "name": "Fluorescent Red",
     "range": "Game Color",
     "type": "fluorescent",
-    "rgb": "#E42D3F"
+    "rgb": "#E42D3F",
+    "oklch": {
+      "l": 0.5988,
+      "c": 0.2157,
+      "h": 22.33
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 80.3,
+      "y": 72.4,
+      "k": 10.6
+    }
   },
   {
     "code": "72.158",
     "name": "Fluorescent Magenta",
     "range": "Game Color",
     "type": "fluorescent",
-    "rgb": "#E8338B"
+    "rgb": "#E8338B",
+    "oklch": {
+      "l": 0.6277,
+      "c": 0.2246,
+      "h": 356.72
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 78,
+      "y": 40.1,
+      "k": 9
+    }
   },
   {
     "code": "72.159",
     "name": "Fluorescent Violet",
     "range": "Game Color",
     "type": "fluorescent",
-    "rgb": "#6E2579"
+    "rgb": "#6E2579",
+    "oklch": {
+      "l": 0.4111,
+      "c": 0.1491,
+      "h": 322.19
+    },
+    "cmyk": {
+      "c": 9.1,
+      "m": 69.4,
+      "y": 0,
+      "k": 52.5
+    }
   },
   {
     "code": "72.160",
     "name": "Fluorescent Blue",
     "range": "Game Color",
     "type": "fluorescent",
-    "rgb": "#007AB9"
+    "rgb": "#007AB9",
+    "oklch": {
+      "l": 0.5554,
+      "c": 0.1321,
+      "h": 242.11
+    },
+    "cmyk": {
+      "c": 100,
+      "m": 34.1,
+      "y": 0,
+      "k": 27.5
+    }
   },
   {
     "code": "72.161",
     "name": "Fluorescent Cold Green",
     "range": "Game Color",
     "type": "fluorescent",
-    "rgb": "#00604E"
+    "rgb": "#00604E",
+    "oklch": {
+      "l": 0.4363,
+      "c": 0.083,
+      "h": 174.05
+    },
+    "cmyk": {
+      "c": 100,
+      "m": 0,
+      "y": 18.7,
+      "k": 62.4
+    }
   },
   {
     "code": "73.200",
     "name": "Sepia",
     "range": "Game Color",
     "type": "wash",
-    "rgb": "#65471B"
+    "rgb": "#65471B",
+    "oklch": {
+      "l": 0.4219,
+      "c": 0.0721,
+      "h": 73.79
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 29.7,
+      "y": 73.3,
+      "k": 60.4
+    }
   },
   {
     "code": "73.201",
     "name": "Black",
     "range": "Game Color",
     "type": "wash",
-    "rgb": "#333034"
+    "rgb": "#333034",
+    "oklch": {
+      "l": 0.3138,
+      "c": 0.0082,
+      "h": 317.72
+    },
+    "cmyk": {
+      "c": 1.9,
+      "m": 7.7,
+      "y": 0,
+      "k": 79.6
+    }
   },
   {
     "code": "73.203",
     "name": "Umber",
     "range": "Game Color",
     "type": "wash",
-    "rgb": "#664E3D"
+    "rgb": "#664E3D",
+    "oklch": {
+      "l": 0.4444,
+      "c": 0.042,
+      "h": 56.7
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 23.5,
+      "y": 40.2,
+      "k": 60
+    }
   },
   {
     "code": "73.204",
     "name": "Flesh",
     "range": "Game Color",
     "type": "wash",
-    "rgb": "#9A624F"
+    "rgb": "#9A624F",
+    "oklch": {
+      "l": 0.5525,
+      "c": 0.0788,
+      "h": 39.49
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 36.4,
+      "y": 48.7,
+      "k": 39.6
+    }
   },
   {
     "code": "73.206",
     "name": "Red",
     "range": "Game Color",
     "type": "wash",
-    "rgb": "#BE1C1A"
+    "rgb": "#BE1C1A",
+    "oklch": {
+      "l": 0.5147,
+      "c": 0.1952,
+      "h": 28.02
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 85.3,
+      "y": 86.3,
+      "k": 25.5
+    }
   },
   {
     "code": "73.207",
     "name": "Blue",
     "range": "Game Color",
     "type": "wash",
-    "rgb": "#0E6DB5"
+    "rgb": "#0E6DB5",
+    "oklch": {
+      "l": 0.5233,
+      "c": 0.1383,
+      "h": 248.81
+    },
+    "cmyk": {
+      "c": 92.3,
+      "m": 39.8,
+      "y": 0,
+      "k": 29
+    }
   },
   {
     "code": "73.208",
     "name": "Yellow",
     "range": "Game Color",
     "type": "wash",
-    "rgb": "#F4E600"
+    "rgb": "#F4E600",
+    "oklch": {
+      "l": 0.9071,
+      "c": 0.1926,
+      "h": 105.15
+    },
+    "cmyk": {
+      "c": 0,
+      "m": 5.7,
+      "y": 100,
+      "k": 4.3
+    }
   },
   {
     "code": "73.209",
     "name": "Violet",
     "range": "Game Color",
     "type": "wash",
-    "rgb": "#6B277F"
+    "rgb": "#6B277F",
+    "oklch": {
+      "l": 0.413,
+      "c": 0.1507,
+      "h": 317.63
+    },
+    "cmyk": {
+      "c": 15.7,
+      "m": 69.3,
+      "y": 0,
+      "k": 50.2
+    }
   }
 ]

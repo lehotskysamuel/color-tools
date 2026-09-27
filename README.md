@@ -140,7 +140,30 @@ Not included: metallics, Game Color Special FX (textured effects without a
 single flat color), Model Color Liquid Metal, Xpress Color, and
 mediums/varnishes.
 
-Each entry has `code`, English `name`, `range`, `type` and `rgb` (`#RRGGBB`).
+Each entry has `code`, English `name`, `range`, `type` and `rgb` (`#RRGGBB`),
+plus values computed from `rgb` by `src/color.js`:
+
+- `oklch`: `l` (0–1), `c`, `h` (degrees, `null` for achromatic colors)
+- `cmyk`: `c`, `m`, `y`, `k` in percent, using the naive
+  `K = 1 − max(R, G, B)` formula (not a print separation)
+
+```json
+{
+  "code": "72.021",
+  "name": "Magic Blue",
+  "range": "Game Color",
+  "type": "opaque",
+  "rgb": "#103D7D",
+  "oklch": { "l": 0.3701, "c": 0.119, "h": 258.31 },
+  "cmyk": { "c": 87.2, "m": 51.2, "y": 0, "k": 51 }
+}
+```
+
+To recompute `oklch` and `cmyk` after changing `rgb` values:
+
+```sh
+node scripts/add-color-spaces.js data/vallejo.json
+```
 
 **Source:** Vallejo's official color charts:
 
