@@ -176,8 +176,9 @@ node scripts/add-oklch.js data/vallejo.json
 The charts store each swatch as print CMYK (for Coated FOGRA39).
 `scripts/extract_vallejo.py` reads those values from the PDFs and converts
 them to sRGB through the charts' embedded Coated FOGRA39 ICC profile, using
-relative colorimetric intent with black point compensation. Names are taken from the chart labels, with
-truncated words spelled out (`Cam.` → `Camouflage`, `Unif.` → `Uniform`, …).
+relative colorimetric intent with black point compensation. Names are taken
+from the chart labels, with truncated words spelled out (`Cam.` →
+`Camouflage`, `Unif.` → `Uniform`, …).
 
 The RGB values are what the official chart looks like on screen, not a
 measurement of dried paint. Vallejo notes that printed chart colors are only
