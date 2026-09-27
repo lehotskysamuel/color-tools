@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Squidmar Paint Swatches</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;800&family=Lato:wght@400;900&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --ground: #000000;
+    --ink: #f3f0ea;
+    --muted: #8e8981;
+    --rule: #26231f;
+    --edge: rgba(255, 255, 255, 0.14);
+    --focus: #f4c542;
+    --display: "Fira Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --figure: "Lato", "Helvetica Neue", Arial, sans-serif;
+  }
+  html, body { background: var(--ground); color: var(--ink); }
+  body { font-family: var(--display); font-size: 15px; line-height: 1.4; }
+  .page { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; }
+
+  header { display: grid; gap: 10px; margin-bottom: 44px; }
+  .eyebrow { font-family: var(--figure); font-weight: 900; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0; }
+  h1 { font-weight: 800; font-size: clamp(34px, 6vw, 56px); line-height: 1; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  .lede { max-width: 62ch; color: var(--muted); margin: 0; font-size: 16px; }
+
+  section + section { margin-top: 56px; }
+  .sheet-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--rule); }
+  h2 { font-weight: 800; font-size: 30px; line-height: 1.1; margin: 0; }
+  .sheet-meta { display: flex; align-items: baseline; gap: 16px; color: var(--muted); font-family: var(--figure); font-size: 13px; }
+  .copy-list { font: inherit; color: var(--ink); background: none; border: 1px solid var(--edge); border-radius: 3px; padding: 4px 10px; cursor: pointer; }
+  .copy-list:hover { border-color: var(--muted); }
+
+  .grid { --cols: 6; display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 26px 16px; margin: 0; padding: 0; list-style: none; }
+  .grid[data-cols="5"] { --cols: 5; gap: 28px 20px; }
+
+  .paint { display: grid; gap: 3px; width: 100%; padding: 0; text-align: left; font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .chip { display: block; aspect-ratio: 1; max-width: 100%; background: var(--c); border-radius: 2px; box-shadow: inset 0 0 0 1px var(--edge); margin-bottom: 7px; transition: transform 120ms ease; }
+  .paint:hover .chip { transform: translateY(-2px); }
+  .paint:focus-visible { outline: none; }
+  .paint:focus-visible .chip { box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px var(--focus); }
+  .code { font-family: var(--figure); font-weight: 900; font-size: 17px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .name { font-weight: 500; font-size: 16px; line-height: 1.2; }
+  .val { font-family: var(--figure); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 0 8px; }
+  .tag { text-transform: uppercase; letter-spacing: 0.1em; font-size: 10px; font-weight: 900; color: var(--ink); opacity: 0.75; }
+
+  .note { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 14px; max-width: 70ch; }
+
+  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--ground); font-family: var(--figure); font-size: 14px; padding: 8px 14px; border-radius: 3px; }
+
+  @media (max-width: 760px) {
+    .grid, .grid[data-cols="5"] { --cols: 3; gap: 22px 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chip { transition: none; }
+    .paint:hover .chip { transform: none; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+<header>
+<p class="eyebrow">Squidmar Color &middot; 74.2xx acrylics</p>
+<h1>Squidmar Paint Swatches</h1>
+<p class="lede">Every paint from the two release sheets, 72 unique colors, laid out in the same order as the originals. Click a swatch to copy its hex code.</p>
+</header>
+<section id="sheet-30" aria-labelledby="sheet-30-title">
+<div class="sheet-head">
+<h2 id="sheet-30-title">30 New Paints</h2>
+<div class="sheet-meta"><span>5 &times; 6 grid, same order as the sheet</span><button type="button" class="copy-list" data-sheet="sheet-30">Copy list</button></div>
+</div>
+<ul class="grid" data-cols="5">
+<li><button type="button" class="paint" style="--c:#F8F3F1" data-code="74.201" data-name="Holy Wight" data-rgb="248,243,241" data-hex="#F8F3F1" aria-label="74.201 Holy Wight, RGB 248 243 241. Copy hex"><span class="chip"></span><span class="code">74.201</span><span class="name">Holy Wight</span><span class="val"><span>RGB 248 243 241</span><span>#F8F3F1</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F4D1BD" data-code="74.203" data-name="Northern Tan" data-rgb="244,209,189" data-hex="#F4D1BD" aria-label="74.203 Northern Tan, RGB 244 209 189. Copy hex"><span class="chip"></span><span class="code">74.203</span><span class="name">Northern Tan</span><span class="val"><span>RGB 244 209 189</span><span>#F4D1BD</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F8A677" data-code="74.204" data-name="Sun Kissed Skin" data-rgb="248,166,119" data-hex="#F8A677" aria-label="74.204 Sun Kissed Skin, RGB 248 166 119. Copy hex"><span class="chip"></span><span class="code">74.204</span><span class="name">Sun Kissed Skin</span><span class="val"><span>RGB 248 166 119</span><span>#F8A677</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#7B554D" data-code="74.207" data-name="Cursed Skin" data-rgb="123,85,77" data-hex="#7B554D" aria-label="74.207 Cursed Skin, RGB 123 85 77. Copy hex"><span class="chip"></span><span class="code">74.207</span><span class="name">Cursed Skin</span><span class="val"><span>RGB 123 85 77</span><span>#7B554D</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#FFF088" data-code="74.208" data-name="Final Yellow" data-rgb="255,240,136" data-hex="#FFF088" aria-label="74.208 Final Yellow, RGB 255 240 136. Copy hex"><span class="chip"></span><span class="code">74.208</span><span class="name">Final Yellow</span><span class="val"><span>RGB 255 240 136</span><span>#FFF088</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#BDD1E5" data-code="74.221" data-name="Snow Storm" data-rgb="189,209,229" data-hex="#BDD1E5" aria-label="74.221 Snow Storm, RGB 189 209 229. Copy hex"><span class="chip"></span><span class="code">74.221</span><span class="name">Snow Storm</span><span class="val"><span>RGB 189 209 229</span><span>#BDD1E5</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#015872" data-code="74.225" data-name="Ghastly Turquoise" data-rgb="1,88,114" data-hex="#015872" aria-label="74.225 Ghastly Turquoise, RGB 1 88 114. Copy hex"><span class="chip"></span><span class="code">74.225</span><span class="name">Ghastly Turquoise</span><span class="val"><span>RGB 1 88 114</span><span>#015872</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#92CFA6" data-code="74.226" data-name="Spearmint" data-rgb="146,207,166" data-hex="#92CFA6" aria-label="74.226 Spearmint, RGB 146 207 166. Copy hex"><span class="chip"></span><span class="code">74.226</span><span class="name">Spearmint</span><span class="val"><span>RGB 146 207 166</span><span>#92CFA6</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#07352D" data-code="74.229" data-name="Deep Blue Sea" data-rgb="7,53,45" data-hex="#07352D" aria-label="74.229 Deep Blue Sea, RGB 7 53 45. Copy hex"><span class="chip"></span><span class="code">74.229</span><span class="name">Deep Blue Sea</span><span class="val"><span>RGB 7 53 45</span><span>#07352D</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#6A923C" data-code="74.230" data-name="Cauldron Green" data-rgb="106,146,60" data-hex="#6A923C" aria-label="74.230 Cauldron Green, RGB 106 146 60. Copy hex"><span class="chip"></span><span class="code">74.230</span><span class="name">Cauldron Green</span><span class="val"><span>RGB 106 146 60</span><span>#6A923C</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#834D31" data-code="74.241" data-name="Leathery Brown" data-rgb="131,77,49" data-hex="#834D31" aria-label="74.241 Leathery Brown, RGB 131 77 49. Copy hex"><span class="chip"></span><span class="code">74.241</span><span class="name">Leathery Brown</span><span class="val"><span>RGB 131 77 49</span><span>#834D31</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#3B251F" data-code="74.243" data-name="Blackwood" data-rgb="59,37,31" data-hex="#3B251F" aria-label="74.243 Blackwood, RGB 59 37 31. Copy hex"><span class="chip"></span><span class="code">74.243</span><span class="name">Blackwood</span><span class="val"><span>RGB 59 37 31</span><span>#3B251F</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#5B362E" data-code="74.244" data-name="Cult Brown" data-rgb="91,54,46" data-hex="#5B362E" aria-label="74.244 Cult Brown, RGB 91 54 46. Copy hex"><span class="chip"></span><span class="code">74.244</span><span class="name">Cult Brown</span><span class="val"><span>RGB 91 54 46</span><span>#5B362E</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#B1ADA9" data-code="74.246" data-name="Ume Grey" data-rgb="177,173,169" data-hex="#B1ADA9" aria-label="74.246 Ume Grey, RGB 177 173 169. Copy hex"><span class="chip"></span><span class="code">74.246</span><span class="name">Ume Grey</span><span class="val"><span>RGB 177 173 169</span><span>#B1ADA9</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#241F21" data-code="74.248" data-name="Pitch Black" data-rgb="36,31,33" data-hex="#241F21" aria-label="74.248 Pitch Black, RGB 36 31 33. Copy hex"><span class="chip"></span><span class="code">74.248</span><span class="name">Pitch Black</span><span class="val"><span>RGB 36 31 33</span><span>#241F21</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#FCA921" data-code="74.210" data-name="Goldcoin Yellow" data-rgb="252,169,33" data-hex="#FCA921" aria-label="74.210 Goldcoin Yellow, RGB 252 169 33. Copy hex"><span class="chip"></span><span class="code">74.210</span><span class="name">Goldcoin Yellow</span><span class="val"><span>RGB 252 169 33</span><span>#FCA921</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F15D22" data-code="74.212" data-name="Tetanus Orange" data-rgb="241,93,34" data-hex="#F15D22" aria-label="74.212 Tetanus Orange, RGB 241 93 34. Copy hex"><span class="chip"></span><span class="code">74.212</span><span class="name">Tetanus Orange</span><span class="val"><span>RGB 241 93 34</span><span>#F15D22</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#C1151B" data-code="74.214" data-name="Murdered" data-rgb="193,21,27" data-hex="#C1151B" aria-label="74.214 Murdered, RGB 193 21 27. Copy hex"><span class="chip"></span><span class="code">74.214</span><span class="name">Murdered</span><span class="val"><span>RGB 193 21 27</span><span>#C1151B</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#AA2C90" data-code="74.217" data-name="Hell Pink" data-rgb="170,44,144" data-hex="#AA2C90" aria-label="74.217 Hell Pink, RGB 170 44 144. Copy hex"><span class="chip"></span><span class="code">74.217</span><span class="name">Hell Pink</span><span class="val"><span>RGB 170 44 144</span><span>#AA2C90</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#4D3163" data-code="74.220" data-name="Infernal Purple" data-rgb="77,49,99" data-hex="#4D3163" aria-label="74.220 Infernal Purple, RGB 77 49 99. Copy hex"><span class="chip"></span><span class="code">74.220</span><span class="name">Infernal Purple</span><span class="val"><span>RGB 77 49 99</span><span>#4D3163</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#204634" data-code="74.232" data-name="Drachonzah Green" data-rgb="32,70,52" data-hex="#204634" aria-label="74.232 Drachonzah Green, RGB 32 70 52. Copy hex"><span class="chip"></span><span class="code">74.232</span><span class="name">Drachonzah Green</span><span class="val"><span>RGB 32 70 52</span><span>#204634</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#585B3A" data-code="74.234" data-name="Mossback Green" data-rgb="88,91,58" data-hex="#585B3A" aria-label="74.234 Mossback Green, RGB 88 91 58. Copy hex"><span class="chip"></span><span class="code">74.234</span><span class="name">Mossback Green</span><span class="val"><span>RGB 88 91 58</span><span>#585B3A</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#BF966A" data-code="74.235" data-name="Mehnadi Desert" data-rgb="191,150,106" data-hex="#BF966A" aria-label="74.235 Mehnadi Desert, RGB 191 150 106. Copy hex"><span class="chip"></span><span class="code">74.235</span><span class="name">Mehnadi Desert</span><span class="val"><span>RGB 191 150 106</span><span>#BF966A</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#6E5A3F" data-code="74.239" data-name="Undead Ochre" data-rgb="110,90,63" data-hex="#6E5A3F" aria-label="74.239 Undead Ochre, RGB 110 90 63. Copy hex"><span class="chip"></span><span class="code">74.239</span><span class="name">Undead Ochre</span><span class="val"><span>RGB 110 90 63</span><span>#6E5A3F</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#B16C48" data-code="74.240" data-name="Rich Brown" data-rgb="177,108,72" data-hex="#B16C48" aria-label="74.240 Rich Brown, RGB 177 108 72. Copy hex"><span class="chip"></span><span class="code">74.240</span><span class="name">Rich Brown</span><span class="val"><span>RGB 177 108 72</span><span>#B16C48</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#81888C" data-code="74.250" data-name="Metallic Metal" data-rgb="129,136,140" data-hex="#81888C" aria-label="74.250 Metallic Metal, RGB 129 136 140. Copy hex"><span class="chip"></span><span class="code">74.250</span><span class="name">Metallic Metal</span><span class="val"><span>RGB 129 136 140</span><span>#81888C</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#4D5252" data-code="74.251" data-name="Dark Steel" data-rgb="77,82,82" data-hex="#4D5252" aria-label="74.251 Dark Steel, RGB 77 82 82. Copy hex"><span class="chip"></span><span class="code">74.251</span><span class="name">Dark Steel</span><span class="val"><span>RGB 77 82 82</span><span>#4D5252</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#CE8637" data-code="74.253" data-name="Demon Gold" data-rgb="206,134,55" data-hex="#CE8637" aria-label="74.253 Demon Gold, RGB 206 134 55. Copy hex"><span class="chip"></span><span class="code">74.253</span><span class="name">Demon Gold</span><span class="val"><span>RGB 206 134 55</span><span>#CE8637</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#E06847" data-code="74.254" data-name="Graveyard Copper" data-rgb="224,104,71" data-hex="#E06847" aria-label="74.254 Graveyard Copper, RGB 224 104 71. Copy hex"><span class="chip"></span><span class="code">74.254</span><span class="name">Graveyard Copper</span><span class="val"><span>RGB 224 104 71</span><span>#E06847</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#704B3F" data-code="74.255" data-name="Ungodly Copper" data-rgb="112,75,63" data-hex="#704B3F" aria-label="74.255 Ungodly Copper, RGB 112 75 63. Copy hex"><span class="chip"></span><span class="code">74.255</span><span class="name">Ungodly Copper</span><span class="val"><span>RGB 112 75 63</span><span>#704B3F</span><span class="tag">Metallic</span></span></button></li>
+</ul>
+</section>
+<section id="sheet-72" aria-labelledby="sheet-72-title">
+<div class="sheet-head">
+<h2 id="sheet-72-title">72 New Paints</h2>
+<div class="sheet-meta"><span>6 &times; 12 grid, same order as the sheet</span><button type="button" class="copy-list" data-sheet="sheet-72">Copy list</button></div>
+</div>
+<ul class="grid" data-cols="6">
+<li><button type="button" class="paint" style="--c:#F9F7F6" data-code="74.201" data-name="Holy Wight" data-rgb="249,247,246" data-hex="#F9F7F6" aria-label="74.201 Holy Wight, RGB 249 247 246. Copy hex"><span class="chip"></span><span class="code">74.201</span><span class="name">Holy Wight</span><span class="val"><span>RGB 249 247 246</span><span>#F9F7F6</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#FAF6D2" data-code="74.202" data-name="Old Skull" data-rgb="250,246,210" data-hex="#FAF6D2" aria-label="74.202 Old Skull, RGB 250 246 210. Copy hex"><span class="chip"></span><span class="code">74.202</span><span class="name">Old Skull</span><span class="val"><span>RGB 250 246 210</span><span>#FAF6D2</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F7D4BF" data-code="74.203" data-name="Northern Tan" data-rgb="247,212,191" data-hex="#F7D4BF" aria-label="74.203 Northern Tan, RGB 247 212 191. Copy hex"><span class="chip"></span><span class="code">74.203</span><span class="name">Northern Tan</span><span class="val"><span>RGB 247 212 191</span><span>#F7D4BF</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F9A678" data-code="74.204" data-name="Sun Kissed Skin" data-rgb="249,166,120" data-hex="#F9A678" aria-label="74.204 Sun Kissed Skin, RGB 249 166 120. Copy hex"><span class="chip"></span><span class="code">74.204</span><span class="name">Sun Kissed Skin</span><span class="val"><span>RGB 249 166 120</span><span>#F9A678</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F69E8E" data-code="74.205" data-name="Dunskär Skin" data-rgb="246,158,142" data-hex="#F69E8E" aria-label="74.205 Dunskär Skin, RGB 246 158 142. Copy hex"><span class="chip"></span><span class="code">74.205</span><span class="name">Dunskär Skin</span><span class="val"><span>RGB 246 158 142</span><span>#F69E8E</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#AD775F" data-code="74.206" data-name="Steve Flesh" data-rgb="173,119,95" data-hex="#AD775F" aria-label="74.206 Steve Flesh, RGB 173 119 95. Copy hex"><span class="chip"></span><span class="code">74.206</span><span class="name">Steve Flesh</span><span class="val"><span>RGB 173 119 95</span><span>#AD775F</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#DD3D43" data-code="74.213" data-name="Deadliest Red" data-rgb="221,61,67" data-hex="#DD3D43" aria-label="74.213 Deadliest Red, RGB 221 61 67. Copy hex"><span class="chip"></span><span class="code">74.213</span><span class="name">Deadliest Red</span><span class="val"><span>RGB 221 61 67</span><span>#DD3D43</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#C1151B" data-code="74.214" data-name="Murdered" data-rgb="193,21,27" data-hex="#C1151B" aria-label="74.214 Murdered, RGB 193 21 27. Copy hex"><span class="chip"></span><span class="code">74.214</span><span class="name">Murdered</span><span class="val"><span>RGB 193 21 27</span><span>#C1151B</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#730920" data-code="74.215" data-name="Gut Red" data-rgb="115,9,32" data-hex="#730920" aria-label="74.215 Gut Red, RGB 115 9 32. Copy hex"><span class="chip"></span><span class="code">74.215</span><span class="name">Gut Red</span><span class="val"><span>RGB 115 9 32</span><span>#730920</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#D772AD" data-code="74.216" data-name="Tentacle Pink" data-rgb="215,114,173" data-hex="#D772AD" aria-label="74.216 Tentacle Pink, RGB 215 114 173. Copy hex"><span class="chip"></span><span class="code">74.216</span><span class="name">Tentacle Pink</span><span class="val"><span>RGB 215 114 173</span><span>#D772AD</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#AA2D91" data-code="74.217" data-name="Hell Pink" data-rgb="170,45,145" data-hex="#AA2D91" aria-label="74.217 Hell Pink, RGB 170 45 145. Copy hex"><span class="chip"></span><span class="code">74.217</span><span class="name">Hell Pink</span><span class="val"><span>RGB 170 45 145</span><span>#AA2D91</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#440220" data-code="74.218" data-name="Witches Purple" data-rgb="68,2,32" data-hex="#440220" aria-label="74.218 Witches Purple, RGB 68 2 32. Copy hex"><span class="chip"></span><span class="code">74.218</span><span class="name">Witches Purple</span><span class="val"><span>RGB 68 2 32</span><span>#440220</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#025772" data-code="74.225" data-name="Ghastly Turquoise" data-rgb="2,87,114" data-hex="#025772" aria-label="74.225 Ghastly Turquoise, RGB 2 87 114. Copy hex"><span class="chip"></span><span class="code">74.225</span><span class="name">Ghastly Turquoise</span><span class="val"><span>RGB 2 87 114</span><span>#025772</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#92D0A6" data-code="74.226" data-name="Spearmint" data-rgb="146,208,166" data-hex="#92D0A6" aria-label="74.226 Spearmint, RGB 146 208 166. Copy hex"><span class="chip"></span><span class="code">74.226</span><span class="name">Spearmint</span><span class="val"><span>RGB 146 208 166</span><span>#92D0A6</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#04AB87" data-code="74.227" data-name="Gemstone" data-rgb="4,171,135" data-hex="#04AB87" aria-label="74.227 Gemstone, RGB 4 171 135. Copy hex"><span class="chip"></span><span class="code">74.227</span><span class="name">Gemstone</span><span class="val"><span>RGB 4 171 135</span><span>#04AB87</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#025B4B" data-code="74.228" data-name="Corrupted Emerald" data-rgb="2,91,75" data-hex="#025B4B" aria-label="74.228 Corrupted Emerald, RGB 2 91 75. Copy hex"><span class="chip"></span><span class="code">74.228</span><span class="name">Corrupted Emerald</span><span class="val"><span>RGB 2 91 75</span><span>#025B4B</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#07352C" data-code="74.229" data-name="Deep Blue Sea" data-rgb="7,53,44" data-hex="#07352C" aria-label="74.229 Deep Blue Sea, RGB 7 53 44. Copy hex"><span class="chip"></span><span class="code">74.229</span><span class="name">Deep Blue Sea</span><span class="val"><span>RGB 7 53 44</span><span>#07352C</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#69913C" data-code="74.230" data-name="Cauldron Green" data-rgb="105,145,60" data-hex="#69913C" aria-label="74.230 Cauldron Green, RGB 105 145 60. Copy hex"><span class="chip"></span><span class="code">74.230</span><span class="name">Cauldron Green</span><span class="val"><span>RGB 105 145 60</span><span>#69913C</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#674F3A" data-code="74.237" data-name="Ancient Tome" data-rgb="103,79,58" data-hex="#674F3A" aria-label="74.237 Ancient Tome, RGB 103 79 58. Copy hex"><span class="chip"></span><span class="code">74.237</span><span class="name">Ancient Tome</span><span class="val"><span>RGB 103 79 58</span><span>#674F3A</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#9E7C48" data-code="74.238" data-name="Corpse Yellow" data-rgb="158,124,72" data-hex="#9E7C48" aria-label="74.238 Corpse Yellow, RGB 158 124 72. Copy hex"><span class="chip"></span><span class="code">74.238</span><span class="name">Corpse Yellow</span><span class="val"><span>RGB 158 124 72</span><span>#9E7C48</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#6F5A40" data-code="74.239" data-name="Undead Ochre" data-rgb="111,90,64" data-hex="#6F5A40" aria-label="74.239 Undead Ochre, RGB 111 90 64. Copy hex"><span class="chip"></span><span class="code">74.239</span><span class="name">Undead Ochre</span><span class="val"><span>RGB 111 90 64</span><span>#6F5A40</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#B36C48" data-code="74.240" data-name="Rich Brown" data-rgb="179,108,72" data-hex="#B36C48" aria-label="74.240 Rich Brown, RGB 179 108 72. Copy hex"><span class="chip"></span><span class="code">74.240</span><span class="name">Rich Brown</span><span class="val"><span>RGB 179 108 72</span><span>#B36C48</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#834D32" data-code="74.241" data-name="Leathery Brown" data-rgb="131,77,50" data-hex="#834D32" aria-label="74.241 Leathery Brown, RGB 131 77 50. Copy hex"><span class="chip"></span><span class="code">74.241</span><span class="name">Leathery Brown</span><span class="val"><span>RGB 131 77 50</span><span>#834D32</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#583C29" data-code="74.242" data-name="Deep Wood" data-rgb="88,60,41" data-hex="#583C29" aria-label="74.242 Deep Wood, RGB 88 60 41. Copy hex"><span class="chip"></span><span class="code">74.242</span><span class="name">Deep Wood</span><span class="val"><span>RGB 88 60 41</span><span>#583C29</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#C2C8C6" data-code="74.249" data-name="Godly Steel" data-rgb="194,200,198" data-hex="#C2C8C6" aria-label="74.249 Godly Steel, RGB 194 200 198. Copy hex"><span class="chip"></span><span class="code">74.249</span><span class="name">Godly Steel</span><span class="val"><span>RGB 194 200 198</span><span>#C2C8C6</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#828A8A" data-code="74.250" data-name="Metallic Metal" data-rgb="130,138,138" data-hex="#828A8A" aria-label="74.250 Metallic Metal, RGB 130 138 138. Copy hex"><span class="chip"></span><span class="code">74.250</span><span class="name">Metallic Metal</span><span class="val"><span>RGB 130 138 138</span><span>#828A8A</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#4E5354" data-code="74.251" data-name="Dark Steel" data-rgb="78,83,84" data-hex="#4E5354" aria-label="74.251 Dark Steel, RGB 78 83 84. Copy hex"><span class="chip"></span><span class="code">74.251</span><span class="name">Dark Steel</span><span class="val"><span>RGB 78 83 84</span><span>#4E5354</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#E4AC32" data-code="74.252" data-name="Dragon Gold" data-rgb="228,172,50" data-hex="#E4AC32" aria-label="74.252 Dragon Gold, RGB 228 172 50. Copy hex"><span class="chip"></span><span class="code">74.252</span><span class="name">Dragon Gold</span><span class="val"><span>RGB 228 172 50</span><span>#E4AC32</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#CF8638" data-code="74.253" data-name="Demon Gold" data-rgb="207,134,56" data-hex="#CF8638" aria-label="74.253 Demon Gold, RGB 207 134 56. Copy hex"><span class="chip"></span><span class="code">74.253</span><span class="name">Demon Gold</span><span class="val"><span>RGB 207 134 56</span><span>#CF8638</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#E26949" data-code="74.254" data-name="Graveyard Copper" data-rgb="226,105,73" data-hex="#E26949" aria-label="74.254 Graveyard Copper, RGB 226 105 73. Copy hex"><span class="chip"></span><span class="code">74.254</span><span class="name">Graveyard Copper</span><span class="val"><span>RGB 226 105 73</span><span>#E26949</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F1C215" data-code="74.261" data-name="Sun Ink" data-rgb="241,194,21" data-hex="#F1C215" aria-label="74.261 Sun Ink, RGB 241 194 21. Copy hex"><span class="chip"></span><span class="code">74.261</span><span class="name">Sun Ink</span><span class="val"><span>RGB 241 194 21</span><span>#F1C215</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#C33F32" data-code="74.262" data-name="Fire Ink" data-rgb="195,63,50" data-hex="#C33F32" aria-label="74.262 Fire Ink, RGB 195 63 50. Copy hex"><span class="chip"></span><span class="code">74.262</span><span class="name">Fire Ink</span><span class="val"><span>RGB 195 63 50</span><span>#C33F32</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#EE3B39" data-code="74.263" data-name="Blood Ink" data-rgb="238,59,57" data-hex="#EE3B39" aria-label="74.263 Blood Ink, RGB 238 59 57. Copy hex"><span class="chip"></span><span class="code">74.263</span><span class="name">Blood Ink</span><span class="val"><span>RGB 238 59 57</span><span>#EE3B39</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#DE4699" data-code="74.264" data-name="Squid Ink" data-rgb="222,70,153" data-hex="#DE4699" aria-label="74.264 Squid Ink, RGB 222 70 153. Copy hex"><span class="chip"></span><span class="code">74.264</span><span class="name">Squid Ink</span><span class="val"><span>RGB 222 70 153</span><span>#DE4699</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#592E92" data-code="74.265" data-name="Witch Ink" data-rgb="89,46,146" data-hex="#592E92" aria-label="74.265 Witch Ink, RGB 89 46 146. Copy hex"><span class="chip"></span><span class="code">74.265</span><span class="name">Witch Ink</span><span class="val"><span>RGB 89 46 146</span><span>#592E92</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#024962" data-code="74.266" data-name="Deep Sea Ink" data-rgb="2,73,98" data-hex="#024962" aria-label="74.266 Deep Sea Ink, RGB 2 73 98. Copy hex"><span class="chip"></span><span class="code">74.266</span><span class="name">Deep Sea Ink</span><span class="val"><span>RGB 2 73 98</span><span>#024962</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#7A554D" data-code="74.207" data-name="Cursed Skin" data-rgb="122,85,77" data-hex="#7A554D" aria-label="74.207 Cursed Skin, RGB 122 85 77. Copy hex"><span class="chip"></span><span class="code">74.207</span><span class="name">Cursed Skin</span><span class="val"><span>RGB 122 85 77</span><span>#7A554D</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#FEF188" data-code="74.208" data-name="Final Yellow" data-rgb="254,241,136" data-hex="#FEF188" aria-label="74.208 Final Yellow, RGB 254 241 136. Copy hex"><span class="chip"></span><span class="code">74.208</span><span class="name">Final Yellow</span><span class="val"><span>RGB 254 241 136</span><span>#FEF188</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#FCCE5E" data-code="74.209" data-name="Owl’s Eye" data-rgb="252,206,94" data-hex="#FCCE5E" aria-label="74.209 Owl’s Eye, RGB 252 206 94. Copy hex"><span class="chip"></span><span class="code">74.209</span><span class="name">Owl’s Eye</span><span class="val"><span>RGB 252 206 94</span><span>#FCCE5E</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#FAAA1F" data-code="74.210" data-name="Goldcoin Yellow" data-rgb="250,170,31" data-hex="#FAAA1F" aria-label="74.210 Goldcoin Yellow, RGB 250 170 31. Copy hex"><span class="chip"></span><span class="code">74.210</span><span class="name">Goldcoin Yellow</span><span class="val"><span>RGB 250 170 31</span><span>#FAAA1F</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F69142" data-code="74.211" data-name="Squid Orange" data-rgb="246,145,66" data-hex="#F69142" aria-label="74.211 Squid Orange, RGB 246 145 66. Copy hex"><span class="chip"></span><span class="code">74.211</span><span class="name">Squid Orange</span><span class="val"><span>RGB 246 145 66</span><span>#F69142</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F15D22" data-code="74.212" data-name="Tetanus Orange" data-rgb="241,93,34" data-hex="#F15D22" aria-label="74.212 Tetanus Orange, RGB 241 93 34. Copy hex"><span class="chip"></span><span class="code">74.212</span><span class="name">Tetanus Orange</span><span class="val"><span>RGB 241 93 34</span><span>#F15D22</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#A082BC" data-code="74.219" data-name="Tulip Fever" data-rgb="160,130,188" data-hex="#A082BC" aria-label="74.219 Tulip Fever, RGB 160 130 188. Copy hex"><span class="chip"></span><span class="code">74.219</span><span class="name">Tulip Fever</span><span class="val"><span>RGB 160 130 188</span><span>#A082BC</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#4D3164" data-code="74.220" data-name="Infernal Purple" data-rgb="77,49,100" data-hex="#4D3164" aria-label="74.220 Infernal Purple, RGB 77 49 100. Copy hex"><span class="chip"></span><span class="code">74.220</span><span class="name">Infernal Purple</span><span class="val"><span>RGB 77 49 100</span><span>#4D3164</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#BBD0E5" data-code="74.221" data-name="Snow Storm" data-rgb="187,208,229" data-hex="#BBD0E5" aria-label="74.221 Snow Storm, RGB 187 208 229. Copy hex"><span class="chip"></span><span class="code">74.221</span><span class="name">Snow Storm</span><span class="val"><span>RGB 187 208 229</span><span>#BBD0E5</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#183874" data-code="74.222" data-name="I’m Blue" data-rgb="24,56,116" data-hex="#183874" aria-label="74.222 I’m Blue, RGB 24 56 116. Copy hex"><span class="chip"></span><span class="code">74.222</span><span class="name">I’m Blue</span><span class="val"><span>RGB 24 56 116</span><span>#183874</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#03193C" data-code="74.223" data-name="Mörk Blue" data-rgb="3,25,60" data-hex="#03193C" aria-label="74.223 Mörk Blue, RGB 3 25 60. Copy hex"><span class="chip"></span><span class="code">74.223</span><span class="name">Mörk Blue</span><span class="val"><span>RGB 3 25 60</span><span>#03193C</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#03B9C2" data-code="74.224" data-name="Ocean Eyes" data-rgb="3,185,194" data-hex="#03B9C2" aria-label="74.224 Ocean Eyes, RGB 3 185 194. Copy hex"><span class="chip"></span><span class="code">74.224</span><span class="name">Ocean Eyes</span><span class="val"><span>RGB 3 185 194</span><span>#03B9C2</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#1C6243" data-code="74.231" data-name="Birch Leaf" data-rgb="28,98,67" data-hex="#1C6243" aria-label="74.231 Birch Leaf, RGB 28 98 67. Copy hex"><span class="chip"></span><span class="code">74.231</span><span class="name">Birch Leaf</span><span class="val"><span>RGB 28 98 67</span><span>#1C6243</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#1E4634" data-code="74.232" data-name="Drachonzah Green" data-rgb="30,70,52" data-hex="#1E4634" aria-label="74.232 Drachonzah Green, RGB 30 70 52. Copy hex"><span class="chip"></span><span class="code">74.232</span><span class="name">Drachonzah Green</span><span class="val"><span>RGB 30 70 52</span><span>#1E4634</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#978F47" data-code="74.233" data-name="Vomitous Green" data-rgb="151,143,71" data-hex="#978F47" aria-label="74.233 Vomitous Green, RGB 151 143 71. Copy hex"><span class="chip"></span><span class="code">74.233</span><span class="name">Vomitous Green</span><span class="val"><span>RGB 151 143 71</span><span>#978F47</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#575C3A" data-code="74.234" data-name="Mossback Green" data-rgb="87,92,58" data-hex="#575C3A" aria-label="74.234 Mossback Green, RGB 87 92 58. Copy hex"><span class="chip"></span><span class="code">74.234</span><span class="name">Mossback Green</span><span class="val"><span>RGB 87 92 58</span><span>#575C3A</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#BF9669" data-code="74.235" data-name="Mehnadi Desert" data-rgb="191,150,105" data-hex="#BF9669" aria-label="74.235 Mehnadi Desert, RGB 191 150 105. Copy hex"><span class="chip"></span><span class="code">74.235</span><span class="name">Mehnadi Desert</span><span class="val"><span>RGB 191 150 105</span><span>#BF9669</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#8F7152" data-code="74.236" data-name="Bone Dust" data-rgb="143,113,82" data-hex="#8F7152" aria-label="74.236 Bone Dust, RGB 143 113 82. Copy hex"><span class="chip"></span><span class="code">74.236</span><span class="name">Bone Dust</span><span class="val"><span>RGB 143 113 82</span><span>#8F7152</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#3B261E" data-code="74.243" data-name="Blackwood" data-rgb="59,38,30" data-hex="#3B261E" aria-label="74.243 Blackwood, RGB 59 38 30. Copy hex"><span class="chip"></span><span class="code">74.243</span><span class="name">Blackwood</span><span class="val"><span>RGB 59 38 30</span><span>#3B261E</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#5B362E" data-code="74.244" data-name="Cult Brown" data-rgb="91,54,46" data-hex="#5B362E" aria-label="74.244 Cult Brown, RGB 91 54 46. Copy hex"><span class="chip"></span><span class="code">74.244</span><span class="name">Cult Brown</span><span class="val"><span>RGB 91 54 46</span><span>#5B362E</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#3E1F21" data-code="74.245" data-name="Knights Brown" data-rgb="62,31,33" data-hex="#3E1F21" aria-label="74.245 Knights Brown, RGB 62 31 33. Copy hex"><span class="chip"></span><span class="code">74.245</span><span class="name">Knights Brown</span><span class="val"><span>RGB 62 31 33</span><span>#3E1F21</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#B0ADA9" data-code="74.246" data-name="Ume Grey" data-rgb="176,173,169" data-hex="#B0ADA9" aria-label="74.246 Ume Grey, RGB 176 173 169. Copy hex"><span class="chip"></span><span class="code">74.246</span><span class="name">Ume Grey</span><span class="val"><span>RGB 176 173 169</span><span>#B0ADA9</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#525145" data-code="74.247" data-name="Granite Grey" data-rgb="82,81,69" data-hex="#525145" aria-label="74.247 Granite Grey, RGB 82 81 69. Copy hex"><span class="chip"></span><span class="code">74.247</span><span class="name">Granite Grey</span><span class="val"><span>RGB 82 81 69</span><span>#525145</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#221F21" data-code="74.248" data-name="Pitch Black" data-rgb="34,31,33" data-hex="#221F21" aria-label="74.248 Pitch Black, RGB 34 31 33. Copy hex"><span class="chip"></span><span class="code">74.248</span><span class="name">Pitch Black</span><span class="val"><span>RGB 34 31 33</span><span>#221F21</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#724C3F" data-code="74.255" data-name="Ungodly Copper" data-rgb="114,76,63" data-hex="#724C3F" aria-label="74.255 Ungodly Copper, RGB 114 76 63. Copy hex"><span class="chip"></span><span class="code">74.255</span><span class="name">Ungodly Copper</span><span class="val"><span>RGB 114 76 63</span><span>#724C3F</span><span class="tag">Metallic</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#FDF205" data-code="74.256" data-name="Fluorescent Sun" data-rgb="253,242,5" data-hex="#FDF205" aria-label="74.256 Fluorescent Sun, RGB 253 242 5. Copy hex"><span class="chip"></span><span class="code">74.256</span><span class="name">Fluorescent Sun</span><span class="val"><span>RGB 253 242 5</span><span>#FDF205</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#F47C20" data-code="74.257" data-name="Fluorescent Fire" data-rgb="244,124,32" data-hex="#F47C20" aria-label="74.257 Fluorescent Fire, RGB 244 124 32. Copy hex"><span class="chip"></span><span class="code">74.257</span><span class="name">Fluorescent Fire</span><span class="val"><span>RGB 244 124 32</span><span>#F47C20</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#EC0778" data-code="74.258" data-name="Fluorescent Hex" data-rgb="236,7,120" data-hex="#EC0778" aria-label="74.258 Fluorescent Hex, RGB 236 7 120. Copy hex"><span class="chip"></span><span class="code">74.258</span><span class="name">Fluorescent Hex</span><span class="val"><span>RGB 236 7 120</span><span>#EC0778</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#03A99C" data-code="74.259" data-name="Fluoresc Ghost" data-rgb="3,169,156" data-hex="#03A99C" aria-label="74.259 Fluoresc Ghost, RGB 3 169 156. Copy hex"><span class="chip"></span><span class="code">74.259</span><span class="name">Fluoresc Ghost</span><span class="val"><span>RGB 3 169 156</span><span>#03A99C</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#78C250" data-code="74.260" data-name="Fluorescent Fae" data-rgb="120,194,80" data-hex="#78C250" aria-label="74.260 Fluorescent Fae, RGB 120 194 80. Copy hex"><span class="chip"></span><span class="code">74.260</span><span class="name">Fluorescent Fae</span><span class="val"><span>RGB 120 194 80</span><span>#78C250</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#026573" data-code="74.267" data-name="Ghostly Ink" data-rgb="2,101,115" data-hex="#026573" aria-label="74.267 Ghostly Ink, RGB 2 101 115. Copy hex"><span class="chip"></span><span class="code">74.267</span><span class="name">Ghostly Ink</span><span class="val"><span>RGB 2 101 115</span><span>#026573</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#046B44" data-code="74.268" data-name="Ork Ink" data-rgb="4,107,68" data-hex="#046B44" aria-label="74.268 Ork Ink, RGB 4 107 68. Copy hex"><span class="chip"></span><span class="code">74.268</span><span class="name">Ork Ink</span><span class="val"><span>RGB 4 107 68</span><span>#046B44</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#758A46" data-code="74.269" data-name="Moss Ink" data-rgb="117,138,70" data-hex="#758A46" aria-label="74.269 Moss Ink, RGB 117 138 70. Copy hex"><span class="chip"></span><span class="code">74.269</span><span class="name">Moss Ink</span><span class="val"><span>RGB 117 138 70</span><span>#758A46</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#A7513A" data-code="74.270" data-name="Ancient Ink" data-rgb="167,81,58" data-hex="#A7513A" aria-label="74.270 Ancient Ink, RGB 167 81 58. Copy hex"><span class="chip"></span><span class="code">74.270</span><span class="name">Ancient Ink</span><span class="val"><span>RGB 167 81 58</span><span>#A7513A</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#72542C" data-code="74.271" data-name="Leather Ink" data-rgb="114,84,44" data-hex="#72542C" aria-label="74.271 Leather Ink, RGB 114 84 44. Copy hex"><span class="chip"></span><span class="code">74.271</span><span class="name">Leather Ink</span><span class="val"><span>RGB 114 84 44</span><span>#72542C</span></span></button></li>
+<li><button type="button" class="paint" style="--c:#322E27" data-code="74.272" data-name="Pitch Black Ink" data-rgb="50,46,39" data-hex="#322E27" aria-label="74.272 Pitch Black Ink, RGB 50 46 39. Copy hex"><span class="chip"></span><span class="code">74.272</span><span class="name">Pitch Black Ink</span><span class="val"><span>RGB 50 46 39</span><span>#322E27</span></span></button></li>
+</ul>
+</section>
+<p class="note">RGB values were sampled from the compressed promo images, so treat them as close screen matches, not official manufacturer data. Paints that appear on both sheets agree within a few RGB units. Metallics are drawn as gradients in the source; their square shows the dominant mid-tone.</p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+  (function () {
+    var toast = document.getElementById('toast');
+    var timer;
+    function say(msg) {
+      toast.textContent = msg;
+      toast.hidden = false;
+      clearTimeout(timer);
+      timer = setTimeout(function () { toast.hidden = true; }, 1800);
+    }
+    function copy(text, done) {
+      var fallback = function () {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        say(ok ? done : 'Copying is blocked here. Select the text on the page instead.');
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { say(done); }, fallback);
+      } else {
+        fallback();
+      }
+    }
+    document.addEventListener('click', function (e) {
+      var paint = e.target.closest('.paint');
+      if (paint) {
+        copy(paint.dataset.hex, 'Copied ' + paint.dataset.hex + ' (' + paint.dataset.name + ')');
+        return;
+      }
+      var btn = e.target.closest('.copy-list');
+      if (btn) {
+        var rows = Array.prototype.map.call(
+          document.querySelectorAll('#' + btn.dataset.sheet + ' .paint'),
+          function (p) { return [p.dataset.code, p.dataset.name, p.dataset.rgb, p.dataset.hex].join('\t'); }
+        );
+        copy(rows.join('\n'), 'Copied ' + rows.length + ' paints as tab-separated text');
+      }
+    });
+  })();
+</script>
+</body>
+</html>

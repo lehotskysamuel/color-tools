@@ -355,3 +355,12 @@ Open questions before building D:
 - Plot a pasted list of colors in views A and B (a small first slice of D, useful on its own).
 - Display P3 gamut toggle.
 - Deep-link the current L, h and picked color in the URL.
+
+## squidmar/
+
+Squidmar Color 74.2xx paint swatches (72 paints), sampled from the two promo sheets in `squidmar/source/`.
+
+- `colors.md` / `colors.json`: code, name, RGB and hex for every paint, in sheet order
+- `index.html`: swatch page that recreates both sheets in the same order
+- `extract_colors.py`: re-samples the colors from the images (`pip install -r squidmar/requirements.txt`)
+- `build_page.py`: regenerates `index.html` from `colors.json`

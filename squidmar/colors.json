@@ -1,0 +1,1140 @@
+[
+  {
+    "id": "30",
+    "title": "30 New Paints",
+    "image": "source/30-new-paints.webp",
+    "columns": 5,
+    "paints": [
+      {
+        "code": "74.201",
+        "name": "Holy Wight",
+        "rgb": [
+          248,
+          243,
+          241
+        ],
+        "hex": "#F8F3F1",
+        "metallic": false
+      },
+      {
+        "code": "74.203",
+        "name": "Northern Tan",
+        "rgb": [
+          244,
+          209,
+          189
+        ],
+        "hex": "#F4D1BD",
+        "metallic": false
+      },
+      {
+        "code": "74.204",
+        "name": "Sun Kissed Skin",
+        "rgb": [
+          248,
+          166,
+          119
+        ],
+        "hex": "#F8A677",
+        "metallic": false
+      },
+      {
+        "code": "74.207",
+        "name": "Cursed Skin",
+        "rgb": [
+          123,
+          85,
+          77
+        ],
+        "hex": "#7B554D",
+        "metallic": false
+      },
+      {
+        "code": "74.208",
+        "name": "Final Yellow",
+        "rgb": [
+          255,
+          240,
+          136
+        ],
+        "hex": "#FFF088",
+        "metallic": false
+      },
+      {
+        "code": "74.221",
+        "name": "Snow Storm",
+        "rgb": [
+          189,
+          209,
+          229
+        ],
+        "hex": "#BDD1E5",
+        "metallic": false
+      },
+      {
+        "code": "74.225",
+        "name": "Ghastly Turquoise",
+        "rgb": [
+          1,
+          88,
+          114
+        ],
+        "hex": "#015872",
+        "metallic": false
+      },
+      {
+        "code": "74.226",
+        "name": "Spearmint",
+        "rgb": [
+          146,
+          207,
+          166
+        ],
+        "hex": "#92CFA6",
+        "metallic": false
+      },
+      {
+        "code": "74.229",
+        "name": "Deep Blue Sea",
+        "rgb": [
+          7,
+          53,
+          45
+        ],
+        "hex": "#07352D",
+        "metallic": false
+      },
+      {
+        "code": "74.230",
+        "name": "Cauldron Green",
+        "rgb": [
+          106,
+          146,
+          60
+        ],
+        "hex": "#6A923C",
+        "metallic": false
+      },
+      {
+        "code": "74.241",
+        "name": "Leathery Brown",
+        "rgb": [
+          131,
+          77,
+          49
+        ],
+        "hex": "#834D31",
+        "metallic": false
+      },
+      {
+        "code": "74.243",
+        "name": "Blackwood",
+        "rgb": [
+          59,
+          37,
+          31
+        ],
+        "hex": "#3B251F",
+        "metallic": false
+      },
+      {
+        "code": "74.244",
+        "name": "Cult Brown",
+        "rgb": [
+          91,
+          54,
+          46
+        ],
+        "hex": "#5B362E",
+        "metallic": false
+      },
+      {
+        "code": "74.246",
+        "name": "Ume Grey",
+        "rgb": [
+          177,
+          173,
+          169
+        ],
+        "hex": "#B1ADA9",
+        "metallic": false
+      },
+      {
+        "code": "74.248",
+        "name": "Pitch Black",
+        "rgb": [
+          36,
+          31,
+          33
+        ],
+        "hex": "#241F21",
+        "metallic": false
+      },
+      {
+        "code": "74.210",
+        "name": "Goldcoin Yellow",
+        "rgb": [
+          252,
+          169,
+          33
+        ],
+        "hex": "#FCA921",
+        "metallic": false
+      },
+      {
+        "code": "74.212",
+        "name": "Tetanus Orange",
+        "rgb": [
+          241,
+          93,
+          34
+        ],
+        "hex": "#F15D22",
+        "metallic": false
+      },
+      {
+        "code": "74.214",
+        "name": "Murdered",
+        "rgb": [
+          193,
+          21,
+          27
+        ],
+        "hex": "#C1151B",
+        "metallic": false
+      },
+      {
+        "code": "74.217",
+        "name": "Hell Pink",
+        "rgb": [
+          170,
+          44,
+          144
+        ],
+        "hex": "#AA2C90",
+        "metallic": false
+      },
+      {
+        "code": "74.220",
+        "name": "Infernal Purple",
+        "rgb": [
+          77,
+          49,
+          99
+        ],
+        "hex": "#4D3163",
+        "metallic": false
+      },
+      {
+        "code": "74.232",
+        "name": "Drachonzah Green",
+        "rgb": [
+          32,
+          70,
+          52
+        ],
+        "hex": "#204634",
+        "metallic": false
+      },
+      {
+        "code": "74.234",
+        "name": "Mossback Green",
+        "rgb": [
+          88,
+          91,
+          58
+        ],
+        "hex": "#585B3A",
+        "metallic": false
+      },
+      {
+        "code": "74.235",
+        "name": "Mehnadi Desert",
+        "rgb": [
+          191,
+          150,
+          106
+        ],
+        "hex": "#BF966A",
+        "metallic": false
+      },
+      {
+        "code": "74.239",
+        "name": "Undead Ochre",
+        "rgb": [
+          110,
+          90,
+          63
+        ],
+        "hex": "#6E5A3F",
+        "metallic": false
+      },
+      {
+        "code": "74.240",
+        "name": "Rich Brown",
+        "rgb": [
+          177,
+          108,
+          72
+        ],
+        "hex": "#B16C48",
+        "metallic": false
+      },
+      {
+        "code": "74.250",
+        "name": "Metallic Metal",
+        "rgb": [
+          129,
+          136,
+          140
+        ],
+        "hex": "#81888C",
+        "metallic": true
+      },
+      {
+        "code": "74.251",
+        "name": "Dark Steel",
+        "rgb": [
+          77,
+          82,
+          82
+        ],
+        "hex": "#4D5252",
+        "metallic": true
+      },
+      {
+        "code": "74.253",
+        "name": "Demon Gold",
+        "rgb": [
+          206,
+          134,
+          55
+        ],
+        "hex": "#CE8637",
+        "metallic": true
+      },
+      {
+        "code": "74.254",
+        "name": "Graveyard Copper",
+        "rgb": [
+          224,
+          104,
+          71
+        ],
+        "hex": "#E06847",
+        "metallic": true
+      },
+      {
+        "code": "74.255",
+        "name": "Ungodly Copper",
+        "rgb": [
+          112,
+          75,
+          63
+        ],
+        "hex": "#704B3F",
+        "metallic": true
+      }
+    ]
+  },
+  {
+    "id": "72",
+    "title": "72 New Paints",
+    "image": "source/72-new-paints.webp",
+    "columns": 6,
+    "paints": [
+      {
+        "code": "74.201",
+        "name": "Holy Wight",
+        "rgb": [
+          249,
+          247,
+          246
+        ],
+        "hex": "#F9F7F6",
+        "metallic": false
+      },
+      {
+        "code": "74.202",
+        "name": "Old Skull",
+        "rgb": [
+          250,
+          246,
+          210
+        ],
+        "hex": "#FAF6D2",
+        "metallic": false
+      },
+      {
+        "code": "74.203",
+        "name": "Northern Tan",
+        "rgb": [
+          247,
+          212,
+          191
+        ],
+        "hex": "#F7D4BF",
+        "metallic": false
+      },
+      {
+        "code": "74.204",
+        "name": "Sun Kissed Skin",
+        "rgb": [
+          249,
+          166,
+          120
+        ],
+        "hex": "#F9A678",
+        "metallic": false
+      },
+      {
+        "code": "74.205",
+        "name": "Dunskär Skin",
+        "rgb": [
+          246,
+          158,
+          142
+        ],
+        "hex": "#F69E8E",
+        "metallic": false
+      },
+      {
+        "code": "74.206",
+        "name": "Steve Flesh",
+        "rgb": [
+          173,
+          119,
+          95
+        ],
+        "hex": "#AD775F",
+        "metallic": false
+      },
+      {
+        "code": "74.213",
+        "name": "Deadliest Red",
+        "rgb": [
+          221,
+          61,
+          67
+        ],
+        "hex": "#DD3D43",
+        "metallic": false
+      },
+      {
+        "code": "74.214",
+        "name": "Murdered",
+        "rgb": [
+          193,
+          21,
+          27
+        ],
+        "hex": "#C1151B",
+        "metallic": false
+      },
+      {
+        "code": "74.215",
+        "name": "Gut Red",
+        "rgb": [
+          115,
+          9,
+          32
+        ],
+        "hex": "#730920",
+        "metallic": false
+      },
+      {
+        "code": "74.216",
+        "name": "Tentacle Pink",
+        "rgb": [
+          215,
+          114,
+          173
+        ],
+        "hex": "#D772AD",
+        "metallic": false
+      },
+      {
+        "code": "74.217",
+        "name": "Hell Pink",
+        "rgb": [
+          170,
+          45,
+          145
+        ],
+        "hex": "#AA2D91",
+        "metallic": false
+      },
+      {
+        "code": "74.218",
+        "name": "Witches Purple",
+        "rgb": [
+          68,
+          2,
+          32
+        ],
+        "hex": "#440220",
+        "metallic": false
+      },
+      {
+        "code": "74.225",
+        "name": "Ghastly Turquoise",
+        "rgb": [
+          2,
+          87,
+          114
+        ],
+        "hex": "#025772",
+        "metallic": false
+      },
+      {
+        "code": "74.226",
+        "name": "Spearmint",
+        "rgb": [
+          146,
+          208,
+          166
+        ],
+        "hex": "#92D0A6",
+        "metallic": false
+      },
+      {
+        "code": "74.227",
+        "name": "Gemstone",
+        "rgb": [
+          4,
+          171,
+          135
+        ],
+        "hex": "#04AB87",
+        "metallic": false
+      },
+      {
+        "code": "74.228",
+        "name": "Corrupted Emerald",
+        "rgb": [
+          2,
+          91,
+          75
+        ],
+        "hex": "#025B4B",
+        "metallic": false
+      },
+      {
+        "code": "74.229",
+        "name": "Deep Blue Sea",
+        "rgb": [
+          7,
+          53,
+          44
+        ],
+        "hex": "#07352C",
+        "metallic": false
+      },
+      {
+        "code": "74.230",
+        "name": "Cauldron Green",
+        "rgb": [
+          105,
+          145,
+          60
+        ],
+        "hex": "#69913C",
+        "metallic": false
+      },
+      {
+        "code": "74.237",
+        "name": "Ancient Tome",
+        "rgb": [
+          103,
+          79,
+          58
+        ],
+        "hex": "#674F3A",
+        "metallic": false
+      },
+      {
+        "code": "74.238",
+        "name": "Corpse Yellow",
+        "rgb": [
+          158,
+          124,
+          72
+        ],
+        "hex": "#9E7C48",
+        "metallic": false
+      },
+      {
+        "code": "74.239",
+        "name": "Undead Ochre",
+        "rgb": [
+          111,
+          90,
+          64
+        ],
+        "hex": "#6F5A40",
+        "metallic": false
+      },
+      {
+        "code": "74.240",
+        "name": "Rich Brown",
+        "rgb": [
+          179,
+          108,
+          72
+        ],
+        "hex": "#B36C48",
+        "metallic": false
+      },
+      {
+        "code": "74.241",
+        "name": "Leathery Brown",
+        "rgb": [
+          131,
+          77,
+          50
+        ],
+        "hex": "#834D32",
+        "metallic": false
+      },
+      {
+        "code": "74.242",
+        "name": "Deep Wood",
+        "rgb": [
+          88,
+          60,
+          41
+        ],
+        "hex": "#583C29",
+        "metallic": false
+      },
+      {
+        "code": "74.249",
+        "name": "Godly Steel",
+        "rgb": [
+          194,
+          200,
+          198
+        ],
+        "hex": "#C2C8C6",
+        "metallic": true
+      },
+      {
+        "code": "74.250",
+        "name": "Metallic Metal",
+        "rgb": [
+          130,
+          138,
+          138
+        ],
+        "hex": "#828A8A",
+        "metallic": true
+      },
+      {
+        "code": "74.251",
+        "name": "Dark Steel",
+        "rgb": [
+          78,
+          83,
+          84
+        ],
+        "hex": "#4E5354",
+        "metallic": true
+      },
+      {
+        "code": "74.252",
+        "name": "Dragon Gold",
+        "rgb": [
+          228,
+          172,
+          50
+        ],
+        "hex": "#E4AC32",
+        "metallic": true
+      },
+      {
+        "code": "74.253",
+        "name": "Demon Gold",
+        "rgb": [
+          207,
+          134,
+          56
+        ],
+        "hex": "#CF8638",
+        "metallic": true
+      },
+      {
+        "code": "74.254",
+        "name": "Graveyard Copper",
+        "rgb": [
+          226,
+          105,
+          73
+        ],
+        "hex": "#E26949",
+        "metallic": true
+      },
+      {
+        "code": "74.261",
+        "name": "Sun Ink",
+        "rgb": [
+          241,
+          194,
+          21
+        ],
+        "hex": "#F1C215",
+        "metallic": false
+      },
+      {
+        "code": "74.262",
+        "name": "Fire Ink",
+        "rgb": [
+          195,
+          63,
+          50
+        ],
+        "hex": "#C33F32",
+        "metallic": false
+      },
+      {
+        "code": "74.263",
+        "name": "Blood Ink",
+        "rgb": [
+          238,
+          59,
+          57
+        ],
+        "hex": "#EE3B39",
+        "metallic": false
+      },
+      {
+        "code": "74.264",
+        "name": "Squid Ink",
+        "rgb": [
+          222,
+          70,
+          153
+        ],
+        "hex": "#DE4699",
+        "metallic": false
+      },
+      {
+        "code": "74.265",
+        "name": "Witch Ink",
+        "rgb": [
+          89,
+          46,
+          146
+        ],
+        "hex": "#592E92",
+        "metallic": false
+      },
+      {
+        "code": "74.266",
+        "name": "Deep Sea Ink",
+        "rgb": [
+          2,
+          73,
+          98
+        ],
+        "hex": "#024962",
+        "metallic": false
+      },
+      {
+        "code": "74.207",
+        "name": "Cursed Skin",
+        "rgb": [
+          122,
+          85,
+          77
+        ],
+        "hex": "#7A554D",
+        "metallic": false
+      },
+      {
+        "code": "74.208",
+        "name": "Final Yellow",
+        "rgb": [
+          254,
+          241,
+          136
+        ],
+        "hex": "#FEF188",
+        "metallic": false
+      },
+      {
+        "code": "74.209",
+        "name": "Owl’s Eye",
+        "rgb": [
+          252,
+          206,
+          94
+        ],
+        "hex": "#FCCE5E",
+        "metallic": false
+      },
+      {
+        "code": "74.210",
+        "name": "Goldcoin Yellow",
+        "rgb": [
+          250,
+          170,
+          31
+        ],
+        "hex": "#FAAA1F",
+        "metallic": false
+      },
+      {
+        "code": "74.211",
+        "name": "Squid Orange",
+        "rgb": [
+          246,
+          145,
+          66
+        ],
+        "hex": "#F69142",
+        "metallic": false
+      },
+      {
+        "code": "74.212",
+        "name": "Tetanus Orange",
+        "rgb": [
+          241,
+          93,
+          34
+        ],
+        "hex": "#F15D22",
+        "metallic": false
+      },
+      {
+        "code": "74.219",
+        "name": "Tulip Fever",
+        "rgb": [
+          160,
+          130,
+          188
+        ],
+        "hex": "#A082BC",
+        "metallic": false
+      },
+      {
+        "code": "74.220",
+        "name": "Infernal Purple",
+        "rgb": [
+          77,
+          49,
+          100
+        ],
+        "hex": "#4D3164",
+        "metallic": false
+      },
+      {
+        "code": "74.221",
+        "name": "Snow Storm",
+        "rgb": [
+          187,
+          208,
+          229
+        ],
+        "hex": "#BBD0E5",
+        "metallic": false
+      },
+      {
+        "code": "74.222",
+        "name": "I’m Blue",
+        "rgb": [
+          24,
+          56,
+          116
+        ],
+        "hex": "#183874",
+        "metallic": false
+      },
+      {
+        "code": "74.223",
+        "name": "Mörk Blue",
+        "rgb": [
+          3,
+          25,
+          60
+        ],
+        "hex": "#03193C",
+        "metallic": false
+      },
+      {
+        "code": "74.224",
+        "name": "Ocean Eyes",
+        "rgb": [
+          3,
+          185,
+          194
+        ],
+        "hex": "#03B9C2",
+        "metallic": false
+      },
+      {
+        "code": "74.231",
+        "name": "Birch Leaf",
+        "rgb": [
+          28,
+          98,
+          67
+        ],
+        "hex": "#1C6243",
+        "metallic": false
+      },
+      {
+        "code": "74.232",
+        "name": "Drachonzah Green",
+        "rgb": [
+          30,
+          70,
+          52
+        ],
+        "hex": "#1E4634",
+        "metallic": false
+      },
+      {
+        "code": "74.233",
+        "name": "Vomitous Green",
+        "rgb": [
+          151,
+          143,
+          71
+        ],
+        "hex": "#978F47",
+        "metallic": false
+      },
+      {
+        "code": "74.234",
+        "name": "Mossback Green",
+        "rgb": [
+          87,
+          92,
+          58
+        ],
+        "hex": "#575C3A",
+        "metallic": false
+      },
+      {
+        "code": "74.235",
+        "name": "Mehnadi Desert",
+        "rgb": [
+          191,
+          150,
+          105
+        ],
+        "hex": "#BF9669",
+        "metallic": false
+      },
+      {
+        "code": "74.236",
+        "name": "Bone Dust",
+        "rgb": [
+          143,
+          113,
+          82
+        ],
+        "hex": "#8F7152",
+        "metallic": false
+      },
+      {
+        "code": "74.243",
+        "name": "Blackwood",
+        "rgb": [
+          59,
+          38,
+          30
+        ],
+        "hex": "#3B261E",
+        "metallic": false
+      },
+      {
+        "code": "74.244",
+        "name": "Cult Brown",
+        "rgb": [
+          91,
+          54,
+          46
+        ],
+        "hex": "#5B362E",
+        "metallic": false
+      },
+      {
+        "code": "74.245",
+        "name": "Knights Brown",
+        "rgb": [
+          62,
+          31,
+          33
+        ],
+        "hex": "#3E1F21",
+        "metallic": false
+      },
+      {
+        "code": "74.246",
+        "name": "Ume Grey",
+        "rgb": [
+          176,
+          173,
+          169
+        ],
+        "hex": "#B0ADA9",
+        "metallic": false
+      },
+      {
+        "code": "74.247",
+        "name": "Granite Grey",
+        "rgb": [
+          82,
+          81,
+          69
+        ],
+        "hex": "#525145",
+        "metallic": false
+      },
+      {
+        "code": "74.248",
+        "name": "Pitch Black",
+        "rgb": [
+          34,
+          31,
+          33
+        ],
+        "hex": "#221F21",
+        "metallic": false
+      },
+      {
+        "code": "74.255",
+        "name": "Ungodly Copper",
+        "rgb": [
+          114,
+          76,
+          63
+        ],
+        "hex": "#724C3F",
+        "metallic": true
+      },
+      {
+        "code": "74.256",
+        "name": "Fluorescent Sun",
+        "rgb": [
+          253,
+          242,
+          5
+        ],
+        "hex": "#FDF205",
+        "metallic": false
+      },
+      {
+        "code": "74.257",
+        "name": "Fluorescent Fire",
+        "rgb": [
+          244,
+          124,
+          32
+        ],
+        "hex": "#F47C20",
+        "metallic": false
+      },
+      {
+        "code": "74.258",
+        "name": "Fluorescent Hex",
+        "rgb": [
+          236,
+          7,
+          120
+        ],
+        "hex": "#EC0778",
+        "metallic": false
+      },
+      {
+        "code": "74.259",
+        "name": "Fluoresc Ghost",
+        "rgb": [
+          3,
+          169,
+          156
+        ],
+        "hex": "#03A99C",
+        "metallic": false
+      },
+      {
+        "code": "74.260",
+        "name": "Fluorescent Fae",
+        "rgb": [
+          120,
+          194,
+          80
+        ],
+        "hex": "#78C250",
+        "metallic": false
+      },
+      {
+        "code": "74.267",
+        "name": "Ghostly Ink",
+        "rgb": [
+          2,
+          101,
+          115
+        ],
+        "hex": "#026573",
+        "metallic": false
+      },
+      {
+        "code": "74.268",
+        "name": "Ork Ink",
+        "rgb": [
+          4,
+          107,
+          68
+        ],
+        "hex": "#046B44",
+        "metallic": false
+      },
+      {
+        "code": "74.269",
+        "name": "Moss Ink",
+        "rgb": [
+          117,
+          138,
+          70
+        ],
+        "hex": "#758A46",
+        "metallic": false
+      },
+      {
+        "code": "74.270",
+        "name": "Ancient Ink",
+        "rgb": [
+          167,
+          81,
+          58
+        ],
+        "hex": "#A7513A",
+        "metallic": false
+      },
+      {
+        "code": "74.271",
+        "name": "Leather Ink",
+        "rgb": [
+          114,
+          84,
+          44
+        ],
+        "hex": "#72542C",
+        "metallic": false
+      },
+      {
+        "code": "74.272",
+        "name": "Pitch Black Ink",
+        "rgb": [
+          50,
+          46,
+          39
+        ],
+        "hex": "#322E27",
+        "metallic": false
+      }
+    ]
+  }
+]
