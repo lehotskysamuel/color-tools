@@ -1,5 +1,6 @@
 import { type Vec3, encodeLinear8, GAMUT_EPSILON, oklabToLinearSrgbInto } from '../color/oklab';
-import type { AppState, Store } from '../state';
+import type { Paint } from '../paints/vallejo';
+import { type AppState, type Store, pickPaint } from '../state';
 import { type Theme, readTheme } from '../theme';
 
 export interface Margins {
@@ -28,10 +29,16 @@ export interface SliceBasis {
   ey: Vec3;
 }
 
-export type HoverHandler = (lab: Vec3 | null, clientX: number, clientY: number) => void;
+/** `paint` is set when the pointer is over a paint's dot rather than the space itself. */
+export type HoverHandler = (lab: Vec3 | null, clientX: number, clientY: number, paint?: Paint) => void;
 
 /** Tolerance for "this color lies on the slice plane", in OKLab units. */
 const ON_PLANE = 1e-7;
+/** Paints within this ΔE_OK of the slice plane are drawn on it, fainter the farther they are. */
+export const PAINT_BAND = 0.04;
+/** Radius of a paint dot including its rim, and how close the pointer must be to hit one, in CSS pixels. */
+const PAINT_RADIUS = 4.5;
+const PAINT_HIT = 7;
 
 const dot = (p: Vec3, q: Vec3) => p[0] * q[0] + p[1] * q[1] + p[2] * q[2];
 const cross = (p: Vec3, q: Vec3): Vec3 => [
@@ -58,6 +65,8 @@ export abstract class SlicePlot {
   private frame = 0;
   private imageDirty = true;
   private sizedAt = '';
+  /** Where the paint dots were last drawn, nearest the plane last, for hit testing. */
+  private paintDots: { paint: Paint; x: number; y: number }[] = [];
 
   constructor(
     protected readonly store: Store,
@@ -84,6 +93,11 @@ export abstract class SlicePlot {
     this.canvas.addEventListener('pointermove', (e) => this.handlePointer(e));
     this.canvas.addEventListener('pointerleave', () => this.onHover?.(null, 0, 0));
     this.canvas.addEventListener('click', (e) => {
+      const paint = this.paintAtEvent(e);
+      if (paint) {
+        pickPaint(this.store, paint);
+        return;
+      }
       const lab = this.labAtEvent(e);
       if (lab && this.inGamut(lab)) this.pick(lab);
     });
@@ -184,9 +198,27 @@ export abstract class SlicePlot {
     return this.labAt(x, y);
   }
 
+  private paintAtEvent(e: MouseEvent): Paint | null {
+    const rect = this.canvas.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    let best: Paint | null = null;
+    let bestDist = PAINT_HIT;
+    // Later dots are drawn on top, so they win ties.
+    for (const dot of this.paintDots) {
+      const dist = Math.hypot(dot.x - px, dot.y - py);
+      if (dist <= bestDist) {
+        best = dot.paint;
+        bestDist = dist;
+      }
+    }
+    return best;
+  }
+
   private handlePointer(e: PointerEvent): void {
-    const lab = this.labAtEvent(e);
-    this.onHover?.(lab, e.clientX, e.clientY);
+    const paint = this.paintAtEvent(e);
+    if (paint) this.onHover?.(paint.lab, e.clientX, e.clientY, paint);
+    else this.onHover?.(this.labAtEvent(e), e.clientX, e.clientY);
   }
 
   private renderImage(): void {
@@ -267,9 +299,48 @@ export abstract class SlicePlot {
     ctx.drawImage(this.image, m.left, m.top, this.plotWidth, this.plotHeight);
 
     this.drawOverlay(ctx, state, this.theme);
+    this.drawPaints(state);
 
     if (state.hover) this.drawHover(state.hover, state);
     this.drawPick(state.pick, state);
+  }
+
+  /**
+   * Paints near the plane, at their orthogonal projection onto it. Opacity falls with distance
+   * from the plane, and the nearest are drawn last so they stay on top.
+   */
+  private drawPaints(state: AppState): void {
+    const { origin, ex, ey } = this.basis(state);
+    const n = cross(ex, ey);
+    const w = this.world;
+    const near: { paint: Paint; x: number; y: number; d: number }[] = [];
+    for (const paint of state.paints) {
+      const lab = paint.lab;
+      const rel: Vec3 = [lab[0] - origin[0], lab[1] - origin[1], lab[2] - origin[2]];
+      const d = Math.abs(dot(rel, n));
+      if (d > PAINT_BAND) continue;
+      const x = dot(rel, ex);
+      const y = dot(rel, ey);
+      if (x < w.x0 || x > w.x1 || y < w.y0 || y > w.y1) continue;
+      const [px, py] = this.toPx(x, y);
+      near.push({ paint, x: px, y: py, d });
+    }
+    near.sort((p, q) => q.d - p.d);
+
+    const ctx = this.ctx;
+    for (const { paint, x, y, d } of near) {
+      ctx.globalAlpha = 1 - (0.8 * d) / PAINT_BAND;
+      ctx.beginPath();
+      ctx.arc(x, y, PAINT_RADIUS, 0, Math.PI * 2);
+      ctx.fillStyle = paint.lab[0] > 0.62 ? '#000' : '#fff';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x, y, PAINT_RADIUS - 1.25, 0, Math.PI * 2);
+      ctx.fillStyle = paint.rgb;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    this.paintDots = near;
   }
 
   private drawPick(lab: Vec3, state: AppState): void {

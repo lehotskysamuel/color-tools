@@ -28,13 +28,13 @@
           <div class="readout-swatch" id="pick-swatch"></div>
           <div class="readout-values">
             <span class="readout-top">
-              <span class="eyebrow">Picked<span class="narrow-only" id="pick-tap-hint"> · tap a paint or any view to change</span></span>
+              <span class="eyebrow">Picked<span class="narrow-only" id="pick-tap-hint"> · tap any view to change</span></span>
               <output class="readout-paint" id="pick-paint"></output>
             </span>
             <output class="mono readout-main" id="pick-oklch"></output>
             <span class="mono readout-sub"><output id="pick-hex"></output> · <output id="pick-oklab"></output></span>
           </div>
-          <p class="readout-hint">Click a paint or a color in any view to pick it. Both slices move to pass through it.</p>
+          <p class="readout-hint">Click a color or a paint dot in any view to pick it. Both slices move through it.</p>
         </section>
 
         <aside class="swatch-pane" aria-labelledby="paints-title">
@@ -45,7 +45,17 @@
             <label class="slider-label" for="layout-select">Layout</label>
             <select class="select" id="layout-select"></select>
           </div>
+          <div class="controls">
+            <button type="button" class="button" id="show-all">Select all</button>
+            <button type="button" class="button" id="show-none">Select none</button>
+            <output class="stat mono" id="swatch-count"></output>
+          </div>
           <div class="swatch-grid" id="swatch-grid"></div>
+          <p class="stat">
+            Click a paint to show or hide it as a dot in the views. Showing a paint also picks it, so double-click a
+            shown paint to pick it. The slices show paints within ΔE<sub>OK</sub> 0.04 of their plane, fainter the
+            farther away. The solid draws every dot on top; orbit it to judge depth.
+          </p>
           <p class="stat" id="swatch-note"></p>
           <p class="stat">
             Colors are Vallejo's printed chart converted to sRGB, not measurements of dried paint.

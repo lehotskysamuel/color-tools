@@ -1,29 +1,44 @@
-import { type Vec3, oklabToOklch } from '../color/oklab';
 import { LAYOUTS, type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
-import type { Store } from '../state';
-
-export type PaintHoverHandler = (lab: Vec3 | null, clientX: number, clientY: number, paint?: Paint) => void;
+import { type Store, pickPaint } from '../state';
+import type { HoverHandler } from './slicePlot';
 
 const STORAGE_KEY = 'color-tools.vallejo-layout';
 
+export interface SwatchPaneElements {
+  grid: HTMLElement;
+  select: HTMLSelectElement;
+  /** Receives the layout's source and how to read it. */
+  note: HTMLElement;
+  /** Receives "n of m shown". */
+  count: HTMLElement;
+  showAll: HTMLButtonElement;
+  showNone: HTMLButtonElement;
+}
+
 /**
- * Vallejo paints laid out the way the official charts print them. Clicking a swatch picks its
- * color, which moves both slices through it, exactly like clicking a color in one of the views.
+ * Vallejo paints laid out the way the official charts print them. The shown paints are drawn as dots in
+ * the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which moves both
+ * slices through it. A new layout starts with all of its paints shown.
  */
 export class SwatchPane {
-  onHover: PaintHoverHandler | null = null;
+  onHover: HoverHandler | null = null;
 
-  /** The paint last clicked, with the exact pick vector it set. */
-  private selected: { paint: Paint; pick: Vec3 } | null = null;
+  private readonly grid: HTMLElement;
+  private readonly note: HTMLElement;
+  private readonly count: HTMLElement;
   private layout: PaintLayout;
+  /** Codes of the paints in this layout, once each, in printed order. */
+  private codes: string[] = [];
+  private shown = new Set<string>();
   private hovering = false;
 
   constructor(
-    private readonly grid: HTMLElement,
-    select: HTMLSelectElement,
-    private readonly note: HTMLElement,
+    { grid, select, note, count, showAll, showNone }: SwatchPaneElements,
     private readonly store: Store,
   ) {
+    this.grid = grid;
+    this.note = note;
+    this.count = count;
     for (const layout of LAYOUTS) select.add(new Option(layout.title, layout.id));
     this.layout = LAYOUTS.find((l) => l.id === readStoredLayout()) ?? LAYOUTS[0];
     select.value = this.layout.id;
@@ -32,10 +47,12 @@ export class SwatchPane {
       storeLayout(this.layout.id);
       this.render();
     });
+    showAll.addEventListener('click', () => this.show(this.codes));
+    showNone.addEventListener('click', () => this.show([]));
 
     grid.addEventListener('click', (e) => {
       const paint = this.paintAt(e.target);
-      if (paint) this.pick(paint);
+      if (paint) this.toggle(paint);
     });
     grid.addEventListener('pointermove', (e) => {
       const paint = this.paintAt(e.target);
@@ -49,22 +66,31 @@ export class SwatchPane {
     });
 
     store.subscribe((_state, changed) => {
-      if (changed.has('pick')) this.markSelected();
+      if (changed.has('pickPaint')) this.markPicked();
     });
     this.render();
   }
 
-  /** The paint the current pick came from, or null when it was picked in one of the views. */
-  get pickedPaint(): Paint | null {
-    return this.selected && this.selected.pick === this.store.get().pick ? this.selected.paint : null;
+  /** Hiding a paint leaves the pick alone, so double-clicking a shown paint (hide, show) picks it. */
+  private toggle(paint: Paint): void {
+    const shown = new Set(this.shown);
+    if (shown.delete(paint.code)) {
+      this.show(shown);
+    } else {
+      shown.add(paint.code);
+      this.show(shown);
+      pickPaint(this.store, paint);
+    }
   }
 
-  private pick(paint: Paint): void {
-    const pick: Vec3 = [...paint.lab];
-    const [L, C, h] = oklabToOklch(pick);
-    this.selected = { paint, pick };
-    // A neutral has no hue; keep the hue slice where it is.
-    this.store.set({ pick, L, h: C > 1e-4 ? h : this.store.get().h });
+  private show(codes: Iterable<string>): void {
+    this.shown = new Set(codes);
+    const paints = this.codes.filter((code) => this.shown.has(code)).map((code) => PAINTS.get(code)!);
+    this.store.set({ paints });
+    this.count.textContent = `${paints.length} of ${this.codes.length} shown`;
+    for (const button of this.grid.querySelectorAll<HTMLButtonElement>('.swatch')) {
+      button.setAttribute('aria-pressed', String(this.shown.has(button.dataset.code!)));
+    }
   }
 
   private paintAt(target: EventTarget | null): Paint | null {
@@ -116,7 +142,9 @@ export class SwatchPane {
       }
       this.note.textContent = `Order as printed in ${this.layout.source}.`;
     }
-    this.markSelected();
+    this.codes = [...new Set(sections.flatMap((s) => s.rows.flat()))];
+    this.show(this.codes);
+    this.markPicked();
   }
 
   private swatch(code: string, row?: number, column?: number): HTMLButtonElement {
@@ -125,7 +153,8 @@ export class SwatchPane {
     button.type = 'button';
     button.className = 'swatch';
     button.dataset.code = code;
-    button.style.background = paint.rgb;
+    // Only the color: a hidden paint's swatch shrinks by clipping the background to the content box.
+    button.style.backgroundColor = paint.rgb;
     if (row && column) {
       button.style.gridRow = String(row);
       button.style.gridColumn = String(column);
@@ -135,11 +164,11 @@ export class SwatchPane {
     return button;
   }
 
-  /** Highlights every swatch of the picked paint; combination tables list some paints several times. */
-  private markSelected(): void {
-    const code = this.pickedPaint?.code;
+  /** Outlines every swatch of the picked paint; combination tables list some paints several times. */
+  private markPicked(): void {
+    const code = this.store.get().pickPaint?.code;
     for (const button of this.grid.querySelectorAll<HTMLButtonElement>('.swatch')) {
-      button.setAttribute('aria-pressed', String(button.dataset.code === code));
+      button.classList.toggle('is-picked', button.dataset.code === code);
     }
   }
 }

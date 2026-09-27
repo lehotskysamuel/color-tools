@@ -67,7 +67,8 @@ The views are linked:
 
 - The cut faces of the solid (A) are the slice images of B.1 and B.2, uploaded as textures.
 - B.1 shows where B.2 cuts it (dashed line through the center), and B.2 shows where B.1 cuts it (dashed horizontal line).
-- Clicking a color in any view, or a Vallejo paint swatch, picks it and moves both slices to pass through it.
+- Clicking a color or a paint dot in any view picks it and moves both slices to pass through it. So does switching
+  a Vallejo paint on.
 - Hovering shows the color's OKLCh, hex and ΔE<sub>OK</sub> from the picked color, in JND units.
 - Hatched areas are outside sRGB. No screen color exists there.
 
@@ -79,13 +80,28 @@ The pane to the left of the views shows the paints from `data/vallejo.json`, lai
 **Layout** select switches between the four layouts in `data/vallejo-layouts.json` (Game Color chart and
 combinations, Model Color chart and combinations), and the page remembers the choice in `localStorage`.
 
-- Clicking a swatch picks its color, exactly like clicking a color in a view: both slices move to pass through it,
-  and the readout shows the paint's code and name.
-- Hovering a swatch shows the paint in the tooltip with its ΔE<sub>OK</sub> from the picked color, and marks it
-  in the gamut solid.
-- The picked paint is outlined wherever it appears. The combination tables repeat paints, so a paint can be
-  outlined several times, which shows every triplet it belongs to.
-- Picking a color in a view clears the paint selection.
+**Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
+its paints on, and **Select all** / **Select none** switch them all at once.
+
+- Clicking a swatch switches its paint on or off. An off swatch shrinks to a small square with a dashed border,
+  still in its own color.
+- Switching a paint on also *picks* it: both slices move to pass through it, and the readout shows its code and
+  name. Switching a paint off leaves the pick alone, so double-clicking a paint that is on (off, then on) picks it.
+- Clicking a paint's dot in any view picks that paint. Hovering a dot or a swatch shows the paint in the tooltip
+  with its ΔE<sub>OK</sub> from the picked color.
+- The picked paint's swatch is outlined wherever it appears. The combination tables repeat paints, so a paint can
+  be outlined several times, which shows every triplet it belongs to.
+- Picking a color of the space itself (not a dot) clears the picked paint.
+
+**Where the dots are drawn.**
+
+- **A (solid):** every dot that is on, drawn after the solid with a fresh depth buffer. No dot hides inside the
+  solid, and nearer dots still cover farther ones. The flip side: a dot behind the solid looks as if it sat on
+  its front surface, so orbit the solid to judge depth. Dots keep a fixed size on screen when zooming.
+- **B.1 and B.2 (slices):** only paints within ΔE<sub>OK</sub> 0.04 of the slice plane (`PAINT_BAND` in
+  `src/views/slicePlot.ts`), at their orthogonal projection onto it. The farther from the plane, the fainter the
+  dot. A dot's position is exact only for a paint that lies on the plane; at the band's edge it can be off by up
+  to 0.04.
 
 Page layout, by width:
 
@@ -128,13 +144,13 @@ src/
   color/oklab.test.ts
   paints/vallejo.ts       Vallejo paints and layouts from data/, with OKLab computed from the hex
   paints/vallejo.test.ts  every layout code resolves, OKLab agrees with the stored OKLCh
-  state.ts                tiny observable store (L, h, picked, hovered, cut mode)
+  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut mode)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
   views/lightnessSlice.ts B.1
   views/hueSlice.ts       B.2
   views/gamutSolid.ts     A (three.js)
-  views/swatchPane.ts     Vallejo swatches and the layout select
+  views/swatchPane.ts     Vallejo swatches, the layout select, and which paints are shown
   main.ts                 wiring, layout, tooltip, readout
 ```
 

@@ -280,7 +280,15 @@ body {
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 3px;
+  background-clip: content-box;
   cursor: pointer;
+  transition: padding 90ms ease-out;
+}
+
+/* A hidden paint keeps its exact color, just shrunk, so it stays recognizable. */
+.swatch[aria-pressed='false'] {
+  padding: 26%;
+  border-style: dashed;
 }
 
 .swatch:hover {
@@ -294,7 +302,7 @@ body {
 }
 
 /* Every instance of the picked paint; the combination tables repeat paints. */
-.swatch[aria-pressed='true'] {
+.swatch.is-picked {
   position: relative;
   outline: 2px solid var(--ink);
   outline-offset: 1px;

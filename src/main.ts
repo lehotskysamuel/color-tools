@@ -32,6 +32,8 @@ const store = createStore({
   L: START_L,
   h: START_H,
   pick: oklchToOklab([START_L, Math.min(0.14, maxChroma(START_L, START_H) * 0.75), START_H]),
+  pickPaint: null,
+  paints: [],
   hover: null,
   cut: 'wedge',
 });
@@ -46,7 +48,17 @@ const solid = new GamutSolid(solidHost, store, lightness.image, hue.image);
 lightness.onImageChange = () => solid.lightnessImageChanged();
 hue.onImageChange = () => solid.hueImageChanged();
 
-const swatches = new SwatchPane($('swatch-grid'), $<HTMLSelectElement>('layout-select'), $('swatch-note'), store);
+const swatches = new SwatchPane(
+  {
+    grid: $('swatch-grid'),
+    select: $<HTMLSelectElement>('layout-select'),
+    note: $('swatch-note'),
+    count: $('swatch-count'),
+    showAll: $<HTMLButtonElement>('show-all'),
+    showNone: $<HTMLButtonElement>('show-none'),
+  },
+  store,
+);
 
 // Controls
 const lSlider = $<HTMLInputElement>('l-slider');
@@ -62,14 +74,14 @@ $('reset-view').addEventListener('click', () => solid.resetView());
 
 // Picked-color readout
 const readout = document.querySelector<HTMLElement>('.readout')!;
-const pickPaint = $<HTMLOutputElement>('pick-paint');
+const pickPaintOut = $<HTMLOutputElement>('pick-paint');
 const pickSwatch = $('pick-swatch');
 const pickOklch = $<HTMLOutputElement>('pick-oklch');
 const pickHex = $<HTMLOutputElement>('pick-hex');
 const pickOklab = $<HTMLOutputElement>('pick-oklab');
 
 function renderControls(): void {
-  const { L, h, pick, cut } = store.get();
+  const { L, h, pick, pickPaint, cut } = store.get();
   if (document.activeElement !== lSlider) lSlider.value = String(L);
   if (document.activeElement !== hSlider) hSlider.value = String(Math.round(h) % 360);
   lValue.value = L.toFixed(3);
@@ -79,15 +91,16 @@ function renderControls(): void {
   pickOklch.value = formatOklch(oklabToOklch(pick));
   pickHex.value = hex;
   pickOklab.value = formatOklab(pick);
-  const paint = swatches.pickedPaint;
-  pickPaint.value = paint ? paintLabel(paint) : '';
-  readout.classList.toggle('has-paint', paint !== null);
+  pickPaintOut.value = pickPaint ? paintLabel(pickPaint) : '';
+  readout.classList.toggle('has-paint', pickPaint !== null);
   const radio = document.querySelector<HTMLInputElement>(`#cut-mode input[value="${cut}"]`);
   if (radio) radio.checked = true;
 }
 
 store.subscribe((_s, changed) => {
-  if (changed.has('L') || changed.has('h') || changed.has('pick') || changed.has('cut')) renderControls();
+  if (changed.has('L') || changed.has('h') || changed.has('pick') || changed.has('pickPaint') || changed.has('cut')) {
+    renderControls();
+  }
 });
 renderControls();
 

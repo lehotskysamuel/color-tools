@@ -40,7 +40,7 @@ export class HueSlice extends SlicePlot {
   }
 
   protected pick(lab: Vec3): void {
-    this.store.set({ pick: lab, L: lab[0] });
+    this.store.set({ pick: lab, pickPaint: null, L: lab[0] });
   }
 
   protected drawOverlay(ctx: CanvasRenderingContext2D, state: AppState, theme: Theme): void {
