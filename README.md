@@ -14,31 +14,32 @@ Stack: Vite, TypeScript, three.js. No UI framework yet.
 
 ## Deployment
 
-Two GitHub Actions workflows publish to the `gh-pages` branch, which GitHub Pages serves:
+`.github/workflows/pages.yml` publishes to the `gh-pages` branch, which GitHub Pages serves:
 
-| Trigger | Workflow | Published at |
-|---|---|---|
-| Push or merge to `main` | `.github/workflows/deploy.yml` | https://lehotskysamuel.github.io/color-tools/ |
-| Pull request opened or updated | `.github/workflows/preview.yml` | https://lehotskysamuel.github.io/color-tools/pr-preview/pr-NUMBER/ |
+| Event | Result |
+|---|---|
+| Push or merge to `main` | https://lehotskysamuel.github.io/color-tools/main/ is updated |
+| PR #N opened, reopened or updated | https://lehotskysamuel.github.io/color-tools/pr-N/ is (re)built, and its link is commented on the PR |
+| PR #N merged | `pr-N/` is removed. The merge itself updates `main/` |
+| PR #N closed without merging | `pr-N/` is removed |
 
-- Both workflows run the tests and the build first, so a failing test blocks the deploy.
-- The preview link is posted as a comment on the PR, and the preview is deleted when the PR is closed or merged.
-- The main deploy leaves `pr-preview/` alone.
-- Vite builds with relative paths (`base: './'`), so the same build works at the site root and in any preview folder.
+- https://lehotskysamuel.github.io/color-tools/ redirects to `main/`.
+- Any missing page outside `main/`, such as the link to a removed preview, also goes to `main/`.
+- Tests and the build run before every publish, so a failing test blocks it.
+- Previews are skipped for PRs from forks, whose token can't push.
 
-One-time setup:
+`.github/scripts/publish-pages.sh <folder> [build-dir]` does the publishing:
 
-1. **Plan or visibility.** GitHub Pages works on private repositories only with a paid plan (Pro, Team or
-   Enterprise). On GitHub Free, the repository has to be public. Either way, the published site is public on the
-   internet, previews included.
-2. **Create the branch.** Let the first workflow run create `gh-pages`, by opening a PR or pushing to `main`.
-3. **Point Pages at it.** In Settings → Pages → Build and deployment, set Source to **Deploy from a branch**, then
-   choose `gh-pages` and `/ (root)`. Don't pick "GitHub Actions": that mode deploys one artifact per site, so a
-   preview would replace production.
+- It replaces or removes one folder and rewrites the root redirect pages.
+- It keeps `gh-pages` as a single commit, so the branch doesn't grow with every deploy.
+- It pushes with `--force-with-lease` and retries, so deploys that run at the same moment don't overwrite each
+  other. That happens on every merge, when the `main/` deploy and the `pr-N/` removal run together.
 
-If a workflow fails with a 403 when pushing, set Settings → Actions → General → Workflow permissions to "Read and
-write permissions". Previews are skipped for pull requests from forks, whose token can't push. `public/.nojekyll`
-turns off Jekyll processing of the branch.
+One-time setup, in the repository settings:
+
+1. The repository must be public (GitHub Pages on a private repository needs a paid plan).
+2. In Settings → Pages → Build and deployment, set Source to **Deploy from a branch**, then choose `gh-pages` and
+   `/ (root)`.
 
 ## Why OKLCh and not HSL
 

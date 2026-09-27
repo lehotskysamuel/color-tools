@@ -1,0 +1,81 @@
+name: Pages
+
+# Publishes the site to the gh-pages branch, which GitHub Pages serves:
+#   main branch      -> /color-tools/main/
+#   pull request #N  -> /color-tools/pr-N/  (removed when the PR is merged or closed)
+#   /color-tools/    -> redirects to main/
+# Pages must be set to "Deploy from a branch" -> gh-pages, / (root).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# One queue per site folder. A newer commit on the same PR cancels the older build.
+concurrency:
+  group: pages-${{ github.event.pull_request.number || 'main' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  publish:
+    # Pull requests from forks get a read-only token and can't push to gh-pages.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      FOLDER: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'main' }}
+      REMOVE: ${{ github.event.action == 'closed' }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        if: env.REMOVE != 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - if: env.REMOVE != 'true'
+        run: npm ci
+      - if: env.REMOVE != 'true'
+        run: npm test
+      - if: env.REMOVE != 'true'
+        run: npm run build
+
+      - name: Publish ${{ env.FOLDER }}
+        if: env.REMOVE != 'true'
+        run: .github/scripts/publish-pages.sh "$FOLDER" dist
+
+      - name: Remove ${{ env.FOLDER }}
+        if: env.REMOVE == 'true'
+        run: .github/scripts/publish-pages.sh "$FOLDER"
+
+      - name: Comment the preview link on the PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          MERGED: ${{ github.event.pull_request.merged }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          site="https://${GITHUB_REPOSITORY_OWNER,,}.github.io/${GITHUB_REPOSITORY#*/}"
+          marker='<!-- pages-preview -->'
+          if [[ $REMOVE == true && $MERGED == true ]]; then
+            body="Preview removed because this PR was merged. The change goes live at $site/main/ when the main deploy finishes."
+          elif [[ $REMOVE == true ]]; then
+            body="Preview removed because this PR was closed."
+          else
+            body="Preview: $site/$FOLDER/"$'\n\n'"Built from ${HEAD_SHA:0:7}. GitHub Pages usually updates within a minute or two."
+          fi
+          body="$marker"$'\n'"$body"
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id" | head -n 1)
+          if [[ -n $id ]]; then
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$body" >/dev/null
+          else
+            gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -f body="$body" >/dev/null
+          fi
