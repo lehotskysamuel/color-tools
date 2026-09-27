@@ -12,7 +12,8 @@ prints a Spanish name on a second line). Fills are print values: DeviceCMYK,
 or /Separation spot colors whose alternate space is DeviceCMYK. They are
 converted to sRGB through the chart's own output intent ICC profile
 (Coated FOGRA39) using relative colorimetric intent with black point
-compensation, the Adobe default for displaying CMYK documents.
+compensation, the Adobe default for displaying CMYK documents. The print
+CMYK itself is kept too, in percent. Colors are written in chart order.
 """
 import io
 import json
@@ -173,8 +174,18 @@ def extract(path, product_range, sections):
             "range": product_range,
             "type": section(index, sections),
             "cmyk": fill_to_cmyk(swatch["non_stroking_color"], seps),
+            # Chart order: the printed index, then position (one index repeats).
+            "order": (index, round(w["top"]), w["x0"]),
         })
     return colors, output_intent_profile(pdf)
+
+
+def cmyk_percent(cmyk):
+    """Chart CMYK (0..1, whole percent in the PDFs) -> {c, m, y, k} in percent."""
+    values = [round(v * 100, 2) for v in cmyk]
+    if any(v != int(v) for v in values):
+        raise ValueError(f"non-integer CMYK percentage in {cmyk}")
+    return dict(zip("cmyk", (int(v) for v in values)))
 
 
 def cmyk_to_srgb_hex(cmyk, transform):
@@ -202,14 +213,16 @@ def main(game_pdf, model_pdf, out_path):
             counts[c["type"]] = counts.get(c["type"], 0) + 1
         if counts != EXPECTED_COUNTS[product_range]:
             raise ValueError(f"{product_range}: unexpected counts {counts}")
+        kept.sort(key=lambda c: c.pop("order"))
         for c in kept:
-            c["rgb"] = cmyk_to_srgb_hex(c.pop("cmyk"), transform)
+            cmyk = c.pop("cmyk")
+            c["rgb"] = cmyk_to_srgb_hex(cmyk, transform)
+            c["cmyk"] = cmyk_percent(cmyk)
         result.extend(kept)
 
     codes = [c["code"] for c in result]
     if len(codes) != len(set(codes)):
         raise ValueError("duplicate codes")
-    result.sort(key=lambda c: c["code"])
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
         f.write("\n")

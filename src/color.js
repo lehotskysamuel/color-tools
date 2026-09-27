@@ -59,25 +59,3 @@ export function rgbToOklch(rgb) {
   }
   return { l: L, c, h };
 }
-
-/**
- * Convert sRGB to CMYK with the device-independent formula
- * (K = 1 − max(R, G, B)). No ICC profile, so this is not a print-accurate
- * separation.
- * @param {string | { r: number, g: number, b: number }} rgb hex string or 0–255 channels
- * @returns {{ c: number, m: number, y: number, k: number }} percentages 0–100
- */
-export function rgbToCmyk(rgb) {
-  const { r, g, b } = toRgb(rgb);
-  const rf = r / 255;
-  const gf = g / 255;
-  const bf = b / 255;
-  const k = 1 - Math.max(rf, gf, bf);
-  if (k === 1) return { c: 0, m: 0, y: 0, k: 100 };
-  return {
-    c: ((1 - rf - k) / (1 - k)) * 100,
-    m: ((1 - gf - k) / (1 - k)) * 100,
-    y: ((1 - bf - k) / (1 - k)) * 100,
-    k: k * 100,
-  };
-}

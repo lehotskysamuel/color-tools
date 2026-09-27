@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { parseHex, rgbToCmyk, rgbToOklch } from '../src/color.js';
+import { parseHex, rgbToOklch } from '../src/color.js';
 
 const close = (actual, expected, tolerance, label) =>
   assert.ok(
@@ -54,27 +54,5 @@ describe('rgbToOklch', () => {
 
   it('accepts channel objects', () => {
     assert.deepEqual(rgbToOklch({ r: 255, g: 0, b: 0 }), rgbToOklch('#FF0000'));
-  });
-});
-
-describe('rgbToCmyk', () => {
-  it('converts primaries and neutrals', () => {
-    assert.deepEqual(rgbToCmyk('#FF0000'), { c: 0, m: 100, y: 100, k: 0 });
-    assert.deepEqual(rgbToCmyk('#FFFFFF'), { c: 0, m: 0, y: 0, k: 0 });
-    assert.deepEqual(rgbToCmyk('#000000'), { c: 0, m: 0, y: 0, k: 100 });
-  });
-
-  it('computes key from the brightest channel', () => {
-    const out = rgbToCmyk('#3366CC');
-    close(out.c, 75, 1e-9, 'c');
-    close(out.m, 50, 1e-9, 'm');
-    close(out.y, 0, 1e-9, 'y');
-    close(out.k, 20, 1e-9, 'k');
-  });
-
-  it('keeps grays on the K channel only', () => {
-    const out = rgbToCmyk('#808080');
-    assert.deepEqual([out.c, out.m, out.y], [0, 0, 0]);
-    close(out.k, (1 - 128 / 255) * 100, 1e-9, 'k');
   });
 });
