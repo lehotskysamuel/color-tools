@@ -1,0 +1,42 @@
+name: Deploy PR preview
+
+# Builds each pull request into gh-pages/pr-preview/pr-<number>/, comments the link on the PR,
+# and removes the preview when the PR is closed or merged.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# One run at a time per PR, so the preview and its comment never get out of sync.
+concurrency: preview-${{ github.ref }}
+
+jobs:
+  preview:
+    # Pull requests from forks get a read-only token and can't push to gh-pages.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        if: github.event.action != 'closed'
+        with:
+          node-version: 22
+          cache: npm
+
+      - if: github.event.action != 'closed'
+        run: npm ci
+      - if: github.event.action != 'closed'
+        run: npm test
+      - if: github.event.action != 'closed'
+        run: npm run build
+
+      - uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./dist/
+          # The default QR code image is fetched from a third-party service with the preview URL in it.
+          qr-code: false

@@ -1,0 +1,42 @@
+name: Deploy main site
+
+# Builds main and publishes it to the root of the gh-pages branch.
+# GitHub Pages must be set to "Deploy from a branch" → gh-pages / (root).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Deploys finish in order; a newer push waiting in line replaces an older one.
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      - name: Publish to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          # PR previews live in pr-preview/ on the same branch; keep them when main redeploys.
+          clean-exclude: pr-preview/
+          # Rebase onto the branch instead of force-pushing, so a preview deployed at the same moment survives.
+          force: false
