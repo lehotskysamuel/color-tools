@@ -120,6 +120,43 @@ src/
 - **No viewing conditions.** Surround, adaptation and display luminance are not modeled. CAM16-UCS would add them
   at the cost of more parameters.
 
+## Data
+
+### `data/vallejo.json`
+
+Vallejo **Game Color** and **Model Color** paints from the current ranges (new
+Game Color 2023, new Model Color 2024), excluding metallics.
+
+| range       | type          | count |
+| ----------- | ------------- | ----- |
+| Game Color  | `opaque`      | 80    |
+| Game Color  | `ink`         | 12    |
+| Game Color  | `wash`        | 8     |
+| Game Color  | `fluorescent` | 8     |
+| Model Color | `opaque`      | 192   |
+| Model Color | `ink`         | 2     |
+
+Not included: metallics, Game Color Special FX (textured effects without a
+single flat color), Model Color Liquid Metal, Xpress Color, and
+mediums/varnishes.
+
+Each entry has `code`, English `name`, `range`, `type` and `rgb` (`#RRGGBB`).
+
+**Source:** Vallejo's official color charts:
+
+- [CC266 Game Color & Xpress Color, Rev. 03 (September 2025)](https://acrylicosvallejo.com/wp-content/uploads/2025/09/CC266-Game_Color.pdf)
+- [CC329 Model Color, Rev. 00 (March 2024)](https://acrylicosvallejo.com/wp-content/uploads/2024/03/CC329-R00-Model-Color-NewIC.pdf)
+
+The charts store each swatch as print CMYK. `scripts/extract_vallejo.py` reads
+those values from the PDFs and converts them to sRGB through the charts'
+embedded Coated FOGRA39 ICC profile, using relative colorimetric intent with
+black point compensation. Names are taken from the chart labels, with
+truncated words spelled out (`Cam.` → `Camouflage`, `Unif.` → `Uniform`, …).
+
+The RGB values are what the official chart looks like on screen, not a
+measurement of dried paint. Vallejo notes that printed chart colors are only
+approximate.
+
 ## Roadmap
 
 ### D. Color set maps (planned, not implemented)

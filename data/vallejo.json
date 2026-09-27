@@ -1,0 +1,2116 @@
+[
+  {
+    "code": "70.740",
+    "name": "Camouflage Middle Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#513E21"
+  },
+  {
+    "code": "70.741",
+    "name": "Camouflage Black Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#313028"
+  },
+  {
+    "code": "70.745",
+    "name": "Dark Rose",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#7F5251"
+  },
+  {
+    "code": "70.746",
+    "name": "Chestnut Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#613F3A"
+  },
+  {
+    "code": "70.747",
+    "name": "Faded Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#BB594F"
+  },
+  {
+    "code": "70.748",
+    "name": "Light Pink",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#E08DA3"
+  },
+  {
+    "code": "70.749",
+    "name": "Dark Purple",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#452734"
+  },
+  {
+    "code": "70.750",
+    "name": "Light Violet",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#A793BB"
+  },
+  {
+    "code": "70.751",
+    "name": "Black Violet",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#392A31"
+  },
+  {
+    "code": "70.752",
+    "name": "Infantry Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#25202C"
+  },
+  {
+    "code": "70.753",
+    "name": "Light Blue Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#0A98A5"
+  },
+  {
+    "code": "70.754",
+    "name": "Continental Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#25242B"
+  },
+  {
+    "code": "70.755",
+    "name": "Light Emerald",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#057C72"
+  },
+  {
+    "code": "70.756",
+    "name": "Splinter Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#446441"
+  },
+  {
+    "code": "70.757",
+    "name": "Pacific Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#587064"
+  },
+  {
+    "code": "70.758",
+    "name": "Bright Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#6F8349"
+  },
+  {
+    "code": "70.759",
+    "name": "German Tank Crew",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#524B3E"
+  },
+  {
+    "code": "70.760",
+    "name": "Light Mud",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#7A755A"
+  },
+  {
+    "code": "70.761",
+    "name": "Old Wood",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#816D53"
+  },
+  {
+    "code": "70.762",
+    "name": "Grey Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#5B4922"
+  },
+  {
+    "code": "70.763",
+    "name": "Canvas",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#4B3F1F"
+  },
+  {
+    "code": "70.764",
+    "name": "Military Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#937726"
+  },
+  {
+    "code": "70.765",
+    "name": "Desert Tan",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#B5A386"
+  },
+  {
+    "code": "70.766",
+    "name": "Cream White",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#E1D2C3"
+  },
+  {
+    "code": "70.767",
+    "name": "Desert Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#AD8355"
+  },
+  {
+    "code": "70.768",
+    "name": "BC Dark Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#76583D"
+  },
+  {
+    "code": "70.769",
+    "name": "Mustard Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#9E724A"
+  },
+  {
+    "code": "70.770",
+    "name": "New Wood",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#89613B"
+  },
+  {
+    "code": "70.771",
+    "name": "Dark Rust",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#3D2525"
+  },
+  {
+    "code": "70.772",
+    "name": "Medium Grey Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#769C94"
+  },
+  {
+    "code": "70.773",
+    "name": "Violet Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#5A5A59"
+  },
+  {
+    "code": "70.774",
+    "name": "Lavender Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#7F6F6E"
+  },
+  {
+    "code": "70.802",
+    "name": "Sunset Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#BE2A4A"
+  },
+  {
+    "code": "70.803",
+    "name": "Brown Rose",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#9C6660"
+  },
+  {
+    "code": "70.804",
+    "name": "Beige Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#B16F4B"
+  },
+  {
+    "code": "70.805",
+    "name": "German Orange",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#BB6355"
+  },
+  {
+    "code": "70.806",
+    "name": "German Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#CDB65E"
+  },
+  {
+    "code": "70.807",
+    "name": "Oxford Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#3D3954"
+  },
+  {
+    "code": "70.808",
+    "name": "Blue Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#057986"
+  },
+  {
+    "code": "70.809",
+    "name": "Royal Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#19437E"
+  },
+  {
+    "code": "70.810",
+    "name": "Royal Purple",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#4B2740"
+  },
+  {
+    "code": "70.811",
+    "name": "Blue Violet",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#58477E"
+  },
+  {
+    "code": "70.812",
+    "name": "Violet Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#63353F"
+  },
+  {
+    "code": "70.814",
+    "name": "Burnt Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#753C3B"
+  },
+  {
+    "code": "70.815",
+    "name": "Basic Skin Tone",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#E9AD8D"
+  },
+  {
+    "code": "70.816",
+    "name": "Luftwaffe Uniform",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#44414C"
+  },
+  {
+    "code": "70.817",
+    "name": "Scarlet",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#C13E2E"
+  },
+  {
+    "code": "70.818",
+    "name": "Red Leather",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#955439"
+  },
+  {
+    "code": "70.819",
+    "name": "Iraqi Sand",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#B4935E"
+  },
+  {
+    "code": "70.820",
+    "name": "Off-White",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#F4EDE6"
+  },
+  {
+    "code": "70.821",
+    "name": "German Beige WWII",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#776A51"
+  },
+  {
+    "code": "70.822",
+    "name": "Camouflage Black Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#413435"
+  },
+  {
+    "code": "70.823",
+    "name": "Luftwaffe Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#373F25"
+  },
+  {
+    "code": "70.824",
+    "name": "Orange Ochre",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#AA8136"
+  },
+  {
+    "code": "70.825",
+    "name": "Pale Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#9F8273"
+  },
+  {
+    "code": "70.826",
+    "name": "Medium Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#5B473C"
+  },
+  {
+    "code": "70.827",
+    "name": "Lime Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#7C9434"
+  },
+  {
+    "code": "70.828",
+    "name": "Mahogany Ink",
+    "range": "Model Color",
+    "type": "ink",
+    "rgb": "#664540"
+  },
+  {
+    "code": "70.829",
+    "name": "Amaranth Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#D24E31"
+  },
+  {
+    "code": "70.830",
+    "name": "German Fieldgrey WWII",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#57523A"
+  },
+  {
+    "code": "70.833",
+    "name": "Fern Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#455734"
+  },
+  {
+    "code": "70.835",
+    "name": "Salmon Rose",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#E18E7C"
+  },
+  {
+    "code": "70.836",
+    "name": "London Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#696362"
+  },
+  {
+    "code": "70.837",
+    "name": "Pale Sand",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#E3C28D"
+  },
+  {
+    "code": "70.838",
+    "name": "Emerald",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#00624A"
+  },
+  {
+    "code": "70.840",
+    "name": "Light Turquoise",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#00688C"
+  },
+  {
+    "code": "70.841",
+    "name": "Andrea Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#0071AD"
+  },
+  {
+    "code": "70.843",
+    "name": "Cork Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#A0704E"
+  },
+  {
+    "code": "70.844",
+    "name": "Deep Sky Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#4D96C4"
+  },
+  {
+    "code": "70.845",
+    "name": "Sunny Skin Tone",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#EC9745"
+  },
+  {
+    "code": "70.846",
+    "name": "Mahogany Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#76524B"
+  },
+  {
+    "code": "70.847",
+    "name": "Dark Sand",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#CBA665"
+  },
+  {
+    "code": "70.850",
+    "name": "Medium Olive",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#404E31"
+  },
+  {
+    "code": "70.851",
+    "name": "Bright Orange",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#DE5A20"
+  },
+  {
+    "code": "70.856",
+    "name": "Ochre Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#AA793E"
+  },
+  {
+    "code": "70.858",
+    "name": "Ice Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#ECCF70"
+  },
+  {
+    "code": "70.859",
+    "name": "Black Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#552F2B"
+  },
+  {
+    "code": "70.860",
+    "name": "Medium Flesh Tone",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#B0793F"
+  },
+  {
+    "code": "70.861",
+    "name": "Gloss Black",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#241E1F"
+  },
+  {
+    "code": "70.862",
+    "name": "Black Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#302722"
+  },
+  {
+    "code": "70.866",
+    "name": "Grey Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#423F3D"
+  },
+  {
+    "code": "70.867",
+    "name": "Dark Blue Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#424346"
+  },
+  {
+    "code": "70.868",
+    "name": "Dark Sea Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#4B4546"
+  },
+  {
+    "code": "70.869",
+    "name": "Basalt Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#5B585D"
+  },
+  {
+    "code": "70.870",
+    "name": "Medium Sea Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#7D7B7B"
+  },
+  {
+    "code": "70.871",
+    "name": "Leather Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#594435"
+  },
+  {
+    "code": "70.872",
+    "name": "Chocolate Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#59433D"
+  },
+  {
+    "code": "70.873",
+    "name": "US Field Drab",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#816746"
+  },
+  {
+    "code": "70.874",
+    "name": "Tan Earth",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#987658"
+  },
+  {
+    "code": "70.875",
+    "name": "Beige Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#815F44"
+  },
+  {
+    "code": "70.876",
+    "name": "Brown Sand",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#926144"
+  },
+  {
+    "code": "70.877",
+    "name": "Gold Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#BF863C"
+  },
+  {
+    "code": "70.879",
+    "name": "Green Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#816C31"
+  },
+  {
+    "code": "70.880",
+    "name": "Khaki Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#7C6338"
+  },
+  {
+    "code": "70.881",
+    "name": "Green Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#6F653C"
+  },
+  {
+    "code": "70.882",
+    "name": "Middle Stone",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#937F40"
+  },
+  {
+    "code": "70.883",
+    "name": "Silver Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#D7CFC6"
+  },
+  {
+    "code": "70.884",
+    "name": "Stone Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#8A7C64"
+  },
+  {
+    "code": "70.885",
+    "name": "Pastel Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#94976F"
+  },
+  {
+    "code": "70.886",
+    "name": "Green Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#65634F"
+  },
+  {
+    "code": "70.887",
+    "name": "US Olive Drab",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#57523C"
+  },
+  {
+    "code": "70.888",
+    "name": "Olive Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#42412D"
+  },
+  {
+    "code": "70.889",
+    "name": "Olive Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#3F3128"
+  },
+  {
+    "code": "70.890",
+    "name": "Refractive Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#454934"
+  },
+  {
+    "code": "70.891",
+    "name": "Intermediate Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#506642"
+  },
+  {
+    "code": "70.892",
+    "name": "Yellow Olive",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#383B31"
+  },
+  {
+    "code": "70.893",
+    "name": "US Dark Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#4B4A38"
+  },
+  {
+    "code": "70.894",
+    "name": "Camouflage Olive Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#3C3B2F"
+  },
+  {
+    "code": "70.895",
+    "name": "Gunship Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#4D5841"
+  },
+  {
+    "code": "70.896",
+    "name": "Extra Dark Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#2A2A14"
+  },
+  {
+    "code": "70.897",
+    "name": "Bronze Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#313A28"
+  },
+  {
+    "code": "70.898",
+    "name": "Dark Sea Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#262D38"
+  },
+  {
+    "code": "70.899",
+    "name": "Dark Prussian Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#37273F"
+  },
+  {
+    "code": "70.901",
+    "name": "Pastel Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#607B91"
+  },
+  {
+    "code": "70.902",
+    "name": "Azure",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#5B6B9E"
+  },
+  {
+    "code": "70.905",
+    "name": "Blue Grey Pale",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#808586"
+  },
+  {
+    "code": "70.906",
+    "name": "Pale Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#90A3A7"
+  },
+  {
+    "code": "70.907",
+    "name": "Pale Grey Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#A8B5B5"
+  },
+  {
+    "code": "70.908",
+    "name": "Carmine Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#97211E"
+  },
+  {
+    "code": "70.909",
+    "name": "Vermilion",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#C42A29"
+  },
+  {
+    "code": "70.911",
+    "name": "Light Orange",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#EE7225"
+  },
+  {
+    "code": "70.913",
+    "name": "Yellow Ochre",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#DEAA46"
+  },
+  {
+    "code": "70.914",
+    "name": "Green Ochre",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#A07F37"
+  },
+  {
+    "code": "70.915",
+    "name": "Deep Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#F0C709"
+  },
+  {
+    "code": "70.916",
+    "name": "Sand Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#EABF54"
+  },
+  {
+    "code": "70.917",
+    "name": "Beige",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#E0BE6D"
+  },
+  {
+    "code": "70.918",
+    "name": "Ivory",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#EAE2D2"
+  },
+  {
+    "code": "70.919",
+    "name": "Cold White",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#F6F5F9"
+  },
+  {
+    "code": "70.920",
+    "name": "German Uniform",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#434E42"
+  },
+  {
+    "code": "70.921",
+    "name": "English Uniform",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#6F532C"
+  },
+  {
+    "code": "70.922",
+    "name": "Uniform Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#49552F"
+  },
+  {
+    "code": "70.923",
+    "name": "Japanese Uniform WWII",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#9F802A"
+  },
+  {
+    "code": "70.924",
+    "name": "Russian Uniform WWII",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#555335"
+  },
+  {
+    "code": "70.925",
+    "name": "Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#372D4B"
+  },
+  {
+    "code": "70.926",
+    "name": "Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#7A2826"
+  },
+  {
+    "code": "70.927",
+    "name": "Dark Flesh",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#D2933A"
+  },
+  {
+    "code": "70.928",
+    "name": "Light Flesh",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#F3D4B8"
+  },
+  {
+    "code": "70.929",
+    "name": "Light Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#A05B31"
+  },
+  {
+    "code": "70.930",
+    "name": "Dark Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#273462"
+  },
+  {
+    "code": "70.939",
+    "name": "Smoke Ink",
+    "range": "Model Color",
+    "type": "ink",
+    "rgb": "#5D4944"
+  },
+  {
+    "code": "70.940",
+    "name": "Saddle Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#8B645B"
+  },
+  {
+    "code": "70.941",
+    "name": "Burnt Umber",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#513B30"
+  },
+  {
+    "code": "70.943",
+    "name": "Grey Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#596E84"
+  },
+  {
+    "code": "70.944",
+    "name": "Old Rose",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#BC6E6F"
+  },
+  {
+    "code": "70.945",
+    "name": "Magenta",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#903055"
+  },
+  {
+    "code": "70.946",
+    "name": "Dark Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#692F25"
+  },
+  {
+    "code": "70.947",
+    "name": "Dark Vermilion",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#B52A27"
+  },
+  {
+    "code": "70.948",
+    "name": "Golden Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#F7A833"
+  },
+  {
+    "code": "70.949",
+    "name": "Light Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#F7D345"
+  },
+  {
+    "code": "70.950",
+    "name": "Black",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#231C1D"
+  },
+  {
+    "code": "70.951",
+    "name": "White",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#FFFFFF"
+  },
+  {
+    "code": "70.952",
+    "name": "Lemon Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#E5D20C"
+  },
+  {
+    "code": "70.953",
+    "name": "Flat Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#F5BA34"
+  },
+  {
+    "code": "70.954",
+    "name": "Yellow Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#DEDD21"
+  },
+  {
+    "code": "70.955",
+    "name": "Flat Flesh",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#DF9A59"
+  },
+  {
+    "code": "70.956",
+    "name": "Clear Orange",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#CC4626"
+  },
+  {
+    "code": "70.957",
+    "name": "Flat Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#A12B28"
+  },
+  {
+    "code": "70.958",
+    "name": "Pink",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#B14E7C"
+  },
+  {
+    "code": "70.959",
+    "name": "Purple",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#533153"
+  },
+  {
+    "code": "70.960",
+    "name": "Violet",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#3B2C4C"
+  },
+  {
+    "code": "70.961",
+    "name": "Sky Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#74B7D0"
+  },
+  {
+    "code": "70.962",
+    "name": "Flat Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#3E4874"
+  },
+  {
+    "code": "70.963",
+    "name": "Medium Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#15416E"
+  },
+  {
+    "code": "70.964",
+    "name": "Field Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#4C5257"
+  },
+  {
+    "code": "70.965",
+    "name": "Prussian Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#38415D"
+  },
+  {
+    "code": "70.966",
+    "name": "Turquoise",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#0C425B"
+  },
+  {
+    "code": "70.967",
+    "name": "Olive Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#506237"
+  },
+  {
+    "code": "70.968",
+    "name": "Flat Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#354B2D"
+  },
+  {
+    "code": "70.969",
+    "name": "Park Green Flat",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#1A634A"
+  },
+  {
+    "code": "70.970",
+    "name": "Deep Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#194C2F"
+  },
+  {
+    "code": "70.971",
+    "name": "Light Green Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#B4B5AB"
+  },
+  {
+    "code": "70.972",
+    "name": "Light Green Blue",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#86968E"
+  },
+  {
+    "code": "70.974",
+    "name": "Green Sky",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#799165"
+  },
+  {
+    "code": "70.975",
+    "name": "Military Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#434234"
+  },
+  {
+    "code": "70.976",
+    "name": "Buff",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#D6B04D"
+  },
+  {
+    "code": "70.977",
+    "name": "Desert Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#B58547"
+  },
+  {
+    "code": "70.978",
+    "name": "Dark Yellow",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#908739"
+  },
+  {
+    "code": "70.979",
+    "name": "Camouflage Dark Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#263122"
+  },
+  {
+    "code": "70.980",
+    "name": "Black Green",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#27352A"
+  },
+  {
+    "code": "70.981",
+    "name": "Orange Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#AC633A"
+  },
+  {
+    "code": "70.982",
+    "name": "Cavalry Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#854438"
+  },
+  {
+    "code": "70.983",
+    "name": "Flat Earth",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#674529"
+  },
+  {
+    "code": "70.984",
+    "name": "Flat Brown",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#6F4037"
+  },
+  {
+    "code": "70.985",
+    "name": "Hull Red",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#5D3938"
+  },
+  {
+    "code": "70.986",
+    "name": "Deck Tan",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#AAA390"
+  },
+  {
+    "code": "70.987",
+    "name": "Medium Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#867259"
+  },
+  {
+    "code": "70.988",
+    "name": "Khaki",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#6F5E3B"
+  },
+  {
+    "code": "70.989",
+    "name": "Sky Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#A8AAAC"
+  },
+  {
+    "code": "70.990",
+    "name": "Light Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#8E9294"
+  },
+  {
+    "code": "70.991",
+    "name": "Dark Sea Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#6C6B6A"
+  },
+  {
+    "code": "70.992",
+    "name": "Neutral Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#61615F"
+  },
+  {
+    "code": "70.993",
+    "name": "White Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#E4DFDE"
+  },
+  {
+    "code": "70.994",
+    "name": "Dark Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#312E34"
+  },
+  {
+    "code": "70.995",
+    "name": "German Grey",
+    "range": "Model Color",
+    "type": "opaque",
+    "rgb": "#2E2E2C"
+  },
+  {
+    "code": "72.001",
+    "name": "Dead White",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#FFFFFF"
+  },
+  {
+    "code": "72.003",
+    "name": "Pale Flesh",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#CE9A7B"
+  },
+  {
+    "code": "72.004",
+    "name": "Elf Skin Tone",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#C47E52"
+  },
+  {
+    "code": "72.005",
+    "name": "Moon Yellow",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#EFB705"
+  },
+  {
+    "code": "72.006",
+    "name": "Sun Yellow",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#F4940C"
+  },
+  {
+    "code": "72.007",
+    "name": "Gold Yellow",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#E7770F"
+  },
+  {
+    "code": "72.008",
+    "name": "Orange Fire",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#E9531D"
+  },
+  {
+    "code": "72.009",
+    "name": "Hot Orange",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#D8311D"
+  },
+  {
+    "code": "72.010",
+    "name": "Bloody Red",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#AA1E19"
+  },
+  {
+    "code": "72.011",
+    "name": "Gory Red",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#611715"
+  },
+  {
+    "code": "72.012",
+    "name": "Scarlet Red",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#581A22"
+  },
+  {
+    "code": "72.013",
+    "name": "Squid Pink",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#CB6F9E"
+  },
+  {
+    "code": "72.014",
+    "name": "Warlord Purple",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#7D223F"
+  },
+  {
+    "code": "72.015",
+    "name": "Hexed Lichen",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#341939"
+  },
+  {
+    "code": "72.016",
+    "name": "Royal Purple",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#241930"
+  },
+  {
+    "code": "72.019",
+    "name": "Night Blue",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#0F0F1C"
+  },
+  {
+    "code": "72.020",
+    "name": "Imperial Blue",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#122133"
+  },
+  {
+    "code": "72.021",
+    "name": "Magic Blue",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#103D7D"
+  },
+  {
+    "code": "72.022",
+    "name": "Ultramarine Blue",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#1A224B"
+  },
+  {
+    "code": "72.023",
+    "name": "Electric Blue",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#016C87"
+  },
+  {
+    "code": "72.024",
+    "name": "Turquoise",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#004145"
+  },
+  {
+    "code": "72.025",
+    "name": "Foul Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#156E53"
+  },
+  {
+    "code": "72.026",
+    "name": "Jade Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#024938"
+  },
+  {
+    "code": "72.027",
+    "name": "Scurvy Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#023426"
+  },
+  {
+    "code": "72.028",
+    "name": "Dark Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#122418"
+  },
+  {
+    "code": "72.029",
+    "name": "Sick Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#3B5B33"
+  },
+  {
+    "code": "72.030",
+    "name": "Goblin Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#44502A"
+  },
+  {
+    "code": "72.031",
+    "name": "Camouflage Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#6E6128"
+  },
+  {
+    "code": "72.032",
+    "name": "Scorpy Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#417A33"
+  },
+  {
+    "code": "72.034",
+    "name": "Bone White",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#D4CAA9"
+  },
+  {
+    "code": "72.035",
+    "name": "Dead Flesh",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#937F3B"
+  },
+  {
+    "code": "72.036",
+    "name": "Bronze Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#995A1B"
+  },
+  {
+    "code": "72.038",
+    "name": "Scrofulous Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#A85E17"
+  },
+  {
+    "code": "72.039",
+    "name": "Plague Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#8F5E24"
+  },
+  {
+    "code": "72.040",
+    "name": "Leather Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#4E3412"
+  },
+  {
+    "code": "72.042",
+    "name": "Parasite Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#6F3C1A"
+  },
+  {
+    "code": "72.043",
+    "name": "Beasty Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#55381C"
+  },
+  {
+    "code": "72.044",
+    "name": "Dark Flesh Tone",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#411F15"
+  },
+  {
+    "code": "72.045",
+    "name": "Charred Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#281A14"
+  },
+  {
+    "code": "72.047",
+    "name": "Wolf Grey",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#95B4BB"
+  },
+  {
+    "code": "72.048",
+    "name": "Sombre Grey",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#373E45"
+  },
+  {
+    "code": "72.049",
+    "name": "Stonewall Grey",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#615D5B"
+  },
+  {
+    "code": "72.050",
+    "name": "Neutral Grey",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#474744"
+  },
+  {
+    "code": "72.051",
+    "name": "Black",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#010000"
+  },
+  {
+    "code": "72.061",
+    "name": "Khaki",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#776247"
+  },
+  {
+    "code": "72.062",
+    "name": "Earth",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#563D25"
+  },
+  {
+    "code": "72.063",
+    "name": "Desert Yellow",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#7B5B2C"
+  },
+  {
+    "code": "72.066",
+    "name": "Tan",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#7D4C3F"
+  },
+  {
+    "code": "72.067",
+    "name": "Cayman Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#41391A"
+  },
+  {
+    "code": "72.071",
+    "name": "Barbarian Skin",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#775A3F"
+  },
+  {
+    "code": "72.076",
+    "name": "Alien Purple",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#54417C"
+  },
+  {
+    "code": "72.082",
+    "name": "White",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#FFFFFF"
+  },
+  {
+    "code": "72.083",
+    "name": "Magenta",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#9B2242"
+  },
+  {
+    "code": "72.084",
+    "name": "Dark Turquoise",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#083E3D"
+  },
+  {
+    "code": "72.085",
+    "name": "Yellow",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#E99C12"
+  },
+  {
+    "code": "72.086",
+    "name": "Red",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#A71521"
+  },
+  {
+    "code": "72.087",
+    "name": "Violet",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#49315E"
+  },
+  {
+    "code": "72.088",
+    "name": "Blue",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#113768"
+  },
+  {
+    "code": "72.089",
+    "name": "Green",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#087033"
+  },
+  {
+    "code": "72.090",
+    "name": "Black Green",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#253B2B"
+  },
+  {
+    "code": "72.091",
+    "name": "Sepia",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#342613"
+  },
+  {
+    "code": "72.093",
+    "name": "Skin",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#452018"
+  },
+  {
+    "code": "72.094",
+    "name": "Black",
+    "range": "Game Color",
+    "type": "ink",
+    "rgb": "#010000"
+  },
+  {
+    "code": "72.095",
+    "name": "Glacier Blue",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#B7D0EC"
+  },
+  {
+    "code": "72.096",
+    "name": "Verdigris",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#85C7A9"
+  },
+  {
+    "code": "72.098",
+    "name": "Elfic Flesh",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#F0D6A3"
+  },
+  {
+    "code": "72.099",
+    "name": "Skin Tone",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#F7B283"
+  },
+  {
+    "code": "72.100",
+    "name": "Rosy Flesh",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#E27262"
+  },
+  {
+    "code": "72.101",
+    "name": "Off-White",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#FDEFB7"
+  },
+  {
+    "code": "72.102",
+    "name": "Steel Grey",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#4A5A62"
+  },
+  {
+    "code": "72.103",
+    "name": "Fluorescent Yellow",
+    "range": "Game Color",
+    "type": "fluorescent",
+    "rgb": "#FAEB3D"
+  },
+  {
+    "code": "72.104",
+    "name": "Fluorescent Green",
+    "range": "Game Color",
+    "type": "fluorescent",
+    "rgb": "#5AB030"
+  },
+  {
+    "code": "72.106",
+    "name": "Scarlet Blood",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#AC1F1D"
+  },
+  {
+    "code": "72.107",
+    "name": "Athena Skin",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#B36354"
+  },
+  {
+    "code": "72.108",
+    "name": "Succubus Skin",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#73413B"
+  },
+  {
+    "code": "72.109",
+    "name": "Toxic Yellow",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#E2C339"
+  },
+  {
+    "code": "72.110",
+    "name": "Sunset Orange",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#F08231"
+  },
+  {
+    "code": "72.111",
+    "name": "Nocturnal Red",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#391919"
+  },
+  {
+    "code": "72.112",
+    "name": "Evil Red",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#341B23"
+  },
+  {
+    "code": "72.113",
+    "name": "Deep Magenta",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#4B1B2F"
+  },
+  {
+    "code": "72.114",
+    "name": "Lustful Purple",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#7D5F92"
+  },
+  {
+    "code": "72.115",
+    "name": "Grunge Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#69361C"
+  },
+  {
+    "code": "72.116",
+    "name": "Midnight Purple",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#241531"
+  },
+  {
+    "code": "72.117",
+    "name": "Elfic Blue",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#3D5474"
+  },
+  {
+    "code": "72.118",
+    "name": "Sunrise Blue",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#5FB8E0"
+  },
+  {
+    "code": "72.119",
+    "name": "Aquamarine",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#007473"
+  },
+  {
+    "code": "72.120",
+    "name": "Abyssal Turquoise",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#122432"
+  },
+  {
+    "code": "72.121",
+    "name": "Ghost Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#5AB889"
+  },
+  {
+    "code": "72.122",
+    "name": "Bile Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#D5D90E"
+  },
+  {
+    "code": "72.123",
+    "name": "Angel Green",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#233822"
+  },
+  {
+    "code": "72.124",
+    "name": "Gorgon Brown",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#3E2317"
+  },
+  {
+    "code": "72.145",
+    "name": "Dirty Grey",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#493E20"
+  },
+  {
+    "code": "72.148",
+    "name": "Warm Grey",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#80655E"
+  },
+  {
+    "code": "72.155",
+    "name": "Charcoal",
+    "range": "Game Color",
+    "type": "opaque",
+    "rgb": "#19170F"
+  },
+  {
+    "code": "72.156",
+    "name": "Fluorescent Orange",
+    "range": "Game Color",
+    "type": "fluorescent",
+    "rgb": "#E63B11"
+  },
+  {
+    "code": "72.157",
+    "name": "Fluorescent Red",
+    "range": "Game Color",
+    "type": "fluorescent",
+    "rgb": "#E42D3F"
+  },
+  {
+    "code": "72.158",
+    "name": "Fluorescent Magenta",
+    "range": "Game Color",
+    "type": "fluorescent",
+    "rgb": "#E8338B"
+  },
+  {
+    "code": "72.159",
+    "name": "Fluorescent Violet",
+    "range": "Game Color",
+    "type": "fluorescent",
+    "rgb": "#6E2579"
+  },
+  {
+    "code": "72.160",
+    "name": "Fluorescent Blue",
+    "range": "Game Color",
+    "type": "fluorescent",
+    "rgb": "#007AB9"
+  },
+  {
+    "code": "72.161",
+    "name": "Fluorescent Cold Green",
+    "range": "Game Color",
+    "type": "fluorescent",
+    "rgb": "#00604E"
+  },
+  {
+    "code": "73.200",
+    "name": "Sepia",
+    "range": "Game Color",
+    "type": "wash",
+    "rgb": "#65471B"
+  },
+  {
+    "code": "73.201",
+    "name": "Black",
+    "range": "Game Color",
+    "type": "wash",
+    "rgb": "#333034"
+  },
+  {
+    "code": "73.203",
+    "name": "Umber",
+    "range": "Game Color",
+    "type": "wash",
+    "rgb": "#664E3D"
+  },
+  {
+    "code": "73.204",
+    "name": "Flesh",
+    "range": "Game Color",
+    "type": "wash",
+    "rgb": "#9A624F"
+  },
+  {
+    "code": "73.206",
+    "name": "Red",
+    "range": "Game Color",
+    "type": "wash",
+    "rgb": "#BE1C1A"
+  },
+  {
+    "code": "73.207",
+    "name": "Blue",
+    "range": "Game Color",
+    "type": "wash",
+    "rgb": "#0E6DB5"
+  },
+  {
+    "code": "73.208",
+    "name": "Yellow",
+    "range": "Game Color",
+    "type": "wash",
+    "rgb": "#F4E600"
+  },
+  {
+    "code": "73.209",
+    "name": "Violet",
+    "range": "Game Color",
+    "type": "wash",
+    "rgb": "#6B277F"
+  }
+]
