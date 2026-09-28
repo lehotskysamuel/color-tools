@@ -182,7 +182,8 @@ dark colors: CMYK cannot print dark saturated colors, so the charts say little a
 
 The Squidmar figure is not comparable. Its colors are sampled from marketing images, which are made for screens,
 with pure black and possibly boosted saturation, so its 50 % and the 57 % for all paints overstate what the data
-supports.
+supports. [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut) has the details and
+the sources.
 
 Page layout, by width:
 
@@ -265,7 +266,8 @@ src/
   hull says how the charts spread, not how far real paint reaches. The charts are limited to what CMYK inks can
   print, which is weakest for dark saturated colors, and Vallejo notes that printed colors are only approximate.
   Squidmar Color comes from marketing images. No published measurements of dried paint were found for the current
-  ranges. Measured CIELAB or spectral data would go into `cielab` and be used as it is.
+  ranges. Measured CIELAB or spectral data would go into `cielab` and be used as it is. See
+  [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut).
 
 ## Data
 
@@ -412,6 +414,140 @@ The chart values describe the printed chart, not a measurement of dried paint.
 Vallejo notes that printed chart colors are only approximate. The Squidmar
 values are one step further removed: they are the colors of a compressed
 marketing image.
+
+## Findings: paint data and Pointer's gamut
+
+A record of the work on "how much of Pointer's gamut do Vallejo's paints cover" (September 2026): what the answer
+is, what went wrong on the way, what the data does now, and why it is still not ideal. Figures from
+`scripts/coverage.js` can be regenerated. Figures marked *one-off* were measured once with throwaway scripts, most
+of them needing the chart PDFs and their ICC profile, which are not in the repository.
+
+### The answer so far
+
+The hull of the Game Color and Model Color charts covers **46 %** of Pointer's gamut, measured by volume in
+OKLab. For scale:
+
+| Gamut | Share of Pointer's gamut |
+|---|---|
+| sRGB | 78 % |
+| FOGRA39, the press the charts are printed for | at most 60 %, probably nearer 55 % (*one-off*) |
+| Game Color and Model Color charts | 46 % |
+
+The press figure is the hull of an 11-step CMYK grid within the 330 % ink limit, converted like `cielab`. A hull
+overstates a gamut that is not convex: the same method gives 84 % for sRGB instead of 78 %. So the charts already
+show most of what print can show, and the figure measures the printed charts, not the paint.
+
+### Where the colors come from, and what each step loses
+
+```
+dried paint                  no published measurements of the current ranges
+  │ Vallejo picks CMYK        limited to what the press prints, and only an imitation
+  ▼
+printed chart: cmyk
+  ├─ profile, relative colorimetric, float          → cielab   exact, not limited to sRGB (the page uses this)
+  └─ profile + black point compensation, 8-bit      → rgb      clipped to sRGB, darks stretched (kept, unused for the charts)
+      ▼
+OKLab                          exact, no limit: a coordinate system, not a device
+```
+
+### Problems we hit, and what we did
+
+1. **The hex was the only color.** The data first stored each chart color as an sRGB hex, and everything was
+   computed from it. A hex can only hold sRGB colors, and ten printed colors lie outside sRGB: 70.808 Blue Green,
+   70.838 Emerald, 70.840 Light Turquoise, 70.841 Andrea Blue, 72.023 Electric Blue, 72.119 Aquamarine,
+   72.160 Fluorescent Blue, 72.161 Fluorescent Cold Green, 73.208 Yellow (wash), and 72.101 Off-White (only
+   just). The conversion clipped them to sRGB's edge. OKLab was never the limit; it just never received the
+   real values. *Fix:* the extractor also stores `cielab`, converted straight from the CMYK, and the page and the
+   scripts use it before `rgb`.
+2. **Black point compensation inflated the coverage.** The hex conversion used it, as displays do: it stretches
+   the press's darkest print (L\* 9.9) to pure black and pulls every dark color down with it. That puts the hull
+   into dark saturated colors the chart never shows. An early estimate from CIELAB made with the same setting
+   gave 59 %, which was wrong for the same reason. *Fix:* `cielab` is converted without it. Black point
+   compensation is for showing a print on a screen, not for measuring what was printed. By lightness
+   (*one-off*):
+
+   | Chart colors as | L\* 15–30 (11.5 % of Pointer's volume) | L\* 30–90 (86 %) | All |
+   |---|---|---|---|
+   | sRGB hex (before) | 50.9 % | 52.2 % | 52.2 % |
+   | CIELAB with black point compensation | 60.3 % | 58.6 % | 58.9 % |
+   | CIELAB without it (now) | 24.3 % | 49.1 % | 45.7 % |
+
+   The two errors of the hex pulled in opposite directions, and the inflation was the larger one.
+3. **The 8-bit conversion is least accurate where it matters.** Pillow converts through a precomputed table. Next
+   to the sRGB edge it is up to 9 units per channel off an exact conversion (70.952 Lemon Yellow,
+   70.915 Deep Yellow), and colors just outside sRGB are not cleanly clipped (72.122 Bile Green's blue channel came
+   out 14 where an exact conversion with the same settings gives 0). *Fix:* `cielab` is computed in double
+   precision by LittleCMS (`scripts/lcms.py`). `rgb` is kept as it was.
+4. **Squidmar Color has no chart.** Its colors are sampled from marketing images, which are made for screens, with
+   pure black and possibly boosted saturation. Its 72 colors alone cover 50 %, more than both charts together, so
+   figures that include it are not comparable. *What we did:* nothing to the data; it has no `cielab`, and the
+   README says so wherever its figures appear.
+5. **"Covered" is not "mixable".** Light mixes linearly in CIE XYZ and linear RGB, so a hull there is exactly the
+   set of optical mixes; built there, the charts' hull covers 46.8 % instead of 45.7 % (*one-off*), so the choice
+   of space barely matters. Paint does not mix linearly in any three-number color space: the result depends on
+   the pigments' spectra (Kubelka–Munk theory), and two paints that look the same can mix differently with a third.
+   *What we did:* the hull is documented as a measure of spread only.
+
+### Why it is still not ideal
+
+- **The chart imitates the paint.** Vallejo chose CMYK values to look like each paint on press. Paint beyond the
+  press gamut was approximated, fluorescents cannot fluoresce in print, and Vallejo notes that printed colors are
+  only approximate.
+- **The dark end is uncertain both ways.** Print is weakest for dark saturated colors (the charts cover 24 % of
+  Pointer's gamut between L\* 15 and 30), so dark paints may reach further than the charts show. But the chart's
+  black is L\* 9.9, while a 2019 spectrophotometer measurement of the old Game Color Black gave about L\* 23:
+  matt paint blacks are lighter than printed ones.
+- **The conversion settings are choices.** Relative colorimetric intent makes the paper L\* 100, a perfect white
+  that no white paint is. Absolute colorimetric would keep the paper at its own L\* of about 95.
+- **Pointer's gamut is only known between L\* 15 and 90.** The taper to black and white is an extrapolation (2.4 %
+  of the volume), and the table is interpolated between its 10° and 5-unit steps.
+- **The measure is a choice too.** Volume in OKLab weighs perceptual extent evenly; volume in CIELAB gives
+  somewhat different shares.
+
+### What would fix it
+
+Measurements of dried paint. From best to worst:
+
+1. Spectral reflectance, 400 to 700 nm in 10 nm steps, over white and over black. It gives the color under any
+   light, the opacity, and Kubelka–Munk mixing.
+2. CIELAB, D50 and 2° observer, of a dried swatch, with the measurement condition stated (ISO 13655 M1, with UV,
+   for fluorescents), the backing (white for washes and inks), the number of coats and the finish. Metallics
+   change with angle and need more than one value.
+3. Print CMYK with its ICC profile, which is what Vallejo publishes and what `cielab` is now.
+4. RGB in a wide-gamut space, named. It removes the clipping but not the doubt about where the value came from.
+   How much of Pointer's gamut each space can hold (*one-off*): sRGB 77.9 %, Display P3 90.7 %, Adobe RGB 92.3 %,
+   Rec. 2020 99.9 %.
+5. An sRGB hex, as shops publish: clipped, and usually of unknown origin.
+
+Measured CIELAB goes into `cielab` and the page uses it as it is. Without published data, a handheld
+spectrophotometer (for example Nix Spectro) or colorimeter (for example Datacolor ColorReader) on drawdown cards,
+painted the same way for every paint and fully dry, would do.
+
+### Sources
+
+- M. R. Pointer, "The gamut of real surface colours", *Color Research & Application* 5 (1980). Table as published
+  by [colour-science](https://www.colour-science.org/) (`colour.models.DATA_POINTER_GAMUT_VOLUME`).
+- Vallejo's charts, with the print CMYK and the embedded Coated FOGRA39 profile:
+  [CC266 Game Color](https://acrylicosvallejo.com/wp-content/uploads/2025/09/CC266-Game_Color.pdf),
+  [CC329 Model Color](https://acrylicosvallejo.com/wp-content/uploads/2024/03/CC329-R00-Model-Color-NewIC.pdf).
+- [LittleCMS](https://www.littlecms.com/), the color engine behind the conversions.
+- P. Kubelka and F. Munk, "Ein Beitrag zur Optik der Farbanstriche" (1931), the standard model of paint mixing;
+  Š. Sochorová and O. Jamriška, "Practical pigment mixing for digital painting" (Mixbox), *ACM Transactions on
+  Graphics* 40 (2021), a practical approximation for a fixed set of pigments.
+
+Searched for measured Vallejo data in September 2026; nothing usable for the current ranges:
+
+- [Oldhammer Forum, "Conversion Table Interest"](https://forum.oldhammer.org/threads/conversion-table-interest.24017/):
+  spectrophotometer, D65/2°, dried opaque swatches, about 40 paints of the old (pre-2023) Game Color. Published
+  only as sRGB values in posts, already clipped (Gold Yellow 255,165,0; Turquoise 0,117,139), with no dataset.
+- [Britmodeller, Vallejo Air measurements](https://www.britmodeller.com/forums/index.php?%2Ftopic%2F235124742-acrylic-vallejo-air-measurements-of-full-range-of-paints%2F=):
+  Model Air, a different range; the page refused access.
+- [Encycolorpedia](https://encycolorpedia.com/252527): its CIELAB values are computed from hex codes, not
+  measured.
+- Paint matchers such as [Miniature Painting Forge](https://www.miniaturepaintingforge.com/full-comparison/) and
+  [paint-comparator](https://nickryden.github.io/paint-comparator/): hex values.
+- [Dan Becker's paint swatch charts](http://www.danbecker.info/minis/miniother/PaintCharts/index.html): not
+  checked, the site was unavailable.
 
 ## Roadmap
 
