@@ -442,6 +442,24 @@ body {
   color: var(--surface);
 }
 
+.segmented:disabled {
+  opacity: 0.45;
+}
+
+.segmented:disabled label {
+  cursor: default;
+}
+
+.segmented:disabled label:hover {
+  color: var(--ink-2);
+  background: none;
+}
+
+.segmented:disabled input:checked + label {
+  color: var(--surface);
+  background: var(--ink);
+}
+
 .segmented input:focus-visible + label,
 .button:focus-visible,
 input[type='range']:focus-visible {
@@ -472,15 +490,6 @@ input[type='range']:focus-visible {
 
 .button[aria-pressed='true']:hover {
   background: var(--ink-2);
-}
-
-/* A view option floating over its plot, clear of the panel's controls row. */
-.plot-action {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 1;
-  background: var(--surface);
 }
 
 .plot {
@@ -520,6 +529,27 @@ input[type='range']:focus-visible {
   margin: 0;
   font-size: 13px;
   color: var(--ink-2);
+}
+
+/* View A's shape options and what they show, under the solid. */
+.panel-foot {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+/* One column per shape, side by side when they fit. */
+.shape-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, max-content));
+  gap: 10px 20px;
+}
+
+.shape-group {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 6px;
 }
 
 .notes {

@@ -1,4 +1,10 @@
-import { type Vec3, encodeLinear8, GAMUT_EPSILON, oklabToLinearSrgbInto } from '../color/oklab';
+import {
+  type Vec3,
+  encodeLinear8,
+  GAMUT_EPSILON,
+  oklabToDisplayLinearInto,
+  oklabToLinearSrgbInto,
+} from '../color/oklab';
 import type { Paint } from '../paints/vallejo';
 import { type AppState, type Store, pickPaint } from '../state';
 import { type Theme, readTheme } from '../theme';
@@ -337,7 +343,7 @@ export abstract class SlicePlot {
       ctx.fill();
       ctx.beginPath();
       ctx.arc(x, y, PAINT_RADIUS - 1.25, 0, Math.PI * 2);
-      ctx.fillStyle = paint.rgb;
+      ctx.fillStyle = paint.display;
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -350,7 +356,7 @@ export abstract class SlicePlot {
     const [px, py] = this.toPx(at[0], at[1]);
     const ctx = this.ctx;
     const dark = lab[0] > 0.62;
-    const rgb = oklabToLinearSrgbInto(lab[0], lab[1], lab[2], [0, 0, 0]);
+    const rgb = oklabToDisplayLinearInto(lab[0], lab[1], lab[2], [0, 0, 0]);
     ctx.beginPath();
     ctx.arc(px, py, 7, 0, Math.PI * 2);
     ctx.fillStyle = `rgb(${rgb.map(encodeLinear8).join(',')})`;

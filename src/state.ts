@@ -1,8 +1,17 @@
+import type { Gamut } from './color/coverage';
 import { type Vec3, oklabToOklch } from './color/oklab';
 import type { Paint } from './paints/vallejo';
 
+export type { Gamut };
+
 /** How the 3D solid is cut open to reveal the two slices. */
 export type CutMode = 'whole' | 'lightness' | 'hue' | 'wedge';
+
+/** A see-through cage of boundary lines, or an opaque surface. */
+export type ShapeStyle = 'wireframe' | 'solid';
+
+/** Fewest shown paints that get a hull. */
+export const MIN_HULL_PAINTS = 5;
 
 export interface AppState {
   /** Lightness of the horizontal slice (view B.1). */
@@ -18,8 +27,12 @@ export interface AppState {
   /** The color under the pointer in any view, in OKLab, or null. */
   hover: Vec3 | null;
   cut: CutMode;
-  /** Draw the solid as a wire cage instead of an opaque surface, so everything inside it shows. */
-  wireframe: boolean;
+  /** The color space drawn in A: Pointer's gamut of real surface colors, or the sRGB screen gamut. */
+  gamut: Gamut;
+  gamutStyle: ShapeStyle;
+  /** Draw the convex hull of the shown paints in A, once at least MIN_HULL_PAINTS are shown. */
+  hull: boolean;
+  hullStyle: ShapeStyle;
 }
 
 export type Listener = (state: AppState, changed: Set<keyof AppState>) => void;

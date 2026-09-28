@@ -13,10 +13,16 @@ Every swatch in the color charts is a filled rectangle with its code label
 directly below it, followed by a running index number and the name (Model
 Color also prints a Spanish name on a second line). Fills are print values:
 DeviceCMYK, or /Separation spot colors whose alternate space is DeviceCMYK.
-They are converted to sRGB through the chart's own output intent ICC profile
-(Coated FOGRA39) using relative colorimetric intent with black point
-compensation, the Adobe default for displaying CMYK documents. The print CMYK
-itself is kept too, in percent.
+Each color is stored three ways, all from the chart's own output intent ICC
+profile (Coated FOGRA39):
+
+- `cmyk`: the print CMYK itself, in percent.
+- `cielab`: CIELAB (D50), relative colorimetric (paper white = L* 100), without
+  black point compensation, in double precision through LittleCMS
+  (scripts/lcms.py). It is not limited to sRGB, so the page uses it.
+- `rgb`: sRGB hex, relative colorimetric with black point compensation, the
+  Adobe default for displaying CMYK documents. Colors outside sRGB end up on
+  its edge.
 
 The color combination tables are small squares with a centered code label
 below each, laid out as blocks of Highlight / Base / Shadow columns.
@@ -33,6 +39,7 @@ from pdfminer.pdftypes import resolve1
 from pdfminer.psparser import literal_name
 
 import vallejo_data
+from lcms import CmykToLab
 
 CODE_RE = re.compile(r"^\d{2}\.\d{3}$")
 
@@ -270,14 +277,21 @@ def cmyk_to_srgb_hex(cmyk, transform):
     return f"#{r:02X}{g:02X}{b:02X}"
 
 
+def cmyk_to_cielab(cmyk, to_lab):
+    L, a, b = to_lab([v * 100 for v in cmyk])
+    return {"l": round(L, 2), "a": round(a, 2), "b": round(b, 2)}
+
+
 def process(path, product_range, sections):
     pdf = pdfplumber.open(path)
     page = pdf.pages[0]
     seps = separations(page)
     # Split on font changes: index numbers otherwise merge with the next code.
     words = page.extract_words(extra_attrs=["fontname", "size"])
+    profile = output_intent_profile(pdf)
+    to_lab = CmykToLab(profile)
     transform = ImageCms.buildTransform(
-        ImageCms.ImageCmsProfile(io.BytesIO(output_intent_profile(pdf))),
+        ImageCms.ImageCmsProfile(io.BytesIO(profile)),
         ImageCms.createProfile("sRGB"), "CMYK", "RGB",
         renderingIntent=ImageCms.Intent.RELATIVE_COLORIMETRIC,
         flags=ImageCms.Flags.BLACKPOINTCOMPENSATION,
@@ -305,6 +319,7 @@ def process(path, product_range, sections):
             "type": c["type"],
             "rgb": cmyk_to_srgb_hex(cmyk, transform),
             "cmyk": cmyk_percent(cmyk),
+            "cielab": cmyk_to_cielab(cmyk, to_lab),
         }
 
     blocks = combinations(page, words, seps)

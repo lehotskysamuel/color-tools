@@ -7,12 +7,13 @@ import {
   formatOklch,
   isOklabInGamut,
   maxChroma,
+  oklabToDisplayHex,
   oklabToHex,
   oklabToOklch,
   oklchToOklab,
 } from './color/oklab';
 import { type Paint, paintLabel } from './paints/vallejo';
-import { type CutMode, createStore } from './state';
+import { type AppState, type CutMode, type Gamut, type ShapeStyle, createStore } from './state';
 import { onThemeChange } from './theme';
 import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
@@ -36,7 +37,10 @@ const store = createStore({
   paints: [],
   hover: null,
   cut: 'wedge',
-  wireframe: false,
+  gamut: 'pointer',
+  gamutStyle: 'wireframe',
+  hull: true,
+  hullStyle: 'solid',
 });
 
 const lightness = new LightnessSlice(store, $('b1-stat'));
@@ -45,7 +49,7 @@ $('b1-host').appendChild(lightness.canvas);
 $('b2-host').appendChild(hue.canvas);
 
 const solidHost = $('solid-host');
-const solid = new GamutSolid(solidHost, store, lightness.image, hue.image);
+const solid = new GamutSolid(solidHost, store, lightness.image, hue.image, $('a-stat'));
 lightness.onImageChange = () => solid.lightnessImageChanged();
 hue.onImageChange = () => solid.hueImageChanged();
 
@@ -68,12 +72,22 @@ const lValue = $<HTMLOutputElement>('l-value');
 const hValue = $<HTMLOutputElement>('h-value');
 lSlider.addEventListener('input', () => store.set({ L: Number(lSlider.value) }));
 hSlider.addEventListener('input', () => store.set({ h: Number(hSlider.value) }));
-for (const input of document.querySelectorAll<HTMLInputElement>('#cut-mode input')) {
-  input.addEventListener('change', () => input.checked && store.set({ cut: input.value as CutMode }));
-}
 $('reset-view').addEventListener('click', () => solid.resetView());
-const wireButton = $<HTMLButtonElement>('wireframe');
-wireButton.addEventListener('click', () => store.set({ wireframe: !store.get().wireframe }));
+
+/** Segmented controls: each is a fieldset of radios whose value is written to the state. */
+const segmented: { id: string; value: (s: AppState) => string; patch: (value: string) => Partial<AppState> }[] = [
+  { id: 'cut-mode', value: (s) => s.cut, patch: (v) => ({ cut: v as CutMode }) },
+  { id: 'gamut', value: (s) => s.gamut, patch: (v) => ({ gamut: v as Gamut }) },
+  { id: 'gamut-style', value: (s) => s.gamutStyle, patch: (v) => ({ gamutStyle: v as ShapeStyle }) },
+  { id: 'hull', value: (s) => (s.hull ? 'on' : 'off'), patch: (v) => ({ hull: v === 'on' }) },
+  { id: 'hull-style', value: (s) => s.hullStyle, patch: (v) => ({ hullStyle: v as ShapeStyle }) },
+];
+for (const { id, patch } of segmented) {
+  for (const input of document.querySelectorAll<HTMLInputElement>(`#${id} input`)) {
+    input.addEventListener('change', () => input.checked && store.set(patch(input.value)));
+  }
+}
+const hullStyle = $<HTMLFieldSetElement>('hull-style');
 
 // Picked-color readout
 const readout = document.querySelector<HTMLElement>('.readout')!;
@@ -84,25 +98,29 @@ const pickHex = $<HTMLOutputElement>('pick-hex');
 const pickOklab = $<HTMLOutputElement>('pick-oklab');
 
 function renderControls(): void {
-  const { L, h, pick, pickPaint, cut, wireframe } = store.get();
+  const state = store.get();
+  const { L, h, pick, pickPaint } = state;
   if (document.activeElement !== lSlider) lSlider.value = String(L);
   if (document.activeElement !== hSlider) hSlider.value = String(Math.round(h) % 360);
   lValue.value = L.toFixed(3);
   hValue.value = `${h.toFixed(h % 1 === 0 ? 0 : 1)}°`;
-  const hex = oklabToHex(pick);
+  // A paint can lie outside sRGB; the swatch then shows the nearest screen color.
+  const hex = oklabToDisplayHex(pick);
   pickSwatch.style.background = hex;
   pickOklch.value = formatOklch(oklabToOklch(pick));
-  pickHex.value = hex;
+  pickHex.value = isOklabInGamut(pick) ? hex : `outside sRGB, shown as ${hex}`;
   pickOklab.value = formatOklab(pick);
   pickPaintOut.value = pickPaint ? paintLabel(pickPaint) : '';
   readout.classList.toggle('has-paint', pickPaint !== null);
-  const radio = document.querySelector<HTMLInputElement>(`#cut-mode input[value="${cut}"]`);
-  if (radio) radio.checked = true;
-  wireButton.setAttribute('aria-pressed', String(wireframe));
+  for (const { id, value } of segmented) {
+    const radio = document.querySelector<HTMLInputElement>(`#${id} input[value="${value(state)}"]`);
+    if (radio) radio.checked = true;
+  }
+  hullStyle.disabled = !state.hull;
 }
 
 store.subscribe((_s, changed) => {
-  const keys = ['L', 'h', 'pick', 'pickPaint', 'cut', 'wireframe'] as const;
+  const keys = ['L', 'h', 'pick', 'pickPaint', 'cut', 'gamut', 'gamutStyle', 'hull', 'hullStyle'] as const;
   if (keys.some((key) => changed.has(key))) renderControls();
 });
 renderControls();
@@ -124,11 +142,14 @@ function showHover(lab: Vec3 | null, clientX: number, clientY: number, paint?: P
   tipName.hidden = !paint;
   const inGamut = isOklabInGamut(lab);
   tipMain.textContent = formatOklch(oklabToOklch(lab));
-  if (inGamut) {
-    const dE = deltaEOK(lab, store.get().pick);
-    tipSwatch.style.background = oklabToHex(lab);
+  const dE = deltaEOK(lab, store.get().pick);
+  const fromPick = `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`;
+  if (inGamut || paint) {
+    // A paint outside sRGB still exists; show it as its nearest screen color.
+    const hex = paint ? paint.display : oklabToHex(lab);
+    tipSwatch.style.background = hex;
     tipSwatch.style.visibility = 'visible';
-    tipSub.textContent = `${oklabToHex(lab)} · ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`;
+    tipSub.textContent = `${inGamut ? hex : `outside sRGB, shown as ${hex}`} · ${fromPick}`;
   } else {
     tipSwatch.style.visibility = 'hidden';
     tipSub.textContent = 'Outside sRGB. No screen color here.';
