@@ -34,18 +34,30 @@ def _load(path):
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
 
 
+def _codes(layout):
+    return {code for section in layout["sections"] for row in section["rows"] for code in row}
+
+
 def update(out_dir, ranges, colors, layouts):
-    """Replace every color whose range is in `ranges` with `colors`, and set
-    each layout in `layouts`. Other colors and layouts are kept; existing
-    layout keys keep their position and new ones are appended."""
+    """Replace every color whose range is in `ranges` with `colors`, and the
+    layouts made only of those colors with `layouts`. Other colors and layouts
+    are kept. A layout key that exists already keeps its position; new keys are
+    appended."""
     out = Path(out_dir)
     colors_path, layouts_path = out / COLORS_FILE, out / LAYOUTS_FILE
 
-    kept = {code: c for code, c in _load(colors_path).items() if c["range"] not in ranges}
+    existing = _load(colors_path)
+    replaced = {code for code, c in existing.items() if c["range"] in ranges}
+    kept = {code: c for code, c in existing.items() if code not in replaced}
     if kept.keys() & colors.keys():
         raise ValueError(f"codes already used by another range: {sorted(kept.keys() & colors.keys())}")
     colors_path.write_text(format_colors(dict(sorted({**kept, **colors}.items()))), encoding="utf-8")
 
-    all_layouts = _load(layouts_path)
-    all_layouts.update(layouts)
-    layouts_path.write_text(format_layouts(all_layouts), encoding="utf-8")
+    merged = {}
+    for key, layout in _load(layouts_path).items():
+        if key in layouts:
+            merged[key] = layouts[key]
+        elif not _codes(layout) <= replaced:  # a stale layout of these ranges is dropped
+            merged[key] = layout
+    merged.update(layouts)
+    layouts_path.write_text(format_layouts(merged), encoding="utf-8")

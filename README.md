@@ -76,9 +76,10 @@ The page chrome is deliberately achromatic. A tinted surround shifts how the plo
 
 ### Vallejo paints
 
-The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as Vallejo prints them. The
-**Layout** select switches between the four layouts in `data/vallejo-layouts.json` (Game Color chart and
-combinations, Model Color chart and combinations), and the page remembers the choice in `localStorage`.
+The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
+**Layout** select switches between the six layouts in `data/vallejo-layouts.json` (Game Color chart and
+combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials), and the page remembers
+the choice in `localStorage`.
 
 **Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
 its paints on, and **Select all** / **Select none** switch them all at once.
@@ -224,14 +225,14 @@ node scripts/add-oklch.js data/vallejo.json
 The order the colors are printed in, as rows of codes. Every code is a key in
 `vallejo.json`.
 
-| key                      | contents                                              |
-| ------------------------ | ----------------------------------------------------- |
-| `gameColor`              | Game Color chart: main chart, Wash, Fluo, Ink         |
-| `modelColor`             | Model Color chart (its two inks sit in the main grid) |
-| `gameColorCombinations`  | 32 Highlight / Base / Shadow triplets in 3 blocks     |
-| `modelColorCombinations` | 68 Highlight / Base / Shadow triplets in 4 blocks     |
-| `squidmarColor`          | Squidmar Color, all 72 paints ("72 New Paints" image) |
-| `squidmarColor30`        | The 30 paints on the "30 New Paints" image            |
+| key                       | contents                                              |
+| ------------------------- | ----------------------------------------------------- |
+| `gameColor`               | Game Color chart: main chart, Wash, Fluo, Ink         |
+| `modelColor`              | Model Color chart (its two inks sit in the main grid) |
+| `gameColorCombinations`   | 32 Highlight / Base / Shadow triplets in 3 blocks     |
+| `modelColorCombinations`  | 68 Highlight / Base / Shadow triplets in 4 blocks     |
+| `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints                |
+| `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72               |
 
 Each layout has `sections`, and each section has `rows`, an array of arrays of
 codes. In the charts a row is one printed row of swatches, and sections carry
@@ -265,25 +266,26 @@ intent with black point compensation. Names are taken from the chart labels,
 with truncated words spelled out (`Cam.` → `Camouflage`, `Unif.` →
 `Uniform`, …).
 
-Squidmar Color has no published chart. Its source is the two announcement
-images in `data/sources/`: "72 New Paints" (the whole range) and "30 New
-Paints" (a subset). `scripts/extract_squidmar.py` finds each brush-stroke
-swatch and takes its dominant fill color, ignoring the printed code, the
-stroke's edges and the background. The colors come from the 72-paint image.
-The 30-paint image is sampled as a cross-check: its 30 paints agree with the
-72-paint values within 5 RGB units per channel (mean ΔE2000 0.6). Metallics
-are drawn as gradients, so their `rgb` is the gradient's dominant mid-tone.
-Names are transcribed from the images, with `Fluoresc` spelled out as
-`Fluorescent`.
+Squidmar Color has no published chart. Its source is the announcement images
+of its two sets, in `data/sources/`: the Mega Set (all 72 paints, headed "72
+New Paints") and the Essentials (30 of them, headed "30 New Paints").
+`scripts/extract_squidmar.py` finds each brush-stroke swatch and takes its
+dominant fill color, ignoring the printed code, the stroke's edges and the
+background. The colors come from the Mega Set image. The Essentials image is
+sampled as a cross-check: its 30 paints agree with the Mega Set values within
+5 RGB units per channel (mean ΔE2000 0.6). Metallics are drawn as gradients,
+so their `rgb` is the gradient's dominant mid-tone. Names are transcribed from
+the images, with `Fluoresc` spelled out as `Fluorescent`.
 
-Each extractor replaces only its own ranges and layouts, so they can run in
-either order:
+Each extractor replaces only its own colors and layouts, so either can be
+re-run on its own. Layouts keep their place in the file, so to build it from
+nothing, run them in this order:
 
 ```sh
 pip install -r scripts/requirements.txt
 python scripts/extract_vallejo.py game.pdf model.pdf data   # PDFs: see the script
-python scripts/extract_squidmar.py data/sources/squidmar-72-new-paints.webp \
-  data/sources/squidmar-30-new-paints.webp data
+python scripts/extract_squidmar.py data/sources/squidmar-mega-set.webp \
+  data/sources/squidmar-essentials.webp data
 node scripts/add-oklch.js data/vallejo.json
 ```
 

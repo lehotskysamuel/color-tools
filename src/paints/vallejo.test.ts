@@ -11,12 +11,14 @@ describe('Vallejo data', () => {
     expect(missing).toEqual([]);
   });
 
-  it('has one layout per chart and per combination table', () => {
+  it('has one layout per chart, combination table and Squidmar set', () => {
     expect(LAYOUTS.map((l) => l.id)).toEqual([
       'gameColor',
       'gameColorCombinations',
       'modelColor',
       'modelColorCombinations',
+      'squidmarColorMegaSet',
+      'squidmarColorEssentials',
     ]);
     for (const layout of LAYOUTS.filter((l) => l.columns)) {
       for (const row of layout.sections.flatMap((s) => s.rows)) expect(row).toHaveLength(layout.columns!.length);

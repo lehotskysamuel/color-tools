@@ -211,9 +211,9 @@
       }
     ]
   },
-  "squidmarColor": {
-    "title": "Squidmar Color (72 New Paints)",
-    "source": "Squidmar Color \"72 New Paints\" announcement image",
+  "squidmarColorMegaSet": {
+    "title": "Squidmar Color Mega Set",
+    "source": "Squidmar Color Mega Set announcement image (\"72 New Paints\")",
     "sections": [
       {
         "rows": [
@@ -237,9 +237,9 @@
       }
     ]
   },
-  "squidmarColor30": {
-    "title": "Squidmar Color (30 New Paints)",
-    "source": "Squidmar Color \"30 New Paints\" announcement image",
+  "squidmarColorEssentials": {
+    "title": "Squidmar Color Essentials",
+    "source": "Squidmar Color Essentials announcement image (\"30 New Paints\")",
     "sections": [
       {
         "rows": [

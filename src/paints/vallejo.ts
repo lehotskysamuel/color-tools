@@ -6,9 +6,12 @@ export interface Paint {
   code: string;
   name: string;
   range: string;
-  /** acrylic, ink, wash or fluorescent */
+  /** acrylic, ink, wash, fluorescent or metallic (Squidmar Color only) */
   type: string;
-  /** "#RRGGBB", the official chart's print color converted to sRGB. */
+  /**
+   * "#RRGGBB": the official chart's print color converted to sRGB. Squidmar Color has no chart; its colors are
+   * sampled from the announcement images.
+   */
   rgb: string;
   /** Computed from `rgb`, so it matches the hex exactly rather than the rounded `oklch` in the JSON. */
   lab: Vec3;
@@ -19,7 +22,7 @@ export interface PaintSection {
   rows: string[][];
 }
 
-/** The order Vallejo prints colors in. See the `data/vallejo-layouts.json` section of the README. */
+/** The order the colors are printed in. See the `data/vallejo-layouts.json` section of the README. */
 export interface PaintLayout {
   id: string;
   title: string;

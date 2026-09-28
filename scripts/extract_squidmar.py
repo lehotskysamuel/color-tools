@@ -2,19 +2,21 @@
 
 Usage:
     pip install -r scripts/requirements.txt
-    python scripts/extract_squidmar.py data/sources/squidmar-72-new-paints.webp \\
-        data/sources/squidmar-30-new-paints.webp data
+    python scripts/extract_squidmar.py data/sources/squidmar-mega-set.webp \\
+        data/sources/squidmar-essentials.webp data
     node scripts/add-oklch.js data/vallejo.json
 
 Squidmar Color (by Vallejo, codes 74.2xx) has no published color chart, so
-the source is its two announcement images: "72 New Paints", the whole range,
-and "30 New Paints", a subset. Each swatch is a brush stroke with the code
-printed on it and the name below. The script finds every stroke, puts them in
+the source is the announcement images of its two sets: the Mega Set, all 72
+paints (headed "72 New Paints"), and the Essentials, 30 of them (headed "30
+New Paints"). Each swatch is a brush stroke with the code printed on it and
+the name below. The script finds every stroke, puts them in
 reading order, and takes the dominant fill color, ignoring the printed code,
 the anti-aliased edges and the black background.
 
-Colors come from the 72-paint image. The 30-paint image is sampled too, as a
-check: each of its paints must match the 72-paint value within MAX_SHEET_DIFF.
+Colors come from the Mega Set image. The Essentials image is sampled too, as
+a check: each of its paints must match the Mega Set value within
+MAX_SHEET_DIFF.
 
 Metallics are drawn as gradients, so their color is the gradient's dominant
 mid-tone. There is no print CMYK, so `cmyk` is null.
@@ -48,9 +50,9 @@ MAX_SHEET_DIFF = 8
 # Transcribed from the images: one line per printed row of swatches, a blank
 # line between the image's panels. Each panel becomes one layout section.
 SHEETS = {
-    "squidmarColor": {
-        "title": "Squidmar Color (72 New Paints)",
-        "source": 'Squidmar Color "72 New Paints" announcement image',
+    "squidmarColorMegaSet": {
+        "title": "Squidmar Color Mega Set",
+        "source": 'Squidmar Color Mega Set announcement image ("72 New Paints")',
         "top": 330,         # first pixel row below the headline
         "threshold": 18,    # the panels are near-black, not pure black
         "max_height": 52,
@@ -70,9 +72,9 @@ SHEETS = {
 74.267 Ghostly Ink|74.268 Ork Ink|74.269 Moss Ink|74.270 Ancient Ink|74.271 Leather Ink|74.272 Pitch Black Ink
 """,
     },
-    "squidmarColor30": {
-        "title": "Squidmar Color (30 New Paints)",
-        "source": 'Squidmar Color "30 New Paints" announcement image',
+    "squidmarColorEssentials": {
+        "title": "Squidmar Color Essentials",
+        "source": 'Squidmar Color Essentials announcement image ("30 New Paints")',
         "top": 400,
         "threshold": 12,
         "max_height": 84,   # Pitch Black's glow merges with its label; clip it
@@ -178,9 +180,9 @@ def sample(path, sheet):
     return paints, layout
 
 
-def main(sheet72, sheet30, out_dir):
-    paints, layout72 = sample(sheet72, SHEETS["squidmarColor"])
-    subset, layout30 = sample(sheet30, SHEETS["squidmarColor30"])
+def main(mega_set, essentials, out_dir):
+    paints, mega_layout = sample(mega_set, SHEETS["squidmarColorMegaSet"])
+    subset, essentials_layout = sample(essentials, SHEETS["squidmarColorEssentials"])
 
     colors = {}
     for code, name, (r, g, b) in paints:
@@ -200,17 +202,17 @@ def main(sheet72, sheet30, out_dir):
     if counts != EXPECTED_COUNTS:
         raise ValueError(f"unexpected counts {counts}")
 
-    rgb72 = {code: rgb for code, _, rgb in paints}
+    mega_rgb = {code: rgb for code, _, rgb in paints}
     for code, name, rgb in subset:
         if code not in colors or expand(name) != colors[code]["name"]:
-            raise ValueError(f"{code} {name!r} on the 30-paint image does not match the 72-paint image")
-        diff = max(abs(a - b) for a, b in zip(rgb, rgb72[code]))
+            raise ValueError(f"{code} {name!r} on the Essentials image does not match the Mega Set image")
+        diff = max(abs(a - b) for a, b in zip(rgb, mega_rgb[code]))
         if diff > MAX_SHEET_DIFF:
-            raise ValueError(f"{code}: images disagree by {diff} ({rgb} vs {rgb72[code]})")
+            raise ValueError(f"{code}: images disagree by {diff} ({rgb} vs {mega_rgb[code]})")
 
     layouts = {
         key: {"title": SHEETS[key]["title"], "source": SHEETS[key]["source"], "sections": layout}
-        for key, layout in (("squidmarColor", layout72), ("squidmarColor30", layout30))
+        for key, layout in (("squidmarColorMegaSet", mega_layout), ("squidmarColorEssentials", essentials_layout))
     }
     vallejo_data.update(out_dir, {RANGE}, dict(sorted(colors.items())), layouts)
     print(f"wrote {len(colors)} colors and {len(layouts)} layouts to {out_dir}")
