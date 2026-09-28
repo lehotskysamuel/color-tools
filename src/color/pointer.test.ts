@@ -1,13 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { type Vec3, hexToLinear, linearSrgbToOklab, oklchToOklab } from './oklab';
-import {
-  cielabToOklab,
-  isOklabInPointer,
-  maxPointerChroma,
-  oklabToCielab,
-  pointerBoundary,
-  pointerMaxChroma,
-} from './pointer';
+import { hexToLinear, linearSrgbToOklab, oklchToOklab } from './oklab';
+import { CIELAB_C } from './cielab';
+import { isOklabInPointer, maxPointerChroma, pointerBoundary, pointerMaxChroma } from './pointer';
 
 describe("Pointer's table", () => {
   it('returns the published values at the grid points', () => {
@@ -31,34 +25,12 @@ describe("Pointer's table", () => {
   });
 });
 
-describe('CIELAB (illuminant C) and OKLab', () => {
-  it('adapts illuminant C to D65, so neutrals stay neutral and white is OKLab white', () => {
-    const white = cielabToOklab([100, 0, 0]);
-    expect(white[0]).toBeCloseTo(1, 6);
-    expect(Math.hypot(white[1], white[2])).toBeLessThan(1e-6);
-    for (const L of [10, 50, 90]) {
-      const gray = cielabToOklab([L, 0, 0]);
-      expect(Math.hypot(gray[1], gray[2])).toBeLessThan(1e-6);
-      // For neutrals OKLab L is the cube root of Y, and so is (L* + 16) / 116 above L* 8.
-      expect(gray[0]).toBeCloseTo((L + 16) / 116, 5);
-    }
-  });
-
-  // The sRGB and OKLab matrices carry 7 to 10 digits, which is 1e-5 in CIELAB units.
-  it('round-trips', () => {
-    for (const lab of [[60, 40, -30], [20, -10, 5], [85, 5, 90]] as Vec3[]) {
-      const back = oklabToCielab(cielabToOklab(lab));
-      for (let k = 0; k < 3; k++) expect(back[k]).toBeCloseTo(lab[k], 4);
-    }
-  });
-});
-
 describe("Pointer's gamut in OKLab", () => {
   it('puts each table point on the boundary', () => {
     for (const [L, h] of [[50, 40], [70, 70], [30, 310], [85, 90], [40, 180]]) {
       const C = pointerMaxChroma(L, h);
       const rad = (h * Math.PI) / 180;
-      const at = (s: number) => cielabToOklab([L, s * C * Math.cos(rad), s * C * Math.sin(rad)]);
+      const at = (s: number) => CIELAB_C.toOklab([L, s * C * Math.cos(rad), s * C * Math.sin(rad)]);
       expect(isOklabInPointer(...at(0.99))).toBe(true);
       expect(isOklabInPointer(...at(1.01))).toBe(false);
       const edge = pointerBoundary(L, h);

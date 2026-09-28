@@ -107,6 +107,11 @@ its paints on, and **Select all** / **Select none** switch them all at once.
   dot. A dot's position is exact only for a paint that lies on the plane; at the band's edge it can be off by up
   to 0.04.
 
+Every paint sits at its best-known color: `cielab` when the data has one, else `rgb` (see
+[`data/vallejo.json`](#datavallejojson)). Ten chart colors, mostly teals and turquoises, lie outside sRGB. They sit
+at their true position and are drawn in the nearest screen color of the same lightness and hue, and the tooltip
+and the readout say that they are outside sRGB.
+
 ### Pointer's gamut and the paint hull
 
 View A draws two shapes, each with its own options under the solid:
@@ -156,23 +161,28 @@ node scripts/coverage.js data/vallejo.json
 ```
 
 It prints the coverage of Pointer's gamut and of sRGB for all colors, for each `range` and `type`, and for all
-colors except each `type`. It also takes a JSON array of `"#rrggbb"` strings, so other paint ranges can be
-compared the same way. The table below comes from it.
+colors except each group of a field with more than two values. Colors come from `cielab` when present, else
+`rgb`, as on the page. It also takes a JSON array of `"#rrggbb"` strings, so other paint ranges can be compared
+the same way. The table below comes from it.
 
-| Paints shown | Share of Pointer's gamut covered by their hull |
-|---|---|
-| All paints (302) | 52 % |
-| Game Color chart (108) | 52 % |
-| Model Color chart (194) | 34 % |
-| All paints, without the 8 fluorescents | 47 % |
-| All paints, acrylics only (no washes, inks or fluorescents) | 42 % |
-| Washes, inks and fluorescents only (30) | 50 % |
-| *sRGB itself, for comparison* | *78 %* |
+| Paints shown | Color from | Share of Pointer's gamut covered by their hull |
+|---|---|---|
+| Game Color and Model Color charts (302) | `cielab` | 46 % |
+| Game Color chart (108) | `cielab` | 46 % |
+| Model Color chart (194) | `cielab` | 30 % |
+| Squidmar Color (72) | `rgb` | 50 % |
+| All paints (374) | both | 57 % |
+| *sRGB itself, for comparison* | | *78 %* |
 
-A one-off check that measures volume in CIELAB instead gives 52.5 % for all paints and 75 % for sRGB. The hull
-of all paints has 26 corners, and 13 of them are washes, inks and fluorescents. Adding the Model Color chart to
-the Game Color chart raises the figure by 0.3 points. Because the paint colors come from a printed chart
-converted to sRGB, their hull cannot cover much more than sRGB does.
+The chart figures describe the printed charts. They are lower than the 52 % the sRGB hex values give, because the
+hex conversion made two errors that pulled in opposite directions. It clipped the ten printed colors outside sRGB
+to its edge, which lowered the figure. Its black point compensation stretched the chart's darkest print (L\* 9.9)
+down to pure black and every dark color with it, which inflated the hull more. What remains is mostly a gap among
+dark colors: CMYK cannot print dark saturated colors, so the charts say little about how far dark paints reach.
+
+The Squidmar figure is not comparable. Its colors are sampled from marketing images, which are made for screens,
+with pure black and possibly boosted saturation, so its 50 % and the 57 % for all paints overstate what the data
+supports.
 
 Page layout, by width:
 
@@ -219,15 +229,18 @@ Two details of the sRGB gamut in OKLab turned up while building this. Both are h
 
 ```
 src/
-  color/oklab.ts          conversions, gamut test, max chroma, cusp
+  color/oklab.ts          conversions, gamut test, max chroma, cusp, nearest screen color
   color/oklab.test.ts
-  color/pointer.ts        Pointer's gamut: the table, CIELAB (C) <-> OKLab, inside test, boundary
+  color/cielab.ts         CIELAB relative to illuminant C or D50 <-> OKLab
+  color/cielab.test.ts
+  color/pointer.ts        Pointer's gamut: the table, inside test, boundary
   color/pointer.test.ts
   color/hull.ts           3D convex hull, inside test, volume
   color/hull.test.ts
   color/coverage.ts       share of a gamut's OKLab volume inside a hull
   color/coverage.test.ts
-  paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab computed from the hex
+  paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
+  paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab from the best field
   paints/vallejo.test.ts  every layout code resolves, OKLab agrees with the stored OKLCh
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
@@ -248,12 +261,11 @@ src/
   two colors look.
 - **No viewing conditions.** Surround, adaptation and display luminance are not modeled. CAM16-UCS would add them
   at the cost of more parameters.
-- **Paint coverage is bounded by the data.** The paint colors are Vallejo's printed chart converted to sRGB, so
-  their hull says how the chart spreads, not how far real paint reaches. The chart itself is limited to what
-  CMYK inks can print, and the conversion to sRGB clips printed colors outside sRGB to its edge: the teals and
-  turquoises with a red channel of 0, such as 70.841 Andrea Blue and 72.119 Aquamarine, are clipped. Pointer's
-  gamut reaches past sRGB (22 % of its volume), so real paints can too; showing that would need measured Lab
-  data of the paints.
+- **Paint colors are not measurements.** Game Color and Model Color come from Vallejo's printed charts, so their
+  hull says how the charts spread, not how far real paint reaches. The charts are limited to what CMYK inks can
+  print, which is weakest for dark saturated colors, and Vallejo notes that printed colors are only approximate.
+  Squidmar Color comes from marketing images. No published measurements of dried paint were found for the current
+  ranges. Measured CIELAB or spectral data would go into `cielab` and be used as it is.
 
 ## Data
 
@@ -289,15 +301,26 @@ vallejo['70.995'];
 // {
 //   code: '70.995', name: 'German Grey', range: 'Model Color', type: 'acrylic',
 //   rgb: '#2E2E2C', cmyk: { c: 70, m: 60, y: 60, k: 70 },
-//   oklch: { l: 0.3004, c: 0.0035, h: 106.61 }
+//   cielab: { l: 23.21, a: -0.47, b: 1.05 },
+//   oklch: { l: 0.3377, c: 0.0031, h: 116.42 }
 // }
 ```
 
-- `rgb`: `#RRGGBB`
+- `rgb`: `#RRGGBB`. For the charts, the print color as a screen shows it: clipped
+  to sRGB, with the darkest print stretched to black. For Squidmar Color, sampled
+  from its images.
 - `cmyk`: Vallejo's own print values from the chart, in percent; `null` for
   Squidmar Color, which has no published chart
-- `oklch`: computed from `rgb` by `hexToOklch` in `src/color/oklab.ts`; `l`
-  (0–1), `c`, `h` (degrees, `null` for achromatic colors)
+- `cielab`: CIELAB relative to D50 (2° observer), `l`, `a`, `b`. For the charts,
+  the print CMYK converted through the chart's own ICC profile: the printed
+  color, not limited to sRGB. `null` for Squidmar Color, which has no such data.
+  Measured values of dried paint would go here too.
+- `oklch`: computed by `scripts/add-oklch.js` from `cielab` when present, else
+  from `rgb`; `l` (0–1), `c`, `h` (degrees, `null` for achromatic colors)
+
+The page and the scripts take a paint's color from `cielab` when it has one, else
+from `rgb` (`src/paints/record.ts`). `cmyk` only means something together with the
+chart's ICC profile, so the extractor turns it into `cielab`.
 
 To recompute `oklch` after changing `rgb` values (Node 22.18 or later, which
 runs the TypeScript import directly):
@@ -346,11 +369,21 @@ Vallejo's official color charts:
 
 The charts store each swatch as print CMYK (for Coated FOGRA39).
 `scripts/extract_vallejo.py` reads those values, the chart rows and the
-combination tables from the PDFs, and converts the CMYK to sRGB through the
-charts' embedded Coated FOGRA39 ICC profile, using relative colorimetric
-intent with black point compensation. Names are taken from the chart labels,
-with truncated words spelled out (`Cam.` → `Camouflage`, `Unif.` →
-`Uniform`, …).
+combination tables from the PDFs, and converts the CMYK through the charts'
+embedded Coated FOGRA39 ICC profile twice:
+
+- to `cielab` with relative colorimetric intent (paper white = L\* 100) and no
+  black point compensation, so the darkest print keeps its own L\* 9.9. It runs
+  LittleCMS in double precision (`scripts/lcms.py`), using the system library or
+  the copy bundled with Pillow.
+- to `rgb` with relative colorimetric intent and black point compensation, the
+  Adobe default for displaying CMYK documents, through Pillow's 8-bit
+  transform. That transform works from a precomputed table, which is least
+  accurate next to the sRGB edge: for some saturated yellows it is up to 9
+  units per channel off an exact conversion.
+
+Names are taken from the chart labels, with truncated words spelled out
+(`Cam.` → `Camouflage`, `Unif.` → `Uniform`, …).
 
 Squidmar Color has no published chart. Its source is the announcement images
 of its two sets, in `data/sources/`: the Mega Set (all 72 paints, headed "72
@@ -375,10 +408,10 @@ python scripts/extract_squidmar.py data/sources/squidmar-mega-set.webp \
 node scripts/add-oklch.js data/vallejo.json
 ```
 
-The RGB values are what the official chart looks like on screen, not a
-measurement of dried paint. Vallejo notes that printed chart colors are only
-approximate. The Squidmar values are one step further removed: they are the
-colors of a compressed marketing image.
+The chart values describe the printed chart, not a measurement of dried paint.
+Vallejo notes that printed chart colors are only approximate. The Squidmar
+values are one step further removed: they are the colors of a compressed
+marketing image.
 
 ## Roadmap
 

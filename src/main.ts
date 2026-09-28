@@ -7,6 +7,7 @@ import {
   formatOklch,
   isOklabInGamut,
   maxChroma,
+  oklabToDisplayHex,
   oklabToHex,
   oklabToOklch,
   oklchToOklab,
@@ -103,10 +104,11 @@ function renderControls(): void {
   if (document.activeElement !== hSlider) hSlider.value = String(Math.round(h) % 360);
   lValue.value = L.toFixed(3);
   hValue.value = `${h.toFixed(h % 1 === 0 ? 0 : 1)}°`;
-  const hex = oklabToHex(pick);
+  // A paint can lie outside sRGB; the swatch then shows the nearest screen color.
+  const hex = oklabToDisplayHex(pick);
   pickSwatch.style.background = hex;
   pickOklch.value = formatOklch(oklabToOklch(pick));
-  pickHex.value = hex;
+  pickHex.value = isOklabInGamut(pick) ? hex : `outside sRGB, shown as ${hex}`;
   pickOklab.value = formatOklab(pick);
   pickPaintOut.value = pickPaint ? paintLabel(pickPaint) : '';
   readout.classList.toggle('has-paint', pickPaint !== null);
@@ -140,11 +142,14 @@ function showHover(lab: Vec3 | null, clientX: number, clientY: number, paint?: P
   tipName.hidden = !paint;
   const inGamut = isOklabInGamut(lab);
   tipMain.textContent = formatOklch(oklabToOklch(lab));
-  if (inGamut) {
-    const dE = deltaEOK(lab, store.get().pick);
-    tipSwatch.style.background = oklabToHex(lab);
+  const dE = deltaEOK(lab, store.get().pick);
+  const fromPick = `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`;
+  if (inGamut || paint) {
+    // A paint outside sRGB still exists; show it as its nearest screen color.
+    const hex = paint ? paint.display : oklabToHex(lab);
+    tipSwatch.style.background = hex;
     tipSwatch.style.visibility = 'visible';
-    tipSub.textContent = `${oklabToHex(lab)} · ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`;
+    tipSub.textContent = `${inGamut ? hex : `outside sRGB, shown as ${hex}`} · ${fromPick}`;
   } else {
     tipSwatch.style.visibility = 'hidden';
     tipSub.textContent = 'Outside sRGB. No screen color here.';

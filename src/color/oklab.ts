@@ -169,6 +169,30 @@ export function oklabToHex(lab: Vec3): string {
   return linearToHex(oklabToLinearSrgb(lab));
 }
 
+/**
+ * Linear sRGB to show a color with. Inside sRGB that is the color itself. Outside, the chroma is reduced at
+ * constant L and h until the color fits: the nearest screen color of the same lightness and hue.
+ */
+export function oklabToDisplayLinearInto(L: number, a: number, b: number, out: Vec3): Vec3 {
+  oklabToLinearSrgbInto(L, a, b, out);
+  if (!isLinearInGamut(out)) {
+    const C = Math.hypot(a, b);
+    const scale = C > 0 ? Math.min(1, maxChroma(L, (Math.atan2(b, a) * 180) / Math.PI) / C) : 1;
+    oklabToLinearSrgbInto(L, a * scale, b * scale, out);
+  }
+  for (let k = 0; k < 3; k++) out[k] = Math.min(1, Math.max(0, out[k]));
+  return out;
+}
+
+export function oklabToDisplayLinear([L, a, b]: Vec3): Vec3 {
+  return oklabToDisplayLinearInto(L, a, b, [0, 0, 0]);
+}
+
+/** "#rrggbb" of the nearest screen color; see `oklabToDisplayLinearInto`. */
+export function oklabToDisplayHex(lab: Vec3): string {
+  return linearToHex(oklabToDisplayLinear(lab));
+}
+
 export function formatOklch([L, C, h]: Vec3): string {
   // Hue is meaningless for neutrals; CSS writes it as "none", we show 0 to keep columns aligned.
   const hue = C < 1e-4 ? 0 : h;

@@ -33,12 +33,11 @@ import {
   AB_RANGE,
   type Vec3,
   deltaEOK,
-  isLinearInGamut,
   isOklabInGamut,
   linearSrgbToOklab,
   maxChroma,
-  oklabToLinearSrgb,
-  oklabToLinearSrgbInto,
+  oklabToDisplayLinear,
+  oklabToDisplayLinearInto,
   oklabToOklch,
   oklchToOklab,
   srgbToLinear,
@@ -112,23 +111,6 @@ function buildGamutGeometry(steps: number): BufferGeometry {
 const CAGE_L_STEP = 0.1;
 const CAGE_H_STEP = 30;
 
-/**
- * Linear sRGB to draw a color with. Outside sRGB the chroma is reduced at constant L and h until the color
- * fits, so Pointer's gamut shows the nearest screen color of the same lightness and hue.
- */
-function displayColorInto(L: number, a: number, b: number, out: Vec3): Vec3 {
-  oklabToLinearSrgbInto(L, a, b, out);
-  if (!isLinearInGamut(out)) {
-    const C = Math.hypot(a, b);
-    const scale = C > 0 ? Math.min(1, maxChroma(L, (Math.atan2(b, a) * 180) / Math.PI) / C) : 1;
-    oklabToLinearSrgbInto(L, a * scale, b * scale, out);
-  }
-  for (let k = 0; k < 3; k++) out[k] = Math.min(1, Math.max(0, out[k]));
-  return out;
-}
-
-const displayColor = ([L, a, b]: Vec3): Vec3 => displayColorInto(L, a, b, [0, 0, 0]);
-
 /** Line segments through OKLab points, every vertex in its own color. */
 function polylineGeometry(lines: Vec3[][]): BufferGeometry {
   const positions: number[] = [];
@@ -137,7 +119,7 @@ function polylineGeometry(lines: Vec3[][]): BufferGeometry {
     for (let i = 1; i < labs.length; i++) {
       for (const lab of [labs[i - 1], labs[i]]) {
         positions.push(lab[1], lab[0], -lab[2]);
-        colors.push(...displayColor(lab));
+        colors.push(...oklabToDisplayLinear(lab));
       }
     }
   }
@@ -212,7 +194,7 @@ function buildPointerGeometry(): BufferGeometry {
       const lab = pointerBoundary(i, j * 2);
       const v = i * cols + j;
       positions.set([lab[1], lab[0], -lab[2]], v * 3);
-      colors.set(displayColor(lab), v * 3);
+      colors.set(oklabToDisplayLinear(lab), v * 3);
       if (i === 0) continue;
       const a = v - cols;
       const b = (i - 1) * cols + ((j + 1) % cols);
@@ -272,7 +254,7 @@ function buildHullGeometry(points: readonly Vec3[], hull: Hull): BufferGeometry 
         positions[v * 3] = a;
         positions[v * 3 + 1] = L;
         positions[v * 3 + 2] = -b;
-        colors.set(displayColorInto(L, a, b, rgb), v * 3);
+        colors.set(oklabToDisplayLinearInto(L, a, b, rgb), v * 3);
         if (i + j === n) continue;
         indices.set([v, at(base, i + 1, j), at(base, i, j + 1)], t);
         t += 3;
@@ -779,7 +761,7 @@ export class GamutSolid {
 
   private placeMarker(marker: ReturnType<typeof makeMarker>, lab: Vec3): void {
     marker.group.position.copy(labToScene(lab));
-    const rgb = oklabToLinearSrgb(lab).map((c) => Math.min(1, Math.max(0, c)));
+    const rgb = oklabToDisplayLinear(lab);
     marker.fill.color.setRGB(rgb[0], rgb[1], rgb[2]); // linear working space
     marker.rim.color.set(lab[0] > 0.62 ? 0x000000 : 0xffffff);
   }
@@ -792,7 +774,7 @@ export class GamutSolid {
     paints.forEach((paint, i) => {
       positions.set(labToScene(paint.lab).toArray(), i * 3);
       // Vertex colors are linear-light, like the solid's.
-      fills.set(oklabToLinearSrgb(paint.lab).map((c) => Math.min(1, Math.max(0, c))), i * 3);
+      fills.set(oklabToDisplayLinear(paint.lab), i * 3);
       rims.set(new Color(paint.lab[0] > 0.62 ? 0x000000 : 0xffffff).toArray(), i * 3);
     });
     for (const [dots, colors] of [

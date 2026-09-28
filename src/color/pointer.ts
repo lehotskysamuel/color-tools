@@ -3,11 +3,10 @@
  * Color Research & Application 5, 1980). Pointer measured 4089 samples of paints, inks, plastics and
  * textiles and published, for each CIELAB lightness and hue, the highest chroma any of them reached.
  *
- * The table is in CIE LCh(ab) under illuminant C. To place it in OKLab (which is relative to D65), each
- * point goes CIELAB (C) -> XYZ (C) -> Bradford adaptation to D65 -> linear sRGB (unbounded) -> OKLab, so a
- * neutral surface stays neutral and white maps to OKLab L = 1.
+ * The table is in CIE LCh(ab) under illuminant C; `CIELAB_C` places it in OKLab.
  */
-import { type Vec3, linearSrgbToOklab, oklabToLinearSrgbInto } from './oklab.ts';
+import { CIELAB_C } from './cielab.ts';
+import type { Vec3 } from './oklab.ts';
 
 /** CIELAB lightness of each table row. */
 export const POINTER_LIGHTNESS = [15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90] as const;
@@ -64,106 +63,17 @@ export function pointerMaxChroma(Lstar: number, hDeg: number): number {
   return lo * (1 - u) + hi * u;
 }
 
-type Mat3 = readonly [Vec3, Vec3, Vec3];
-
-const apply = (m: Mat3, [x, y, z]: Vec3): Vec3 => [
-  m[0][0] * x + m[0][1] * y + m[0][2] * z,
-  m[1][0] * x + m[1][1] * y + m[1][2] * z,
-  m[2][0] * x + m[2][1] * y + m[2][2] * z,
-];
-
-const multiply = (a: Mat3, b: Mat3): Mat3 =>
-  [0, 1, 2].map((r) =>
-    [0, 1, 2].map((c) => a[r][0] * b[0][c] + a[r][1] * b[1][c] + a[r][2] * b[2][c]),
-  ) as unknown as Mat3;
-
-function invert(m: Mat3): Mat3 {
-  const [[a, b, c], [d, e, f], [g, h, i]] = m;
-  const A = e * i - f * h;
-  const B = f * g - d * i;
-  const C = d * h - e * g;
-  const det = a * A + b * B + c * C;
-  return [
-    [A / det, (c * h - b * i) / det, (b * f - c * e) / det],
-    [B / det, (a * i - c * g) / det, (c * d - a * f) / det],
-    [C / det, (b * g - a * h) / det, (a * e - b * d) / det],
-  ];
-}
-
-/** Linear sRGB -> CIE XYZ (D65), IEC 61966-2-1. */
-const SRGB_TO_XYZ: Mat3 = [
-  [0.4124564, 0.3575761, 0.1804375],
-  [0.2126729, 0.7151522, 0.072175],
-  [0.0193339, 0.119192, 0.9503041],
-];
-
-const BRADFORD: Mat3 = [
-  [0.8951, 0.2664, -0.1614],
-  [-0.7502, 1.7135, 0.0367],
-  [0.0389, -0.0685, 1.0296],
-];
-
-/** Illuminant C, CIE 1931 2° observer. */
-const C_XY = [0.310056734303928, 0.316145704789204] as const;
-export const WHITE_C: Vec3 = [C_XY[0] / C_XY[1], 1, (1 - C_XY[0] - C_XY[1]) / C_XY[1]];
-const WHITE_D65 = apply(SRGB_TO_XYZ, [1, 1, 1]);
-
-/** Von Kries adaptation in the Bradford cone space, from one white to another. */
-function bradford(from: Vec3, to: Vec3): Mat3 {
-  const s = apply(BRADFORD, from);
-  const d = apply(BRADFORD, to);
-  const scale: Mat3 = [
-    [d[0] / s[0], 0, 0],
-    [0, d[1] / s[1], 0],
-    [0, 0, d[2] / s[2]],
-  ];
-  return multiply(invert(BRADFORD), multiply(scale, BRADFORD));
-}
-
-/** XYZ relative to illuminant C -> linear sRGB, and back. Values outside [0, 1] are outside sRGB. */
-const XYZ_C_TO_LINEAR = multiply(invert(SRGB_TO_XYZ), bradford(WHITE_C, WHITE_D65));
-const LINEAR_TO_XYZ_C = invert(XYZ_C_TO_LINEAR);
-
-const EPSILON = 216 / 24389;
-const KAPPA = 24389 / 27;
-const f = (t: number) => (t > EPSILON ? Math.cbrt(t) : (KAPPA * t + 16) / 116);
-const fInv = (v: number) => (v * v * v > EPSILON ? v * v * v : (116 * v - 16) / KAPPA);
-
-/** CIELAB (illuminant C, the table's space) -> OKLab. */
-export function cielabToOklab([Lstar, a, b]: Vec3): Vec3 {
-  const fy = (Lstar + 16) / 116;
-  const xyz: Vec3 = [WHITE_C[0] * fInv(fy + a / 500), WHITE_C[1] * fInv(fy), WHITE_C[2] * fInv(fy - b / 200)];
-  return linearSrgbToOklab(apply(XYZ_C_TO_LINEAR, xyz));
-}
-
-/** OKLab -> CIELAB (illuminant C). Written into `out` for per-sample loops. */
-export function oklabToCielabInto(L: number, a: number, b: number, out: Vec3): Vec3 {
-  const rgb = oklabToLinearSrgbInto(L, a, b, out);
-  const [x, y, z] = apply(LINEAR_TO_XYZ_C, rgb);
-  const fx = f(x / WHITE_C[0]);
-  const fy = f(y / WHITE_C[1]);
-  const fz = f(z / WHITE_C[2]);
-  out[0] = 116 * fy - 16;
-  out[1] = 500 * (fx - fy);
-  out[2] = 200 * (fy - fz);
-  return out;
-}
-
-export function oklabToCielab([L, a, b]: Vec3): Vec3 {
-  return oklabToCielabInto(L, a, b, [0, 0, 0]);
-}
-
 /** The point of Pointer's boundary at a CIELAB lightness and hue, in OKLab. */
 export function pointerBoundary(Lstar: number, hDeg: number): Vec3 {
   const C = pointerMaxChroma(Lstar, hDeg);
   const rad = (hDeg * Math.PI) / 180;
-  return cielabToOklab([Lstar, C * Math.cos(rad), C * Math.sin(rad)]);
+  return CIELAB_C.toOklab([Lstar, C * Math.cos(rad), C * Math.sin(rad)]);
 }
 
 const scratch: Vec3 = [0, 0, 0];
 
 export function isOklabInPointer(L: number, a: number, b: number): boolean {
-  const [Lstar, as, bs] = oklabToCielabInto(L, a, b, scratch);
+  const [Lstar, as, bs] = CIELAB_C.fromOklabInto(L, a, b, scratch);
   if (!(Lstar > 0 && Lstar < 100)) return false;
   let h = (Math.atan2(bs, as) * 180) / Math.PI;
   if (h < 0) h += 360;
