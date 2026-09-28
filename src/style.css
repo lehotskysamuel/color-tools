@@ -92,19 +92,60 @@ body {
   gap: 20px;
 }
 
-/* Header */
+/* Header: the title and the two tabs, on the line that underlines the active tab. */
 .masthead {
-  display: grid;
-  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 4px 32px;
+  border-bottom: 1px solid var(--line);
 }
 
 .masthead h1 {
   margin: 0;
+  padding-bottom: 10px;
   font-size: 30px;
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.1;
   text-wrap: balance;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: -1px;
+  padding: 8px 12px 9px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+
+.tab-page {
+  display: grid;
+  gap: 20px;
 }
 
 .lede {
@@ -535,8 +576,11 @@ input[type='range']:focus-visible {
   gap: 6px;
 }
 
-.notes {
+.workspace > .notes {
   grid-area: notes;
+}
+
+.notes {
   display: grid;
   gap: 6px;
   font-size: 13px;
@@ -546,6 +590,148 @@ input[type='range']:focus-visible {
 .notes p {
   margin: 0;
   max-width: 90ch;
+}
+
+/* Set comparator */
+.compare-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.set-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.compare-reset {
+  margin-left: auto;
+}
+
+/*
+ * As many sets side by side as fit at 260px each. The cards share their rows through subgrid, so the renders,
+ * figures and tables line up even when one set's title or source wraps onto more lines.
+ */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 0 20px;
+}
+
+.compare-grid:empty {
+  display: none;
+}
+
+.set-card {
+  grid-row: span 4;
+  margin-bottom: 20px;
+}
+
+.set-card-head {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+}
+
+.set-card-head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.coverage {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding-bottom: 18px;
+}
+
+.coverage-value {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* The whole of Pointer's gamut: the fill is the set's share, the mark sRGB's. */
+.meter {
+  position: relative;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 4px;
+  background: var(--line);
+}
+
+.meter-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 4px;
+  background: var(--ink-2);
+}
+
+.meter-mark {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ink);
+}
+
+.meter-label {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.type-table {
+  width: 100%;
+  align-self: start;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.type-table th,
+.type-table td {
+  padding: 4px 0;
+}
+
+.type-table tr + tr {
+  border-top: 1px solid var(--line);
+}
+
+.type-table th {
+  text-align: left;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+.type-table td {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.type-table .total th,
+.type-table .total td {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.type-table td.none {
+  color: var(--ink-3);
 }
 
 /* Hover tooltip */

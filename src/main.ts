@@ -6,42 +6,26 @@ import {
   formatOklab,
   formatOklch,
   isOklabInGamut,
-  maxChroma,
   oklabToDisplayHex,
-  oklabToHex,
   oklabToOklch,
-  oklchToOklab,
 } from './color/oklab';
 import { type Paint, paintLabel } from './paints/vallejo';
-import { type AppState, type CutMode, type Gamut, type ShapeStyle, createStore } from './state';
+import { type AppState, type CutMode, type Gamut, type ShapeStyle, createStore, initialState } from './state';
+import { initTabs } from './tabs';
 import { onThemeChange } from './theme';
 import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
 import { LightnessSlice } from './views/lightnessSlice';
+import { SetComparator } from './views/setComparator';
 import { SwatchPane } from './views/swatchPane';
+import { Tooltip } from './views/tooltip';
 
 /** ΔE_OK of roughly one just-noticeable difference (the value CSS Color 4 uses for gamut mapping). */
 const JND = 0.02;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
-// Start on the blue / amber hue plane: its two halves peak at very different lightness,
-// which is the clearest picture of why HSL's "same lightness" is misleading.
-const START_L = 0.65;
-const START_H = 264;
-const store = createStore({
-  L: START_L,
-  h: START_H,
-  pick: oklchToOklab([START_L, Math.min(0.14, maxChroma(START_L, START_H) * 0.75), START_H]),
-  pickPaint: null,
-  paints: [],
-  hover: null,
-  cut: 'wedge',
-  gamut: 'pointer',
-  gamutStyle: 'wireframe',
-  hull: true,
-  hullStyle: 'solid',
-});
+const store = createStore(initialState());
 
 const lightness = new LightnessSlice(store, $('b1-stat'));
 const hue = new HueSlice(store, $('b2-stat'));
@@ -49,7 +33,7 @@ $('b1-host').appendChild(lightness.canvas);
 $('b2-host').appendChild(hue.canvas);
 
 const solidHost = $('solid-host');
-const solid = new GamutSolid(solidHost, store, lightness.image, hue.image, $('a-stat'));
+const solid = new GamutSolid(solidHost, store, lightness.image, hue.image, { stat: $('a-stat') });
 lightness.onImageChange = () => solid.lightnessImageChanged();
 hue.onImageChange = () => solid.hueImageChanged();
 
@@ -125,41 +109,23 @@ store.subscribe((_s, changed) => {
 });
 renderControls();
 
-// Hover tooltip, shared by the three views and the paint swatches
-const tooltip = $('tooltip');
-const tipName = $('tip-name');
-const tipSwatch = $('tip-swatch');
-const tipMain = $('tip-main');
-const tipSub = $('tip-sub');
+// Hover tooltip, shared by the three views, the paint swatches and the set comparator
+const tooltip = new Tooltip({
+  root: $('tooltip'),
+  name: $('tip-name'),
+  swatch: $('tip-swatch'),
+  main: $('tip-main'),
+  sub: $('tip-sub'),
+});
 
 function showHover(lab: Vec3 | null, clientX: number, clientY: number, paint?: Paint): void {
   store.set({ hover: lab });
   if (!lab) {
-    tooltip.hidden = true;
+    tooltip.hide();
     return;
   }
-  tipName.textContent = paint ? paintLabel(paint) : '';
-  tipName.hidden = !paint;
-  const inGamut = isOklabInGamut(lab);
-  tipMain.textContent = formatOklch(oklabToOklch(lab));
   const dE = deltaEOK(lab, store.get().pick);
-  const fromPick = `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`;
-  if (inGamut || paint) {
-    // A paint outside sRGB still exists; show it as its nearest screen color.
-    const hex = paint ? paint.display : oklabToHex(lab);
-    tipSwatch.style.background = hex;
-    tipSwatch.style.visibility = 'visible';
-    tipSub.textContent = `${inGamut ? hex : `outside sRGB, shown as ${hex}`} · ${fromPick}`;
-  } else {
-    tipSwatch.style.visibility = 'hidden';
-    tipSub.textContent = 'Outside sRGB. No screen color here.';
-  }
-  tooltip.hidden = false;
-  const pad = 14;
-  const { width, height } = tooltip.getBoundingClientRect();
-  const x = clientX + pad + width > window.innerWidth ? clientX - pad - width : clientX + pad;
-  const y = clientY + pad + height > window.innerHeight ? clientY - pad - height : clientY + pad;
-  tooltip.style.transform = `translate(${Math.max(4, x)}px, ${Math.max(4, y)}px)`;
+  tooltip.show(lab, clientX, clientY, paint, `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`);
 }
 
 lightness.onHover = showHover;
@@ -172,6 +138,7 @@ const views = document.querySelector<HTMLElement>('.views')!;
 
 function layout(): void {
   const width = $('b2-host').clientWidth;
+  if (width === 0) return; // the deep-dive tab is hidden
   // One column when the views area is narrow, two or three otherwise (container queries in style.css).
   const stacked = getComputedStyle(views).gridTemplateColumns.split(' ').length < 2;
   const b1Margins = lightness.sizeAt(0);
@@ -210,4 +177,21 @@ onThemeChange(() => {
 document.fonts?.ready.then(() => {
   lightness.refreshTheme();
   hue.refreshTheme();
+});
+
+// Tabs. The comparator is built the first time it is shown: it computes every selected set's coverage and
+// creates a WebGL context per set.
+let comparator: SetComparator | null = null;
+initTabs((tab) => {
+  tooltip.hide();
+  if (tab !== 'compare') return;
+  comparator ??= new SetComparator(
+    {
+      picker: $('compare-sets'),
+      grid: $('compare-grid'),
+      empty: $('compare-empty'),
+      reset: $<HTMLButtonElement>('compare-reset'),
+    },
+    tooltip,
+  );
 });

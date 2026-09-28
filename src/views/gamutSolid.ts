@@ -365,8 +365,23 @@ function clippedBy(point: Vector3, material: Material): boolean {
   return material.clipIntersection ? outside.every(Boolean) : outside.some(Boolean);
 }
 
+export interface GamutSolidOptions {
+  /** Receives how much of the color space the paint hull covers. */
+  stat?: HTMLElement;
+  /** Clicking picks a color or a paint, and the picked color is marked. Default true. */
+  picking?: boolean;
+}
+
+/** Where the camera is, enough to show the same view in another solid. The orbit target never moves. */
+export interface SolidView {
+  position: Vector3;
+  zoom: number;
+}
+
 export class GamutSolid {
   onHover: HoverHandler | null = null;
+  /** Called when the user orbits or zooms, and on resetView; not for views set with setView. */
+  onViewChange: ((view: SolidView) => void) | null = null;
 
   private readonly renderer: WebGLRenderer;
   private readonly scene = new Scene();
@@ -419,15 +434,17 @@ export class GamutSolid {
   private pointerDown: { x: number; y: number } | null = null;
   private hoverFrame = 0;
   private lastPointer: PointerEvent | null = null;
+  private applyingView = false;
+  private readonly stat: HTMLElement | null;
 
   constructor(
     private readonly host: HTMLElement,
     private readonly store: Store,
     lightnessImage: HTMLCanvasElement,
     hueImage: HTMLCanvasElement,
-    /** Receives how much of the color space the paint hull covers. */
-    private readonly stat: HTMLElement,
+    { stat, picking = true }: GamutSolidOptions = {},
   ) {
+    this.stat = stat ?? null;
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.autoClear = false;
@@ -481,13 +498,17 @@ export class GamutSolid {
     this.scene.add(axis);
 
     this.overlay.add(this.dotRims, this.dotFills, this.pickMarker.group, this.hoverMarker.group);
+    this.pickMarker.group.visible = picking;
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.copy(TARGET);
     this.controls.enablePan = false;
     this.controls.minZoom = 0.6;
     this.controls.maxZoom = 6;
-    this.controls.addEventListener('change', () => this.requestRender());
+    this.controls.addEventListener('change', () => {
+      this.requestRender();
+      if (!this.applyingView) this.onViewChange?.(this.view);
+    });
     this.controls.addEventListener('start', () => {
       this.dragging = true;
       this.onHover?.(null, 0, 0);
@@ -497,6 +518,7 @@ export class GamutSolid {
     const el = this.renderer.domElement;
     el.addEventListener('pointerdown', (e) => (this.pointerDown = { x: e.clientX, y: e.clientY }));
     el.addEventListener('pointerup', (e) => {
+      if (!picking) return;
       const down = this.pointerDown;
       this.pointerDown = null;
       if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) return;
@@ -574,6 +596,22 @@ export class GamutSolid {
     this.controls.target.copy(TARGET);
     this.updateCamera();
     this.controls.update();
+    this.requestRender();
+  }
+
+  get view(): SolidView {
+    return { position: this.camera.position.clone(), zoom: this.camera.zoom };
+  }
+
+  /** Shows a view taken from another solid. */
+  setView(view: SolidView): void {
+    this.applyingView = true;
+    this.camera.position.copy(view.position);
+    this.camera.zoom = view.zoom;
+    this.camera.updateProjectionMatrix();
+    this.controls.update();
+    this.applyingView = false;
+    // The controls report no change when only the zoom differs.
     this.requestRender();
   }
 
@@ -741,6 +779,7 @@ export class GamutSolid {
   }
 
   private updateStat(state: AppState): void {
+    if (!this.stat) return;
     const pct = (share: number) => `${Math.round(share * 100)}%`;
     const pointer = state.gamut === 'pointer';
     const parts: string[] = [];

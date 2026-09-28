@@ -2,7 +2,8 @@
 
 Browser tools for seeing color the way people perceive it. The first one, **OKLCh Atlas**, draws the sRGB
 gamut and Pointer's gamut of real surface colors in OKLab, so that distance on screen matches perceived color
-difference, and measures how much of them a set of paints covers.
+difference, and measures how much of them a set of paints covers. It has two tabs: the **set deep-dive**, one
+paint set in three linked views, and the **[set comparator](#set-comparator)**, several paint sets side by side.
 
 ```sh
 npm install
@@ -55,7 +56,7 @@ about 0.02 is one just-noticeable difference (the threshold CSS Color 4 uses for
 
 ## The views
 
-All three views use OKLab geometry with **one pixel scale for every axis**. In the 2D slices, a given on-screen
+The **Set deep-dive** tab. All three views use OKLab geometry with **one pixel scale for every axis**. In the 2D slices, a given on-screen
 distance is the same perceptual difference everywhere, in both slices.
 
 | | View | Shows | Distances |
@@ -196,6 +197,39 @@ Page layout, by width:
 The views switch on the width of their own area (a container query), not the window, because the paints pane
 takes a share of it.
 
+## Set comparator
+
+The **Set comparator** tab (`#compare` in the URL, so a reload keeps it and the back button returns to the
+deep-dive) puts paint sets side by side. The sets are the layouts of the deep-dive's **Layout** select, each
+counted once per paint: a combination table's set is the paints it uses. The toggle buttons above the cards pick
+the sets, the page remembers them in `localStorage`, and the cards follow the order of the layout list. It starts
+with the three printed ranges: Game Color chart, Model Color chart and Squidmar Color Mega Set.
+
+Each set gets one card:
+
+| Part | Shows |
+|---|---|
+| **Render** | View A exactly as the deep-dive first draws it with that layout selected: Pointer's gamut as a wireframe, the hull of the set's paints as a solid, every paint as a dot, cut with a wedge at L 0.650 and hue 264°. There is no picked color, so no pick marker, and clicking picks nothing. |
+| **Pointer's gamut covered** | The share of Pointer's gamut's volume in OKLab inside the hull of the set's paints, as [measured for the deep-dive](#pointers-gamut-and-the-paint-hull), to one decimal. The bar is all of Pointer's gamut; its mark is sRGB's share (78 %) for scale. |
+| **Colors** | How many paints the set has, and how many of each type (acrylic, ink, fluorescent, wash, metallic), every type listed so the rows line up across cards. |
+
+The renders are linked. Orbiting or zooming any of them moves all of them to the same view, **Reset view**
+resets all of them, and a set added later joins at the current view. Hovering a color marks it in every render
+and shows it in the tooltip, so a paint of one set can be seen against the hull of another.
+
+The caveat from [the coverage table](#pointers-gamut-and-the-paint-hull) applies: the Squidmar Color figures come
+from marketing images and are not directly comparable with the printed charts'.
+
+Each render has its own WebGL context, created when its set is first selected and kept afterwards, so the page
+never holds more than eight (seven sets and the deep-dive's solid), half of the sixteen Chrome allows. The comparator
+itself is built the first time its tab is shown. The cut faces come from a lightness and a hue slice at the
+starting L and h that are never put on screen.
+
+| Width | Layout |
+|---|---|
+| Room for several 260 px columns | As many cards side by side as fit, rows aligned across cards (CSS subgrid) |
+| Narrower | One card per row |
+
 ## How it works
 
 - **Color math** (`src/color/oklab.ts`): the sRGB transfer function, Ottosson's matrices, and OKLab ↔ OKLCh. A
@@ -243,14 +277,20 @@ src/
   paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
   paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab from the best field
   paints/vallejo.test.ts  every layout code resolves, OKLab agrees with the stored OKLCh
-  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
+  paints/sets.ts          a layout's paints once each, paints per type, coverage of Pointer's gamut
+  paints/sets.test.ts
+  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes),
+                          and the starting state
+  tabs.ts                 the two tabs, and the comparator's #compare URL
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
   views/lightnessSlice.ts B.1
   views/hueSlice.ts       B.2
   views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
   views/swatchPane.ts     Vallejo swatches, the layout select, and which paints are shown
-  main.ts                 wiring, layout, tooltip, readout
+  views/setComparator.ts  the comparator tab: set toggles, one card per set, renders with a shared camera
+  views/tooltip.ts        the hover tooltip, shared by both tabs
+  main.ts                 wiring, layout, readout
 ```
 
 ## Known limits

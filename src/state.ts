@@ -1,5 +1,5 @@
 import type { Gamut } from './color/coverage';
-import { type Vec3, oklabToOklch } from './color/oklab';
+import { type Vec3, maxChroma, oklabToOklch, oklchToOklab } from './color/oklab';
 import type { Paint } from './paints/vallejo';
 
 export type { Gamut };
@@ -33,6 +33,28 @@ export interface AppState {
   /** Draw the convex hull of the shown paints in A, once at least MIN_HULL_PAINTS are shown. */
   hull: boolean;
   hullStyle: ShapeStyle;
+}
+
+// Start on the blue / amber hue plane: its two halves peak at very different lightness,
+// which is the clearest picture of why HSL's "same lightness" is misleading.
+const START_L = 0.65;
+const START_H = 264;
+
+/** The deep-dive's starting state. The set comparator draws every set in it. */
+export function initialState(paints: readonly Paint[] = []): AppState {
+  return {
+    L: START_L,
+    h: START_H,
+    pick: oklchToOklab([START_L, Math.min(0.14, maxChroma(START_L, START_H) * 0.75), START_H]),
+    pickPaint: null,
+    paints,
+    hover: null,
+    cut: 'wedge',
+    gamut: 'pointer',
+    gamutStyle: 'wireframe',
+    hull: true,
+    hullStyle: 'solid',
+  };
 }
 
 export type Listener = (state: AppState, changed: Set<keyof AppState>) => void;
