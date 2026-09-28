@@ -102,7 +102,6 @@ export class SwatchPane {
     const { sections, columns } = this.layout;
     const grid = this.grid;
     grid.replaceChildren();
-    grid.classList.toggle('is-combinations', !!columns);
     // The hovered swatch is gone, and no pointerleave will fire for it.
     if (this.hovering) {
       this.hovering = false;
@@ -112,33 +111,34 @@ export class SwatchPane {
     if (columns) {
       // Combination tables: each printed block is a column of [highlight, base, shadow] rows. The blocks sit
       // side by side as on the chart when the pane is wide enough, and wrap when it is not (style.css).
-      grid.style.gridTemplateColumns = '';
-      grid.style.setProperty('--triplet', String(columns.length));
+      const blocks = document.createElement('div');
+      blocks.className = 'swatch-blocks';
+      blocks.style.setProperty('--triplet', String(columns.length));
       for (const section of sections) {
         const block = document.createElement('div');
         block.className = 'swatch-block';
         for (const code of section.rows.flat()) block.append(this.swatch(code));
-        grid.append(block);
+        blocks.append(block);
       }
+      grid.append(blocks);
       const triplet = columns.join(', ').replace(/, (?=[^,]*$)/, ' and ');
       this.note.textContent = `Each row is a ${triplet} triplet. Order as printed in ${this.layout.source}.`;
     } else {
-      // Charts: sections stacked, every printed row starting in the first column.
+      // Charts: sections stacked, every printed row starting in the first column. The heading goes above its
+      // section's chart, so the swatches alone sit on the stage gray.
       const width = Math.max(...sections.flatMap((s) => s.rows.map((row) => row.length)));
-      grid.style.gridTemplateColumns = `repeat(${width}, minmax(0, var(--swatch-max)))`;
-      let r = 1;
       for (const section of sections) {
         if (section.title && sections.length > 1) {
           const heading = document.createElement('h3');
           heading.className = 'swatch-heading eyebrow';
           heading.textContent = section.title;
-          heading.style.gridRow = String(r++);
           grid.append(heading);
         }
-        for (const row of section.rows) {
-          row.forEach((code, c) => grid.append(this.swatch(code, r, c + 1)));
-          r++;
-        }
+        const chart = document.createElement('div');
+        chart.className = 'swatch-chart';
+        chart.style.gridTemplateColumns = `repeat(${width}, minmax(0, var(--swatch-max)))`;
+        section.rows.forEach((row, r) => row.forEach((code, c) => chart.append(this.swatch(code, r + 1, c + 1))));
+        grid.append(chart);
       }
       this.note.textContent = `Order as printed in ${this.layout.source}.`;
     }

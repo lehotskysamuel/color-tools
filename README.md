@@ -72,7 +72,9 @@ The views are linked:
 - Hovering shows the color's OKLCh, hex and ΔE<sub>OK</sub> from the picked color, in JND units.
 - Hatched areas are outside sRGB. No screen color exists there.
 
-The page chrome is deliberately achromatic. A tinted surround shifts how the plotted colors look.
+The page chrome is deliberately achromatic. A tinted surround shifts how the plotted colors look, and so does a bright
+or dark one. So every color (the slices, the solid, the paint swatches, the picked color) sits on the same middle
+gray, CIE L\* 50, in both themes; only the text is on white, or black in the dark theme.
 
 ### Vallejo paints
 
