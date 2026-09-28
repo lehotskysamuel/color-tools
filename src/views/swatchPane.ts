@@ -128,12 +128,7 @@ export class SwatchPane {
       // section's chart, so the swatches alone sit on the stage gray.
       const width = Math.max(...sections.flatMap((s) => s.rows.map((row) => row.length)));
       for (const section of sections) {
-        if (section.title && sections.length > 1) {
-          const heading = document.createElement('h3');
-          heading.className = 'swatch-heading eyebrow';
-          heading.textContent = section.title;
-          grid.append(heading);
-        }
+        if (section.title && sections.length > 1) grid.append(this.sectionHead(section.title, section.rows.flat()));
         const chart = document.createElement('div');
         chart.className = 'swatch-chart';
         chart.style.gridTemplateColumns = `repeat(${width}, minmax(0, var(--swatch-max)))`;
@@ -145,6 +140,36 @@ export class SwatchPane {
     this.codes = [...new Set(sections.flatMap((s) => s.rows.flat()))];
     this.show(this.codes);
     this.markPicked();
+  }
+
+  /** A section's heading, with buttons that show or hide only that section's paints. Neither picks a paint. */
+  private sectionHead(title: string, codes: string[]): HTMLElement {
+    const head = document.createElement('div');
+    head.className = 'swatch-section-head';
+    const heading = document.createElement('h3');
+    heading.className = 'swatch-heading eyebrow';
+    heading.textContent = title;
+    head.append(heading);
+    for (const [text, label, visible] of [
+      ['All', 'Select all', true],
+      ['None', 'Select none', false],
+    ] as const) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'button button-small';
+      button.textContent = text;
+      button.setAttribute('aria-label', `${label}: ${title}`);
+      button.addEventListener('click', () => {
+        const shown = new Set(this.shown);
+        for (const code of codes) {
+          if (visible) shown.add(code);
+          else shown.delete(code);
+        }
+        this.show(shown);
+      });
+      head.append(button);
+    }
+    return head;
   }
 
   private swatch(code: string, row?: number, column?: number): HTMLButtonElement {

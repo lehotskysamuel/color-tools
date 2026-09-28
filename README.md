@@ -86,7 +86,9 @@ charts and the Mega Set one after the other, which holds every paint in the cata
 choice in `localStorage`.
 
 **Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
-its paints on, and **Select all** / **Select none** switch them all at once.
+its paints on, and **Select all** / **Select none** switch them all at once. In a chart printed in several sections
+(the Game Color chart's chart, wash, fluo and ink), **All** / **None** next to a section's heading switch only that
+section's paints. None of these buttons picks a paint.
 
 - Clicking a swatch switches its paint on or off. An off swatch shrinks to a small square with a dashed border,
   still in its own color.

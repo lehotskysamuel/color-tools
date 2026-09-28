@@ -280,13 +280,22 @@ body {
   gap: 9px 5px;
 }
 
-.swatch-heading {
-  margin: 10px 0 0;
-  font-weight: 500;
+/* A section's heading, followed by buttons that show or hide just its paints. */
+.swatch-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
 }
 
-.swatch-heading:first-child {
+.swatch-section-head:first-child {
   margin-top: 0;
+}
+
+.swatch-heading {
+  margin: 0 4px 0 0;
+  font-weight: 500;
 }
 
 .swatch {
@@ -480,6 +489,11 @@ input[type='range']:focus-visible {
 
 .button:hover {
   background: var(--bg);
+}
+
+.button-small {
+  font-size: 12px;
+  padding: 1px 8px;
 }
 
 .button[aria-pressed='true'] {
