@@ -113,6 +113,37 @@ body {
   color: var(--ink-2);
 }
 
+/* Links between the pages */
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.site-nav a {
+  color: var(--ink-2);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.site-nav a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink-3);
+}
+
+.site-nav a[aria-current='page'] {
+  color: var(--ink);
+  font-weight: 500;
+  border-bottom-color: var(--ink);
+}
+
+.site-nav a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
 /*
  * Two panes: Vallejo swatches on the left, the readout and the three views on the right.
  * The swatch pane spans every row and sticks to the top, so the paints stay in reach while the views scroll.
@@ -535,8 +566,11 @@ input[type='range']:focus-visible {
   gap: 6px;
 }
 
-.notes {
+.workspace > .notes {
   grid-area: notes;
+}
+
+.notes {
   display: grid;
   gap: 6px;
   font-size: 13px;
@@ -546,6 +580,200 @@ input[type='range']:focus-visible {
 .notes p {
   margin: 0;
   max-width: 90ch;
+}
+
+/*
+ * Difference matrix (matrix.html). The table scrolls inside its own box both ways, which is what lets the
+ * header row and column stick. Only the cells in view are rendered, with spacers around them (diffMatrix.ts),
+ * so every size the spacers stand for is fixed here: the row header column --head, a cell --cell wide and
+ * --row tall. The table layout is fixed, with widths from the <col>s.
+ */
+.matrix-panel {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  min-width: 0;
+}
+
+.matrix-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.matrix-scroll {
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.matrix-scroll:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.matrix {
+  --head: 216px;
+  --cell: 50px;
+  /* Two 14px lines, 3px padding above and below, a 1px border. */
+  --row: 35px;
+  table-layout: fixed;
+  /* --n, the number of paints, is set by diffMatrix.ts. */
+  width: calc(var(--head) + var(--n, 0) * var(--cell));
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.matrix tbody tr {
+  height: var(--row);
+}
+
+.matrix col {
+  width: var(--cell);
+}
+
+.matrix col:first-child {
+  width: var(--head);
+}
+
+/* The hovered cell's row and column. */
+.matrix col.is-hover,
+.matrix tbody tr:not(.matrix-gap):hover {
+  background: var(--bg);
+}
+
+.matrix td,
+.matrix-key-cell {
+  padding: 3px 5px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.matrix td,
+.matrix th {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+/* J, under D */
+.matrix td span,
+.matrix-key-cell span {
+  display: block;
+  color: var(--ink-3);
+}
+
+.matrix tr:not(.matrix-gap) > td:not(.matrix-gap):hover {
+  outline: 1px solid var(--ink);
+  outline-offset: -1px;
+}
+
+.matrix td.is-self {
+  background: var(--hatch);
+  color: var(--ink-3);
+}
+
+/* Spacers standing for the rows and columns out of view */
+.matrix td.matrix-gap,
+.matrix .matrix-gap td {
+  padding: 0;
+  border: 0;
+}
+
+.matrix-key-cell {
+  display: inline-block;
+  font-size: 11px;
+  line-height: 14px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.matrix th,
+.matrix-corner {
+  position: sticky;
+  overflow: hidden;
+  background: var(--surface);
+  font-weight: 400;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.matrix thead th,
+.matrix-corner {
+  top: 0;
+  z-index: 2;
+}
+
+.matrix thead th {
+  padding: 5px 3px 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.matrix-corner {
+  left: 0;
+  z-index: 3;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.matrix tbody th {
+  left: 0;
+  z-index: 1;
+  padding: 3px 8px 3px 5px;
+  text-align: left;
+  text-overflow: ellipsis;
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+.matrix th.is-hover {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.matrix-swatch {
+  display: block;
+  height: 14px;
+  margin-bottom: 3px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+
+.matrix tbody .matrix-swatch {
+  display: inline-block;
+  width: 14px;
+  margin: 0 6px 0 0;
+  vertical-align: -3px;
+}
+
+.matrix-tip {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.matrix-tip-paint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.matrix-tip-swatch {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  flex: none;
 }
 
 /* Hover tooltip */
@@ -658,5 +886,17 @@ input[type='range']:focus-visible {
 
   .narrow-only {
     display: inline;
+  }
+
+  .matrix {
+    --head: 84px;
+  }
+
+  .matrix-name {
+    display: none;
+  }
+
+  .matrix-panel {
+    padding: 12px;
   }
 }

@@ -2,7 +2,9 @@
 
 Browser tools for seeing color the way people perceive it. The first one, **OKLCh Atlas**, draws the sRGB
 gamut and Pointer's gamut of real surface colors in OKLab, so that distance on screen matches perceived color
-difference, and measures how much of them a set of paints covers.
+difference, and measures how much of them a set of paints covers. The second, the
+[**Difference matrix**](#difference-matrix) (`matrix.html`), gives the perceived difference between every pair of
+paints. Links at the top of each page lead to the other.
 
 ```sh
 npm install
@@ -196,6 +198,31 @@ Page layout, by width:
 The views switch on the width of their own area (a container query), not the window, because the paints pane
 takes a share of it.
 
+## Difference matrix
+
+`matrix.html` is a table of every pair of paints: each paint is a row and, in the same order, a column. The cell
+where two paints meet holds two values:
+
+- **D**, their distance in OKLab (ΔE<sub>OK</sub>), to three decimals.
+- **J**, the same distance in just-noticeable differences, D / 0.02 (`JND` in `src/color/oklab.ts`), to one
+  decimal.
+
+J is D × 50, so both rank the pairs the same way. J is the easier one to read against what the eye can tell apart.
+
+- **Paints** picks the paints: any layout from the atlas's paint pane, with All paints (374) as the default.
+  Layouts that repeat paints (the combination tables) list each paint once, in printed order. The page remembers
+  the choice in `localStorage`, separately from the atlas.
+- The table is symmetric, with zeros on the shaded diagonal. The header row and column stick while it scrolls.
+  Hovering a cell highlights its row and column and shows both paints with their D and J.
+- Each paint has the same color as in the atlas: `cielab` when present, else `rgb`. For the ten chart colors
+  outside sRGB, the swatch shows the nearest screen color, but the distance uses the real color.
+
+All paints make 374 × 374 = 139 876 cells. Rendered as one plain table, they took seconds to lay out on every
+layout switch. So `src/views/diffMatrix.ts` renders only the rows and columns in view, plus 8 on each side, with
+spacer rows and columns standing for the rest, and renders again when a scroll goes past them. The spacers need
+fixed sizes, which `style.css` sets as `--head`, `--cell` and `--row`. The browser's find (Ctrl+F) only sees the
+rendered cells.
+
 ## How it works
 
 - **Color math** (`src/color/oklab.ts`): the sRGB transfer function, Ottosson's matrices, and OKLab ↔ OKLCh. A
@@ -250,7 +277,9 @@ src/
   views/hueSlice.ts       B.2
   views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
   views/swatchPane.ts     Vallejo swatches, the layout select, and which paints are shown
-  main.ts                 wiring, layout, tooltip, readout
+  views/diffMatrix.ts     the difference matrix table, rendering only the cells in view
+  main.ts                 atlas (index.html): wiring, layout, tooltip, readout
+  matrix.ts               difference matrix (matrix.html): paint set, tooltip
 ```
 
 ## Known limits
