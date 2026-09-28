@@ -154,7 +154,7 @@ export class SwatchPane {
     button.className = 'swatch';
     button.dataset.code = code;
     // Only the color: a hidden paint's swatch shrinks by clipping the background to the content box.
-    button.style.backgroundColor = paint.rgb;
+    button.style.backgroundColor = paint.display;
     if (row && column) {
       button.style.gridRow = String(row);
       button.style.gridColumn = String(column);

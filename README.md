@@ -1,7 +1,8 @@
 # color-tools
 
 Browser tools for seeing color the way people perceive it. The first one, **OKLCh Atlas**, draws the sRGB
-gamut in OKLab so that distance on screen matches perceived color difference.
+gamut and Pointer's gamut of real surface colors in OKLab, so that distance on screen matches perceived color
+difference, and measures how much of them a set of paints covers.
 
 ```sh
 npm install
@@ -59,7 +60,7 @@ distance is the same perceptual difference everywhere, in both slices.
 
 | | View | Shows | Distances |
 |---|---|---|---|
-| **A** | Gamut solid (3D) | Every sRGB color at its OKLab position, L pointing up. Drag to orbit, scroll to zoom. The solid can be cut at the current L, at the current hue, or with a wedge that removes one quarter. **Wireframe** swaps the surface for a see-through cage; the cut still decides which slices show inside it. | Correct in 3D. The on-screen projection is only faithful for pairs parallel to the screen. The camera is orthographic, so there is no perspective distortion on top of that. |
+| **A** | Gamut solid (3D) | A color space's gamut at its OKLab position, L pointing up: Pointer's gamut (default) or every sRGB color. With it, the convex hull of the shown paints. Drag to orbit, scroll to zoom. The solids can be cut at the current L, at the current hue, or with a wedge that removes one quarter. Each shape is drawn as a see-through **wireframe** or an opaque **solid**; the cut still decides which slices show inside a wireframe. See [Pointer's gamut and the paint hull](#pointers-gamut-and-the-paint-hull). | Correct in 3D. The on-screen projection is only faithful for pairs parallel to the screen. The camera is orthographic, so there is no perspective distortion on top of that. |
 | **B.1** | Lightness slice | A horizontal cut at one lightness. Hue is the angle, chroma the radius. | Exact within the slice. |
 | **B.2** | Hue slice | A vertical plane through the gray axis. Hue h on the right, its complement h + 180° on the left, L up. It is a true plane, so the complement half is not mirrored or stretched. Diamonds mark each half's cusp, its most chromatic point. | Exact within the slice, including across the gray axis. |
 
@@ -78,8 +79,9 @@ The page chrome is deliberately achromatic. A tinted surround shifts how the plo
 
 The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
 **Layout** select switches between the six layouts in `data/vallejo-layouts.json` (Game Color chart and
-combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials), and the page remembers
-the choice in `localStorage`.
+combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials) plus **All paints**, the
+charts and the Mega Set one after the other, which holds every paint in the catalog once. The page remembers the
+choice in `localStorage`.
 
 **Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
 its paints on, and **Select all** / **Select none** switch them all at once.
@@ -98,12 +100,90 @@ its paints on, and **Select all** / **Select none** switch them all at once.
 
 - **A (solid):** every dot that is on, drawn after the solid with a fresh depth buffer. No dot hides inside the
   solid, and nearer dots still cover farther ones. The flip side: a dot behind the solid looks as if it sat on
-  its front surface, so orbit the solid to judge depth, or switch on **Wireframe** to see through it. Dots are
+  its front surface, so orbit the solid to judge depth, or draw it as a **Wireframe** to see through it. Dots are
   drawn over the slice planes inside the cage too. Dots keep a fixed size on screen when zooming.
 - **B.1 and B.2 (slices):** only paints within ΔE<sub>OK</sub> 0.04 of the slice plane (`PAINT_BAND` in
   `src/views/slicePlot.ts`), at their orthogonal projection onto it. The farther from the plane, the fainter the
   dot. A dot's position is exact only for a paint that lies on the plane; at the band's edge it can be off by up
   to 0.04.
+
+Every paint sits at its best-known color: `cielab` when the data has one, else `rgb` (see
+[`data/vallejo.json`](#datavallejojson)). Ten chart colors, mostly teals and turquoises, lie outside sRGB. They sit
+at their true position and are drawn in the nearest screen color of the same lightness and hue, and the tooltip
+and the readout say that they are outside sRGB.
+
+### Pointer's gamut and the paint hull
+
+View A draws two shapes, each with its own options under the solid:
+
+| Shape | Options | Default |
+|---|---|---|
+| **Color space** | **sRGB** or **Pointer's** gamut; **Wireframe** or **Solid** | Pointer's, wireframe |
+| **Paint hull** | **On** or **Off**; **Wireframe** or **Solid** | On, solid |
+
+**Pointer's gamut** is the gamut of real surface colors: M. R. Pointer measured 4089 samples of paints, inks,
+plastics and textiles and published, for every 5 units of CIELAB lightness (L\* 15 to 90) and every 10° of hue,
+the highest chroma any of them reached ("The gamut of real surface colours", *Color Research & Application* 5,
+1980). The table (`src/color/pointer.ts`) is the one [colour-science](https://www.colour-science.org/) publishes.
+It is in CIE LCh under illuminant C. Each point is converted to OKLab through XYZ, with Bradford adaptation from
+C to D65, so a neutral surface stays neutral and white maps to OKLab L = 1.
+
+- Between table entries, chroma is linear in L\* and in hue.
+- The table stops at L\* 15 and 90. The solid is closed with a straight taper to zero chroma at black and white.
+  That part is an extrapolation, not data. It holds 2.4 % of the volume, and leaving it out moves the Vallejo
+  figure below by 0.1 points.
+- Outside sRGB, the surface shows the sRGB color of the same L and h with the chroma reduced until it fits.
+  Hovering it shows the real value and says it is outside sRGB; clicking there picks nothing.
+
+**The paint hull** is the convex hull of the shown paints in OKLab: the smallest convex solid that contains them.
+It is drawn once at least 5 paints are shown. Its faces are flat in OKLab and split into cells of 0.03 so every
+point shows its own color. Where a cut goes through it, a dashed line traces its outline. A convex hull is a
+measure of spread, not a claim that every color inside it can be mixed from the paints. Light mixes linearly in
+CIE XYZ and linear RGB, where a hull would be exactly the reachable mixes, but paint does not mix linearly in
+any three-number color space: the result depends on the pigments' spectra (Kubelka–Munk theory).
+
+**Coverage.** The line under the solid gives the share of the color space's volume that the hull covers, and in
+Pointer's mode the share sRGB covers. Volumes are measured in OKLab, so equal volumes are equal perceptual
+extents. `src/color/coverage.ts` computes them on a grid:
+
+1. OKLab (L 0 to 1, a and b within ±0.34) is split into cubes 0.01 on a side, about 460 000 of them.
+2. The centers inside the gamut stand for its volume: about 49 000 for Pointer's gamut, 54 000 for sRGB. A center
+   is inside Pointer's gamut when, converted to CIELAB under illuminant C, its chroma is at most the table's
+   maximum for its L\* and hue.
+3. The coverage is the fraction of those centers that also lie inside the hull, that is on the inner side of
+   every face plane. Parts of the hull outside the gamut do not count.
+
+A four times finer grid moves the figures by less than 0.05 points. `colorSetCoverage(colors, gamut)` does all of
+it for a list of OKLab colors, and `scripts/coverage.js` for a file of hex colors (Node 22.18 or later):
+
+```sh
+node scripts/coverage.js data/vallejo.json
+```
+
+It prints the coverage of Pointer's gamut and of sRGB for all colors, for each `range` and `type`, and for all
+colors except each group of a field with more than two values. Colors come from `cielab` when present, else
+`rgb`, as on the page. It also takes a JSON array of `"#rrggbb"` strings, so other paint ranges can be compared
+the same way. The table below comes from it.
+
+| Paints shown | Color from | Share of Pointer's gamut covered by their hull |
+|---|---|---|
+| Game Color and Model Color charts (302) | `cielab` | 46 % |
+| Game Color chart (108) | `cielab` | 46 % |
+| Model Color chart (194) | `cielab` | 30 % |
+| Squidmar Color (72) | `rgb` | 50 % |
+| All paints (374) | both | 57 % |
+| *sRGB itself, for comparison* | | *78 %* |
+
+The chart figures describe the printed charts. They are lower than the 52 % the sRGB hex values give, because the
+hex conversion made two errors that pulled in opposite directions. It clipped the ten printed colors outside sRGB
+to its edge, which lowered the figure. Its black point compensation stretched the chart's darkest print (L\* 9.9)
+down to pure black and every dark color with it, which inflated the hull more. What remains is mostly a gap among
+dark colors: CMYK cannot print dark saturated colors, so the charts say little about how far dark paints reach.
+
+The Squidmar figure is not comparable. Its colors are sampled from marketing images, which are made for screens,
+with pure black and possibly boosted saturation, so its 50 % and the 57 % for all paints overstate what the data
+supports. [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut) has the details and
+the sources.
 
 Page layout, by width:
 
@@ -126,12 +206,17 @@ takes a share of it.
   basis. Every pixel is converted independently, so the gamut boundary is exact at pixel resolution. Picking,
   hover markers and "is this color on the plane" checks all use the same basis.
 - **Solid** (`src/views/gamutSolid.ts`): the six faces of the RGB cube, each a 64 × 64 grid sampled uniformly in
-  gamma-encoded sRGB (which spreads vertices evenly in L), are mapped to OKLab (x = a, y = L, z = −b). The material
-  is unlit, so each surface point shows exactly its own color. Instead of shading, the cut faces get outlines.
-  The cuts use three.js clipping planes, and the caps are the slice textures, themselves clipped in wedge mode.
+  gamma-encoded sRGB (which spreads vertices evenly in L), are mapped to OKLab (x = a, y = L, z = −b). Pointer's
+  gamut is a grid on its own table, every 1 L\* and 2° of CIELAB hue. The material is unlit, so each surface
+  point shows exactly its own color. Instead of shading, the cut faces get outlines. The cuts use three.js
+  clipping planes, and the caps are the slice textures, themselves clipped in wedge mode.
   The wireframe cage traces the gamut boundary along OKLCh lines, so it matches the slices: rings every 0.1 L
-  (what B.1 outlines), meridians every 30° of hue (what B.2 outlines), plus the 12 edges of the RGB cube, which
-  are the solid's creases. Each vertex has its own color.
+  (what B.1 outlines), meridians every 30° of hue (what B.2 outlines), plus for sRGB the 12 edges of the RGB
+  cube, which are the solid's creases. Each vertex has its own color. Pointer's boundary on an OKLCh line is
+  found by bisection, like sRGB's; a unit test checks that each constant-L, constant-h ray leaves it once.
+- **Hull** (`src/color/hull.ts`): built incrementally. Each point outside the current hull removes the faces it
+  can see and is joined to their horizon, which is instant for a few hundred paints. The same face planes give
+  the inside test that coverage uses.
 
 Two details of the sRGB gamut in OKLab turned up while building this. Both are handled and covered by tests.
 
@@ -145,16 +230,25 @@ Two details of the sRGB gamut in OKLab turned up while building this. Both are h
 
 ```
 src/
-  color/oklab.ts          conversions, gamut test, max chroma, cusp
+  color/oklab.ts          conversions, gamut test, max chroma, cusp, nearest screen color
   color/oklab.test.ts
-  paints/vallejo.ts       Vallejo paints and layouts from data/, with OKLab computed from the hex
+  color/cielab.ts         CIELAB relative to illuminant C or D50 <-> OKLab
+  color/cielab.test.ts
+  color/pointer.ts        Pointer's gamut: the table, inside test, boundary
+  color/pointer.test.ts
+  color/hull.ts           3D convex hull, inside test, volume
+  color/hull.test.ts
+  color/coverage.ts       share of a gamut's OKLab volume inside a hull
+  color/coverage.test.ts
+  paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
+  paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab from the best field
   paints/vallejo.test.ts  every layout code resolves, OKLab agrees with the stored OKLCh
-  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, wireframe)
+  state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
   views/lightnessSlice.ts B.1
   views/hueSlice.ts       B.2
-  views/gamutSolid.ts     A (three.js)
+  views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
   views/swatchPane.ts     Vallejo swatches, the layout select, and which paints are shown
   main.ts                 wiring, layout, tooltip, readout
 ```
@@ -168,6 +262,12 @@ src/
   two colors look.
 - **No viewing conditions.** Surround, adaptation and display luminance are not modeled. CAM16-UCS would add them
   at the cost of more parameters.
+- **Paint colors are not measurements.** Game Color and Model Color come from Vallejo's printed charts, so their
+  hull says how the charts spread, not how far real paint reaches. The charts are limited to what CMYK inks can
+  print, which is weakest for dark saturated colors, and Vallejo notes that printed colors are only approximate.
+  Squidmar Color comes from marketing images. No published measurements of dried paint were found for the current
+  ranges. Measured CIELAB or spectral data would go into `cielab` and be used as it is. See
+  [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut).
 
 ## Data
 
@@ -203,15 +303,26 @@ vallejo['70.995'];
 // {
 //   code: '70.995', name: 'German Grey', range: 'Model Color', type: 'acrylic',
 //   rgb: '#2E2E2C', cmyk: { c: 70, m: 60, y: 60, k: 70 },
-//   oklch: { l: 0.3004, c: 0.0035, h: 106.61 }
+//   cielab: { l: 23.21, a: -0.47, b: 1.05 },
+//   oklch: { l: 0.3377, c: 0.0031, h: 116.42 }
 // }
 ```
 
-- `rgb`: `#RRGGBB`
+- `rgb`: `#RRGGBB`. For the charts, the print color as a screen shows it: clipped
+  to sRGB, with the darkest print stretched to black. For Squidmar Color, sampled
+  from its images.
 - `cmyk`: Vallejo's own print values from the chart, in percent; `null` for
   Squidmar Color, which has no published chart
-- `oklch`: computed from `rgb` by `hexToOklch` in `src/color/oklab.ts`; `l`
-  (0–1), `c`, `h` (degrees, `null` for achromatic colors)
+- `cielab`: CIELAB relative to D50 (2° observer), `l`, `a`, `b`. For the charts,
+  the print CMYK converted through the chart's own ICC profile: the printed
+  color, not limited to sRGB. `null` for Squidmar Color, which has no such data.
+  Measured values of dried paint would go here too.
+- `oklch`: computed by `scripts/add-oklch.js` from `cielab` when present, else
+  from `rgb`; `l` (0–1), `c`, `h` (degrees, `null` for achromatic colors)
+
+The page and the scripts take a paint's color from `cielab` when it has one, else
+from `rgb` (`src/paints/record.ts`). `cmyk` only means something together with the
+chart's ICC profile, so the extractor turns it into `cielab`.
 
 To recompute `oklch` after changing `rgb` values (Node 22.18 or later, which
 runs the TypeScript import directly):
@@ -260,11 +371,21 @@ Vallejo's official color charts:
 
 The charts store each swatch as print CMYK (for Coated FOGRA39).
 `scripts/extract_vallejo.py` reads those values, the chart rows and the
-combination tables from the PDFs, and converts the CMYK to sRGB through the
-charts' embedded Coated FOGRA39 ICC profile, using relative colorimetric
-intent with black point compensation. Names are taken from the chart labels,
-with truncated words spelled out (`Cam.` → `Camouflage`, `Unif.` →
-`Uniform`, …).
+combination tables from the PDFs, and converts the CMYK through the charts'
+embedded Coated FOGRA39 ICC profile twice:
+
+- to `cielab` with relative colorimetric intent (paper white = L\* 100) and no
+  black point compensation, so the darkest print keeps its own L\* 9.9. It runs
+  LittleCMS in double precision (`scripts/lcms.py`), using the system library or
+  the copy bundled with Pillow.
+- to `rgb` with relative colorimetric intent and black point compensation, the
+  Adobe default for displaying CMYK documents, through Pillow's 8-bit
+  transform. That transform works from a precomputed table, which is least
+  accurate next to the sRGB edge: for some saturated yellows it is up to 9
+  units per channel off an exact conversion.
+
+Names are taken from the chart labels, with truncated words spelled out
+(`Cam.` → `Camouflage`, `Unif.` → `Uniform`, …).
 
 Squidmar Color has no published chart. Its source is the announcement images
 of its two sets, in `data/sources/`: the Mega Set (all 72 paints, headed "72
@@ -289,10 +410,144 @@ python scripts/extract_squidmar.py data/sources/squidmar-mega-set.webp \
 node scripts/add-oklch.js data/vallejo.json
 ```
 
-The RGB values are what the official chart looks like on screen, not a
-measurement of dried paint. Vallejo notes that printed chart colors are only
-approximate. The Squidmar values are one step further removed: they are the
-colors of a compressed marketing image.
+The chart values describe the printed chart, not a measurement of dried paint.
+Vallejo notes that printed chart colors are only approximate. The Squidmar
+values are one step further removed: they are the colors of a compressed
+marketing image.
+
+## Findings: paint data and Pointer's gamut
+
+A record of the work on "how much of Pointer's gamut do Vallejo's paints cover" (September 2026): what the answer
+is, what went wrong on the way, what the data does now, and why it is still not ideal. Figures from
+`scripts/coverage.js` can be regenerated. Figures marked *one-off* were measured once with throwaway scripts, most
+of them needing the chart PDFs and their ICC profile, which are not in the repository.
+
+### The answer so far
+
+The hull of the Game Color and Model Color charts covers **46 %** of Pointer's gamut, measured by volume in
+OKLab. For scale:
+
+| Gamut | Share of Pointer's gamut |
+|---|---|
+| sRGB | 78 % |
+| FOGRA39, the press the charts are printed for | at most 60 %, probably nearer 55 % (*one-off*) |
+| Game Color and Model Color charts | 46 % |
+
+The press figure is the hull of an 11-step CMYK grid within the 330 % ink limit, converted like `cielab`. A hull
+overstates a gamut that is not convex: the same method gives 84 % for sRGB instead of 78 %. So the charts already
+show most of what print can show, and the figure measures the printed charts, not the paint.
+
+### Where the colors come from, and what each step loses
+
+```
+dried paint                  no published measurements of the current ranges
+  │ Vallejo picks CMYK        limited to what the press prints, and only an imitation
+  ▼
+printed chart: cmyk
+  ├─ profile, relative colorimetric, float          → cielab   exact, not limited to sRGB (the page uses this)
+  └─ profile + black point compensation, 8-bit      → rgb      clipped to sRGB, darks stretched (kept, unused for the charts)
+      ▼
+OKLab                          exact, no limit: a coordinate system, not a device
+```
+
+### Problems we hit, and what we did
+
+1. **The hex was the only color.** The data first stored each chart color as an sRGB hex, and everything was
+   computed from it. A hex can only hold sRGB colors, and ten printed colors lie outside sRGB: 70.808 Blue Green,
+   70.838 Emerald, 70.840 Light Turquoise, 70.841 Andrea Blue, 72.023 Electric Blue, 72.119 Aquamarine,
+   72.160 Fluorescent Blue, 72.161 Fluorescent Cold Green, 73.208 Yellow (wash), and 72.101 Off-White (only
+   just). The conversion clipped them to sRGB's edge. OKLab was never the limit; it just never received the
+   real values. *Fix:* the extractor also stores `cielab`, converted straight from the CMYK, and the page and the
+   scripts use it before `rgb`.
+2. **Black point compensation inflated the coverage.** The hex conversion used it, as displays do: it stretches
+   the press's darkest print (L\* 9.9) to pure black and pulls every dark color down with it. That puts the hull
+   into dark saturated colors the chart never shows. An early estimate from CIELAB made with the same setting
+   gave 59 %, which was wrong for the same reason. *Fix:* `cielab` is converted without it. Black point
+   compensation is for showing a print on a screen, not for measuring what was printed. By lightness
+   (*one-off*):
+
+   | Chart colors as | L\* 15–30 (11.5 % of Pointer's volume) | L\* 30–90 (86 %) | All |
+   |---|---|---|---|
+   | sRGB hex (before) | 50.9 % | 52.2 % | 52.2 % |
+   | CIELAB with black point compensation | 60.3 % | 58.6 % | 58.9 % |
+   | CIELAB without it (now) | 24.3 % | 49.1 % | 45.7 % |
+
+   The two errors of the hex pulled in opposite directions, and the inflation was the larger one.
+3. **The 8-bit conversion is least accurate where it matters.** Pillow converts through a precomputed table. Next
+   to the sRGB edge it is up to 9 units per channel off an exact conversion (70.952 Lemon Yellow,
+   70.915 Deep Yellow), and colors just outside sRGB are not cleanly clipped (72.122 Bile Green's blue channel came
+   out 14 where an exact conversion with the same settings gives 0). *Fix:* `cielab` is computed in double
+   precision by LittleCMS (`scripts/lcms.py`). `rgb` is kept as it was.
+4. **Squidmar Color has no chart.** Its colors are sampled from marketing images, which are made for screens, with
+   pure black and possibly boosted saturation. Its 72 colors alone cover 50 %, more than both charts together, so
+   figures that include it are not comparable. *What we did:* nothing to the data; it has no `cielab`, and the
+   README says so wherever its figures appear.
+5. **"Covered" is not "mixable".** Light mixes linearly in CIE XYZ and linear RGB, so a hull there is exactly the
+   set of optical mixes; built there, the charts' hull covers 46.8 % instead of 45.7 % (*one-off*), so the choice
+   of space barely matters. Paint does not mix linearly in any three-number color space: the result depends on
+   the pigments' spectra (Kubelka–Munk theory), and two paints that look the same can mix differently with a third.
+   *What we did:* the hull is documented as a measure of spread only.
+
+### Why it is still not ideal
+
+- **The chart imitates the paint.** Vallejo chose CMYK values to look like each paint on press. Paint beyond the
+  press gamut was approximated, fluorescents cannot fluoresce in print, and Vallejo notes that printed colors are
+  only approximate.
+- **The dark end is uncertain both ways.** Print is weakest for dark saturated colors (the charts cover 24 % of
+  Pointer's gamut between L\* 15 and 30), so dark paints may reach further than the charts show. But the chart's
+  black is L\* 9.9, while a 2019 spectrophotometer measurement of the old Game Color Black gave about L\* 23:
+  matt paint blacks are lighter than printed ones.
+- **The conversion settings are choices.** Relative colorimetric intent makes the paper L\* 100, a perfect white
+  that no white paint is. Absolute colorimetric would keep the paper at its own L\* of about 95.
+- **Pointer's gamut is only known between L\* 15 and 90.** The taper to black and white is an extrapolation (2.4 %
+  of the volume), and the table is interpolated between its 10° and 5-unit steps.
+- **The measure is a choice too.** Volume in OKLab weighs perceptual extent evenly; volume in CIELAB gives
+  somewhat different shares.
+
+### What would fix it
+
+Measurements of dried paint. From best to worst:
+
+1. Spectral reflectance, 400 to 700 nm in 10 nm steps, over white and over black. It gives the color under any
+   light, the opacity, and Kubelka–Munk mixing.
+2. CIELAB, D50 and 2° observer, of a dried swatch, with the measurement condition stated (ISO 13655 M1, with UV,
+   for fluorescents), the backing (white for washes and inks), the number of coats and the finish. Metallics
+   change with angle and need more than one value.
+3. Print CMYK with its ICC profile, which is what Vallejo publishes and what `cielab` is now.
+4. RGB in a wide-gamut space, named. It removes the clipping but not the doubt about where the value came from.
+   How much of Pointer's gamut each space can hold (*one-off*): sRGB 77.9 %, Display P3 90.7 %, Adobe RGB 92.3 %,
+   Rec. 2020 99.9 %.
+5. An sRGB hex, as shops publish: clipped, and usually of unknown origin.
+
+Measured CIELAB goes into `cielab` and the page uses it as it is. Without published data, a handheld
+spectrophotometer (for example Nix Spectro) or colorimeter (for example Datacolor ColorReader) on drawdown cards,
+painted the same way for every paint and fully dry, would do.
+
+### Sources
+
+- M. R. Pointer, "The gamut of real surface colours", *Color Research & Application* 5 (1980). Table as published
+  by [colour-science](https://www.colour-science.org/) (`colour.models.DATA_POINTER_GAMUT_VOLUME`).
+- Vallejo's charts, with the print CMYK and the embedded Coated FOGRA39 profile:
+  [CC266 Game Color](https://acrylicosvallejo.com/wp-content/uploads/2025/09/CC266-Game_Color.pdf),
+  [CC329 Model Color](https://acrylicosvallejo.com/wp-content/uploads/2024/03/CC329-R00-Model-Color-NewIC.pdf).
+- [LittleCMS](https://www.littlecms.com/), the color engine behind the conversions.
+- P. Kubelka and F. Munk, "Ein Beitrag zur Optik der Farbanstriche" (1931), the standard model of paint mixing;
+  Š. Sochorová and O. Jamriška, "Practical pigment mixing for digital painting" (Mixbox), *ACM Transactions on
+  Graphics* 40 (2021), a practical approximation for a fixed set of pigments.
+
+Searched for measured Vallejo data in September 2026; nothing usable for the current ranges:
+
+- [Oldhammer Forum, "Conversion Table Interest"](https://forum.oldhammer.org/threads/conversion-table-interest.24017/):
+  spectrophotometer, D65/2°, dried opaque swatches, about 40 paints of the old (pre-2023) Game Color. Published
+  only as sRGB values in posts, already clipped (Gold Yellow 255,165,0; Turquoise 0,117,139), with no dataset.
+- [Britmodeller, Vallejo Air measurements](https://www.britmodeller.com/forums/index.php?%2Ftopic%2F235124742-acrylic-vallejo-air-measurements-of-full-range-of-paints%2F=):
+  Model Air, a different range; the page refused access.
+- [Encycolorpedia](https://encycolorpedia.com/252527): its CIELAB values are computed from hex codes, not
+  measured.
+- Paint matchers such as [Miniature Painting Forge](https://www.miniaturepaintingforge.com/full-comparison/) and
+  [paint-comparator](https://nickryden.github.io/paint-comparator/): hex values.
+- [Dan Becker's paint swatch charts](http://www.danbecker.info/minis/miniother/PaintCharts/index.html): not
+  checked, the site was unavailable.
 
 ## Roadmap
 
@@ -357,7 +612,8 @@ Alternatives, and why not:
      near-duplicate.
    - Between sets: each color's nearest match in the other set; the worst of those (Hausdorff distance) and the
      average (Chamfer distance); for equal-size palettes, the optimal one-to-one matching (Hungarian algorithm).
-   - Coverage: convex-hull volume in OKLab (quickhull), plus L range and chroma range.
+   - Coverage: convex-hull volume in OKLab, plus L range and chroma range. The hull and the volume-share
+     measure already exist (`src/color/hull.ts`, `src/color/coverage.ts`).
 10. **Links to A and B.** Draw set colors as points in the 3D solid. In B.1 and B.2, show points within a thin band
    around the slice plane, faded by their distance from it.
 

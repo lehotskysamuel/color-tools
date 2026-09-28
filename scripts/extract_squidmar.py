@@ -19,7 +19,8 @@ a check: each of its paints must match the Mega Set value within
 MAX_SHEET_DIFF.
 
 Metallics are drawn as gradients, so their color is the gradient's dominant
-mid-tone. There is no print CMYK, so `cmyk` is null.
+mid-tone. There is no print CMYK or other color data, so `cmyk` and `cielab`
+are null and the page uses `rgb`.
 """
 import sys
 
@@ -195,6 +196,7 @@ def main(mega_set, essentials, out_dir):
             "type": paint_type(code),
             "rgb": f"#{r:02X}{g:02X}{b:02X}",
             "cmyk": None,
+            "cielab": None,
         }
     counts = {}
     for c in colors.values():

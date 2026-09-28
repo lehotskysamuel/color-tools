@@ -1,6 +1,7 @@
 import catalog from '../../data/vallejo.json';
 import layoutData from '../../data/vallejo-layouts.json';
-import { type Vec3, hexToLinear, linearSrgbToOklab } from '../color/oklab';
+import { type Vec3, oklabToDisplayHex } from '../color/oklab';
+import { type ColorRecord, type ColorSource, colorSource, recordOklab } from './record';
 
 export interface Paint {
   code: string;
@@ -13,8 +14,15 @@ export interface Paint {
    * sampled from the announcement images.
    */
   rgb: string;
-  /** Computed from `rgb`, so it matches the hex exactly rather than the rounded `oklch` in the JSON. */
+  /** Which field `lab` comes from: `cielab` when the data has one, else `rgb` (see ./record.ts). */
+  source: ColorSource;
+  /**
+   * OKLab, from the best source, computed here so it is exact rather than the rounded `oklch` in the JSON.
+   * From `cielab` it can lie outside sRGB.
+   */
   lab: Vec3;
+  /** "#rrggbb" to draw the paint with: `rgb` when that is the source, else the nearest screen color of `lab`. */
+  display: string;
 }
 
 export interface PaintSection {
@@ -32,24 +40,48 @@ export interface PaintLayout {
   sections: PaintSection[];
 }
 
-interface RawPaint {
+interface RawPaint extends ColorRecord {
   code: string;
   name: string;
   range: string;
   type: string;
-  rgb: string;
 }
 
 export const PAINTS: ReadonlyMap<string, Paint> = new Map(
-  Object.values(catalog as Record<string, RawPaint>).map(({ code, name, range, type, rgb }) => [
-    code,
-    { code, name, range, type, rgb, lab: linearSrgbToOklab(hexToLinear(rgb)) },
-  ]),
+  Object.values(catalog as Record<string, RawPaint>).map((raw) => {
+    const { code, name, range, type, rgb } = raw;
+    const source = colorSource(raw);
+    const lab = recordOklab(raw);
+    return [code, { code, name, range, type, rgb, source, lab, display: source === 'rgb' ? rgb : oklabToDisplayHex(lab) }];
+  }),
 );
 
-export const LAYOUTS: readonly PaintLayout[] = Object.entries(
-  layoutData as Record<string, Omit<PaintLayout, 'id'>>,
-).map(([id, layout]) => ({ id, ...layout }));
+const PRINTED: readonly PaintLayout[] = Object.entries(layoutData as Record<string, Omit<PaintLayout, 'id'>>).map(
+  ([id, layout]) => ({ id, ...layout }),
+);
+
+/**
+ * Every printed layout that adds paints, one after the other: every paint in the catalog, once. Combination
+ * tables and sets that only repeat paints (Squidmar Essentials) are left out. A layout's untitled first section
+ * gets the layout's title as its heading.
+ */
+function allPaints(): PaintLayout {
+  const seen = new Set<string>();
+  const parts = PRINTED.filter((layout) => {
+    const codes = layout.sections.flatMap((s) => s.rows.flat());
+    if (layout.columns || codes.every((code) => seen.has(code))) return false;
+    for (const code of codes) seen.add(code);
+    return true;
+  });
+  return {
+    id: 'allPaints',
+    title: 'All paints',
+    source: parts.map((l) => l.source).join(', '),
+    sections: parts.flatMap((l) => l.sections.map((s, i) => (i === 0 && !s.title ? { ...s, title: l.title } : s))),
+  };
+}
+
+export const LAYOUTS: readonly PaintLayout[] = [...PRINTED, allPaints()];
 
 /** "72.001 Dead White", plus the type for anything that is not a plain acrylic. */
 export function paintLabel(paint: Paint): string {
