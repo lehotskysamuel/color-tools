@@ -273,6 +273,12 @@ body {
   border-radius: 4px;
 }
 
+/* Sets: no printed rows, so the swatches flow across the pane, about as large as a chart's. */
+.swatch-flow {
+  grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  justify-self: stretch;
+}
+
 .swatch-block {
   display: grid;
   grid-template-columns: repeat(var(--triplet), minmax(0, var(--swatch-max)));
