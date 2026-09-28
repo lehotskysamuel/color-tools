@@ -243,6 +243,7 @@ src/
   paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
   paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab from the best field
   paints/vallejo.test.ts  every layout code resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
+  paints/kimera.test.ts   data/kimera.json: 13 colors, a pigment and webhex each, stand-ins named, OKLCh agrees
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
@@ -436,6 +437,110 @@ The chart values describe the printed chart, not a measurement of dried paint.
 Vallejo notes that printed chart colors are only approximate. The Squidmar
 values are one step further removed: they are the colors of a compressed
 marketing image.
+
+### `data/kimera.json`
+
+The **Kimera Kolors** Pure Pigments Base Set (Kimera Models, sold through
+Pegaso World, made by Camerini & Co): 13 acrylics with one pigment each and no
+white. The set's satin medium has no color and is left out. They have no
+product codes, so the file is keyed by name. The page does not show them yet;
+`scripts/coverage.js` reads the file.
+
+| name | pigment | `webhex` | `cielab` (D50) | `cielab` stand-in |
+| --- | --- | --- | --- | --- |
+| The White | PW6 | `#F6F5F4` | 96.3 / −0.5 / 0.9 | Golden Matte Fluid Titanium White, Okumura 2005 |
+| Carbon Black | PBk7 | `#252223` | 26.1 / 0.2 / −0.2 | Golden Matte Fluid Carbon Black, Okumura 2005 |
+| The Red | PR170 | `#D93634` | — | none found |
+| Orange | PO34 | `#DE573D` | — | none found |
+| Warm Yellow | PY83 | `#F1AE22` | 78.5 / 29.0 / 88.8 | Golden Matte Fluid Diarylide Yellow, Okumura 2005 |
+| Cold Yellow | PY151 | `#FDDD18` | — | none found |
+| Phthalo Blue (red shade) | PB15:2 | `#292D67` | 23.6 / 5.3 / −10.4 | Golden Heavy Body Phthalo Blue (Red Shade), PB15:0, Golden 2014 |
+| Phthalo Blue (green shade) | PB15:4 | `#283676` | 23.1 / 9.7 / −21.8 | Golden Matte Fluid Phthalo Blue (Green Shade), Okumura 2005 |
+| Magenta | PR122 | `#A12238` | 30.6 / 29.8 / 4.3 | Golden Matte Fluid Quinacridone Magenta, Okumura 2005 |
+| Phthalo Green | PG7 | `#1B4044` | 25.3 / −4.6 / −7.4 | Golden Matte Fluid Phthalo Green (Blue Shade), Okumura 2005 |
+| Violet | PV23 | `#3D2E2A` | 23.9 / 2.9 / 0.2 | Golden Matte Fluid Dioxazine Purple, Okumura 2005 |
+| Red Oxide | PR101 | `#913A2E` | 39.0 / 33.9 / 25.5 | Golden Matte Fluid Red Oxide, Okumura 2005 |
+| Yellow Oxide | PY42 | `#EBA91B` | 64.8 / 14.0 / 48.4 | Golden Heavy Body Yellow Oxide, Golden 2014 |
+
+The fields are those of `data/vallejo.json`, without `code`, plus two:
+
+- `pigment`: the Colour Index name, from the list on the base set's page in
+  the maker's shop.
+- `webhex` (and `rgb`, the same value): the color the maker's own chart shows.
+  The shop gives no color value as text or CSS, and its product photos show
+  the paint through the translucent bottle, lighter and bluer than the chart
+  (Carbon Black reads `#384455` there), so they are not used. The chart
+  ("Kimera Kolors Charts" on the maker's resources page) is scans of
+  hand-painted swatches, each a square that goes from the paint at full
+  strength to a thin wash. `webhex` is the full-strength top of the square,
+  converted from the chart's CMYK the way Vallejo's web colors are made from
+  its chart (relative colorimetric with black point compensation). The chart
+  is printed for uncoated paper, which cannot show dark saturated colors:
+  Violet comes out near-black brown, though its tints with white are plainly
+  violet. The White is white on white paper, so its value is the paper's.
+- `cmyk`: `null`.
+- `cielab`: a **stand-in**, not a measurement of the Kimera paint. No
+  published measurement of Kimera Kolors was found. A pigment has no single
+  color: its grade, particle size, binder, concentration and the film's
+  thickness all change it. So `cielab` is the measured full-strength film of a
+  Golden acrylic with the same pigment (for PB15:2, the nearest one, PB15:0),
+  computed from its reflectance spectrum for D50 and the 2° observer (ASTM
+  E308). `null` for The Red (PR170), Orange (PO34) and Cold Yellow (PY151),
+  which no usable dataset covers.
+- `cielabSource`: the stand-in paint and its dataset.
+- `oklch`: from `cielab` when present, else from `rgb`, as for Vallejo.
+
+The pigment list and the chart disagree twice, and the shop's list is used: the
+chart prints Warm Yellow as PY85 (the shop names Diarylide Yellow HR, which is
+PY83) and Red Oxide as PR130 (the shop: "PR101 (130)", probably the Bayferrox
+130 grade).
+
+The stand-in spectra are in `data/sources/pigment-spectra.json`, taken by
+`scripts/extract_pigment_spectra.py` from two datasets of Golden acrylics,
+whose pigments Golden publishes:
+
+- Y. Okumura, "Developing a spectral and colorimetric database of artist paint
+  materials", MS thesis, RIT Munsell Color Science Laboratory (2005), data at
+  [rit-mcsl.org](https://www.rit-mcsl.org/StudentResearch/paint_research.zip):
+  Golden Matte Fluid Acrylics drawn down thick enough to hide, unvarnished,
+  measured with specular excluded, 360–750 nm. Eight of the pigments.
+- Golden Heavy Body Acrylics, 10 mil drawdowns over white (2014), from
+  [realtimerendering.com](https://www.realtimerendering.com/golden.html), now
+  only on the Wayback Machine: 400–700 nm. The white card shows through the
+  more transparent colors, Golden notes. Yellow Oxide and Phthalo Blue (Red
+  Shade), which the thesis lacks.
+
+The same integration reproduces the CIELAB that Golden's file gives for all its
+78 paints within 0.06, and the thesis's masstone of Carbon Black (L\* 26.1).
+The six pigments both datasets have agree within 0.6–3.5 ΔE\*ab. Other
+sources were checked and not used (September 2026):
+
+- The CHSOS Pigments Checker has PR170 and PY151, but in thin films (its
+  phthalo green is L\* 66), and its two spectrometers differ by 15–20 in b\*
+  on the same swatches.
+- handprint.com has watercolors only.
+- The pigment data sheets checked (Lanxess Bayferrox 130, Kronos, Orion carbon
+  blacks) give only differences from the maker's own standard.
+- artistpigments.org lists 33 Kimera Kolors, 13 of them with measured CIELAB
+  (D50, 2°). Measurements of these paints would replace the stand-ins, but the
+  site sits behind a bot check that the scripts cannot pass, so which 13 is not
+  known here.
+
+To rebuild (Node 22.18 or later for the last step):
+
+```sh
+pip install -r scripts/requirements.txt
+python scripts/extract_pigment_spectra.py paint_research.zip GoldenSpectra.zip data/sources  # downloads: see the script
+python scripts/extract_kimera.py kolors-charts.pdf data                                      # chart: see the script
+node scripts/add-oklch.js data/kimera.json
+```
+
+The stand-ins are opaque films, and the transparent pigments (the phthalos,
+Magenta, Violet) are nearly black that way: a thin layer over a light primer,
+or a mix with white, is far lighter and more colorful. So the hull of the 13
+paints says little about a set meant for mixing. It covers 12.5 % of Pointer's
+gamut from the best source of each paint (10 stand-ins, 3 web colors), and
+17.2 % from `webhex` alone.
 
 ## Findings: paint data and Pointer's gamut
 
