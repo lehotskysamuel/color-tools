@@ -1,11 +1,16 @@
 /**
  * How much of a gamut's volume another shape covers, measured in OKLab so that equal volumes are equal
- * perceptual extents. Volumes are sums over a regular grid of cells: a gamut is the set of cell centers
- * inside it, computed once per gamut.
+ * perceptual extents. Volumes are sums over a regular grid of cells:
+ *
+ *   1. Split OKLab (L 0..1, a and b within ±AB_RANGE) into cubes 0.01 on a side.
+ *   2. Keep the centers that lie inside the gamut. They stand for its volume; computed once per gamut.
+ *   3. The coverage of a shape is the fraction of those centers that also lie inside the shape.
+ *
+ * Parts of the shape outside the gamut do not count, so the result is between 0 and 1.
  */
-import { type Hull, hullContains } from './hull';
-import { AB_RANGE, GAMUT_EPSILON, type Vec3, oklabToLinearSrgbInto } from './oklab';
-import { isOklabInPointer } from './pointer';
+import { type Hull, convexHull, hullContains } from './hull.ts';
+import { AB_RANGE, GAMUT_EPSILON, type Vec3, oklabToLinearSrgbInto } from './oklab.ts';
+import { isOklabInPointer } from './pointer.ts';
 
 /** The gamut drawn as the color space in view A. */
 export type Gamut = 'srgb' | 'pointer';
@@ -62,6 +67,15 @@ export function volumeShare(gamut: Gamut, test: (L: number, a: number, b: number
 /** Fraction of the gamut's volume inside the hull. */
 export function hullCoverage(gamut: Gamut, hull: Hull): number {
   return volumeShare(gamut, (L, a, b) => hullContains(hull, L, a, b));
+}
+
+/**
+ * Fraction of the gamut's volume inside the convex hull of a set of OKLab colors. Null when the colors
+ * enclose no volume: fewer than 4, or all in one plane.
+ */
+export function colorSetCoverage(colors: readonly Vec3[], gamut: Gamut = 'pointer'): number | null {
+  const hull = convexHull(colors);
+  return hull ? hullCoverage(gamut, hull) : null;
 }
 
 let srgbShare: number | null = null;

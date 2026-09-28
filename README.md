@@ -133,12 +133,31 @@ C to D65, so a neutral surface stays neutral and white maps to OKLab L = 1.
 **The paint hull** is the convex hull of the shown paints in OKLab: the smallest convex solid that contains them.
 It is drawn once at least 5 paints are shown. Its faces are flat in OKLab and split into cells of 0.03 so every
 point shows its own color. Where a cut goes through it, a dashed line traces its outline. A convex hull is a
-measure of spread, not a claim that every color inside it can be mixed from the paints.
+measure of spread, not a claim that every color inside it can be mixed from the paints. Light mixes linearly in
+CIE XYZ and linear RGB, where a hull would be exactly the reachable mixes, but paint does not mix linearly in
+any three-number color space: the result depends on the pigments' spectra (Kubelka–Munk theory).
 
 **Coverage.** The line under the solid gives the share of the color space's volume that the hull covers, and in
 Pointer's mode the share sRGB covers. Volumes are measured in OKLab, so equal volumes are equal perceptual
-extents. They are sums over a grid of cells 0.01 on a side (`src/color/coverage.ts`); a four times finer grid
-moves the figures by less than 0.05 points.
+extents. `src/color/coverage.ts` computes them on a grid:
+
+1. OKLab (L 0 to 1, a and b within ±0.34) is split into cubes 0.01 on a side, about 460 000 of them.
+2. The centers inside the gamut stand for its volume: about 49 000 for Pointer's gamut, 54 000 for sRGB. A center
+   is inside Pointer's gamut when, converted to CIELAB under illuminant C, its chroma is at most the table's
+   maximum for its L\* and hue.
+3. The coverage is the fraction of those centers that also lie inside the hull, that is on the inner side of
+   every face plane. Parts of the hull outside the gamut do not count.
+
+A four times finer grid moves the figures by less than 0.05 points. `colorSetCoverage(colors, gamut)` does all of
+it for a list of OKLab colors, and `scripts/coverage.js` for a file of hex colors (Node 22.18 or later):
+
+```sh
+node scripts/coverage.js data/vallejo.json
+```
+
+It prints the coverage of Pointer's gamut and of sRGB for all colors, for each `range` and `type`, and for all
+colors except each `type`. It also takes a JSON array of `"#rrggbb"` strings, so other paint ranges can be
+compared the same way. The table below comes from it.
 
 | Paints shown | Share of Pointer's gamut covered by their hull |
 |---|---|
@@ -147,12 +166,13 @@ moves the figures by less than 0.05 points.
 | Model Color chart (194) | 34 % |
 | All paints, without the 8 fluorescents | 47 % |
 | All paints, acrylics only (no washes, inks or fluorescents) | 42 % |
+| Washes, inks and fluorescents only (30) | 50 % |
 | *sRGB itself, for comparison* | *78 %* |
 
-Measured by CIELAB volume instead, all paints cover 52.5 % and sRGB 75 %. The hull of all paints has 26 corners,
-and 13 of them are washes, inks and fluorescents. Adding the Model Color chart to the Game Color chart raises the
-figure by 0.3 points. Because the paint colors come from a printed chart converted to sRGB, their hull cannot
-cover much more than sRGB does.
+A one-off check that measures volume in CIELAB instead gives 52.5 % for all paints and 75 % for sRGB. The hull
+of all paints has 26 corners, and 13 of them are washes, inks and fluorescents. Adding the Model Color chart to
+the Game Color chart raises the figure by 0.3 points. Because the paint colors come from a printed chart
+converted to sRGB, their hull cannot cover much more than sRGB does.
 
 Page layout, by width:
 
@@ -229,8 +249,11 @@ src/
 - **No viewing conditions.** Surround, adaptation and display luminance are not modeled. CAM16-UCS would add them
   at the cost of more parameters.
 - **Paint coverage is bounded by the data.** The paint colors are Vallejo's printed chart converted to sRGB, so
-  their hull says how the chart spreads, not how far real paint reaches. Pointer's gamut reaches past sRGB (22 %
-  of its volume), so real paints can too; showing that would need measured Lab data of the paints.
+  their hull says how the chart spreads, not how far real paint reaches. The chart itself is limited to what
+  CMYK inks can print, and the conversion to sRGB clips printed colors outside sRGB to its edge: the teals and
+  turquoises with a red channel of 0, such as 70.841 Andrea Blue and 72.119 Aquamarine, are clipped. Pointer's
+  gamut reaches past sRGB (22 % of its volume), so real paints can too; showing that would need measured Lab
+  data of the paints.
 
 ## Data
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PAINTS } from '../paints/vallejo';
-import { hullCoverage, srgbShareOfPointer } from './coverage';
+import { colorSetCoverage, hullCoverage, srgbShareOfPointer } from './coverage';
 import { convexHull } from './hull';
 import { type Vec3, isOklabInGamut } from './oklab';
 import { pointerBoundary } from './pointer';
@@ -23,11 +23,18 @@ describe('coverage', () => {
     expect(hullCoverage('pointer', convexHull(boundary)!)).toBeGreaterThan(0.999);
   });
 
-  // Regression values for the figures the page shows; see the README for how they are defined.
+  it('gives no coverage for colors that enclose no volume', () => {
+    expect(colorSetCoverage([])).toBeNull();
+    expect(colorSetCoverage(box(0.5, 0.5, 0.03))).toBeNull();
+    expect(colorSetCoverage(box(0.45, 0.65, 0.03))).toBeGreaterThan(0);
+  });
+
+  // Regression values for the figures the page and scripts/coverage.js show; see the README for how they are defined.
   it("puts sRGB at 78% of Pointer's gamut and all Game Color and Model Color paints at 52%", () => {
     expect(srgbShareOfPointer()).toBeCloseTo(0.779, 2);
     const charts = [...PAINTS.values()].filter((p) => p.range === 'Game Color' || p.range === 'Model Color');
-    const all = convexHull(charts.map((p) => p.lab))!;
-    expect(hullCoverage('pointer', all)).toBeCloseTo(0.522, 2);
+    const all = charts.map((p) => p.lab);
+    expect(colorSetCoverage(all)).toBeCloseTo(0.522, 2);
+    expect(colorSetCoverage(all, 'srgb')).toBeCloseTo(0.5, 2);
   });
 });

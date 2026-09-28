@@ -13,6 +13,8 @@
     "noUncheckedIndexedAccess": false,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
+    // Scripts run src/color modules directly in Node, which needs the .ts extension in their imports.
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "noEmit": true
   },

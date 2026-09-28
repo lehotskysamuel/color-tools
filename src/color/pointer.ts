@@ -7,7 +7,7 @@
  * point goes CIELAB (C) -> XYZ (C) -> Bradford adaptation to D65 -> linear sRGB (unbounded) -> OKLab, so a
  * neutral surface stays neutral and white maps to OKLab L = 1.
  */
-import { type Vec3, linearSrgbToOklab, oklabToLinearSrgbInto } from './oklab';
+import { type Vec3, linearSrgbToOklab, oklabToLinearSrgbInto } from './oklab.ts';
 
 /** CIELAB lightness of each table row. */
 export const POINTER_LIGHTNESS = [15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90] as const;

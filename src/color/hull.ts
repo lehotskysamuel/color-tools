@@ -3,7 +3,7 @@
  * point outside the current hull removes the faces it can see and is joined to their horizon.
  * Cost is O(n · faces), which is instant for a few hundred paints.
  */
-import type { Vec3 } from './oklab';
+import type { Vec3 } from './oklab.ts';
 
 export interface Hull {
   /** Indices into the input points, three per face, counter-clockwise seen from outside. */
