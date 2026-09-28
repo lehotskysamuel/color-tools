@@ -149,9 +149,9 @@ body {
 
 /* The color on a stage mat; the inset hairline keeps a color close to the stage gray visible. */
 .readout-swatch {
-  width: 56px;
-  height: 56px;
-  border: 8px solid var(--stage);
+  width: 72px;
+  height: 72px;
+  border: 14px solid var(--stage);
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px var(--stage-line);
   flex: none;
@@ -252,20 +252,23 @@ body {
  */
 .swatch-chart {
   display: grid;
-  gap: 3px;
+  gap: 6px;
   justify-self: start;
-  padding: 6px;
+  padding: 12px;
   background: var(--stage);
   border-radius: 4px;
 }
 
-/* Combinations: one block per printed block, as many side by side as fit with cells of at least 24px. */
+/*
+ * Combinations: one block per printed block, as many side by side as fit with cells of at least 24px.
+ * Rows are further apart than cells, so each triplet still reads as one row.
+ */
 .swatch-blocks {
   --triplet: 3;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(calc(var(--triplet) * 26px), 1fr));
-  gap: 14px 10px;
-  padding: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--triplet) * 29px), 1fr));
+  gap: 16px 14px;
+  padding: 12px;
   background: var(--stage);
   border-radius: 4px;
 }
@@ -274,7 +277,7 @@ body {
   display: grid;
   grid-template-columns: repeat(var(--triplet), minmax(0, var(--swatch-max)));
   align-content: start;
-  gap: 5px 2px;
+  gap: 9px 5px;
 }
 
 .swatch-heading {
@@ -551,9 +554,9 @@ input[type='range']:focus-visible {
 }
 
 .tooltip-swatch {
-  width: 36px;
-  height: 36px;
-  border: 5px solid var(--stage);
+  width: 44px;
+  height: 44px;
+  border: 8px solid var(--stage);
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px var(--stage-line);
   flex: none;
