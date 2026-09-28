@@ -1,6 +1,7 @@
 /*
- * The chrome is strictly achromatic. In color-critical viewing the surround is neutral gray,
- * because any tint in the UI shifts how the plotted colors are perceived.
+ * The chrome is strictly achromatic. The plots are drawn on --surface (near-white, near-black in
+ * dark mode), not on --bg, and neither has any tint, because a tinted surround shifts how the
+ * plotted colors are perceived.
  */
 :root {
   --bg: #ececec;
