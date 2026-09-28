@@ -473,10 +473,10 @@ export class GamutSolid {
     this.scene.add(this.lightnessCap, this.hueCap, this.lightnessOutline, this.hueOutline);
     this.scene.add(this.hullLightnessOutline, this.hullHueOutline);
 
-    // Neutral axis from black to white.
+    // Neutral axis from black to white. Dark, because a middle gray would vanish into the stage.
     const axis = new Line(
       new BufferGeometry().setFromPoints([new Vector3(0, -0.04, 0), new Vector3(0, 1.04, 0)]),
-      new LineBasicMaterial({ color: 0x808080 }),
+      new LineBasicMaterial({ color: 0x262626 }),
     );
     this.scene.add(axis);
 
