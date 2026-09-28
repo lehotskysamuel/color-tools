@@ -76,9 +76,10 @@ The page chrome is deliberately achromatic. A tinted surround shifts how the plo
 
 ### Vallejo paints
 
-The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as Vallejo prints them. The
-**Layout** select switches between the four layouts in `data/vallejo-layouts.json` (Game Color chart and
-combinations, Model Color chart and combinations), and the page remembers the choice in `localStorage`.
+The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
+**Layout** select switches between the six layouts in `data/vallejo-layouts.json` (Game Color chart and
+combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials), and the page remembers
+the choice in `localStorage`.
 
 **Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
 its paints on, and **Select all** / **Select none** switch them all at once.
@@ -173,20 +174,25 @@ src/
 ### `data/vallejo.json`
 
 Vallejo **Game Color** and **Model Color** paints from the current ranges (new
-Game Color 2023, new Model Color 2024), excluding metallics.
+Game Color 2023, new Model Color 2024), excluding metallics, and the whole
+**Squidmar Color** range (made by Vallejo), including its metallics.
 
-| range       | type          | count |
-| ----------- | ------------- | ----- |
-| Game Color  | `acrylic`     | 80    |
-| Game Color  | `ink`         | 12    |
-| Game Color  | `wash`        | 8     |
-| Game Color  | `fluorescent` | 8     |
-| Model Color | `acrylic`     | 192   |
-| Model Color | `ink`         | 2     |
+| range          | type          | count |
+| -------------- | ------------- | ----- |
+| Game Color     | `acrylic`     | 80    |
+| Game Color     | `ink`         | 12    |
+| Game Color     | `wash`        | 8     |
+| Game Color     | `fluorescent` | 8     |
+| Model Color    | `acrylic`     | 192   |
+| Model Color    | `ink`         | 2     |
+| Squidmar Color | `acrylic`     | 48    |
+| Squidmar Color | `metallic`    | 7     |
+| Squidmar Color | `fluorescent` | 5     |
+| Squidmar Color | `ink`         | 12    |
 
-Not included: metallics, Game Color Special FX (textured effects without a
-single flat color), Model Color Liquid Metal, Xpress Color, and
-mediums/varnishes.
+Not included: Game Color and Model Color metallics, Game Color Special FX
+(textured effects without a single flat color), Model Color Liquid Metal,
+Xpress Color, and mediums/varnishes.
 
 Colors are keyed by code, one color per line:
 
@@ -202,7 +208,8 @@ vallejo['70.995'];
 ```
 
 - `rgb`: `#RRGGBB`
-- `cmyk`: Vallejo's own print values from the chart, in percent
+- `cmyk`: Vallejo's own print values from the chart, in percent; `null` for
+  Squidmar Color, which has no published chart
 - `oklch`: computed from `rgb` by `hexToOklch` in `src/color/oklab.ts`; `l`
   (0–1), `c`, `h` (degrees, `null` for achromatic colors)
 
@@ -215,21 +222,24 @@ node scripts/add-oklch.js data/vallejo.json
 
 ### `data/vallejo-layouts.json`
 
-The order Vallejo prints colors in, as rows of codes. Every code is a key in
+The order the colors are printed in, as rows of codes. Every code is a key in
 `vallejo.json`.
 
-| key                      | contents                                              |
-| ------------------------ | ----------------------------------------------------- |
-| `gameColor`              | Game Color chart: main chart, Wash, Fluo, Ink         |
-| `modelColor`             | Model Color chart (its two inks sit in the main grid) |
-| `gameColorCombinations`  | 32 Highlight / Base / Shadow triplets in 3 blocks     |
-| `modelColorCombinations` | 68 Highlight / Base / Shadow triplets in 4 blocks     |
+| key                       | contents                                              |
+| ------------------------- | ----------------------------------------------------- |
+| `gameColor`               | Game Color chart: main chart, Wash, Fluo, Ink         |
+| `modelColor`              | Model Color chart (its two inks sit in the main grid) |
+| `gameColorCombinations`   | 32 Highlight / Base / Shadow triplets in 3 blocks     |
+| `modelColorCombinations`  | 68 Highlight / Base / Shadow triplets in 4 blocks     |
+| `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints                |
+| `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72               |
 
 Each layout has `sections`, and each section has `rows`, an array of arrays of
 codes. In the charts a row is one printed row of swatches, and sections carry
-the chart heading as `title`. In the combinations each row is one
-`[highlight, base, shadow]` triplet (named by the layout's `columns`), and
-each section is one printed block.
+the chart heading as `title`. The Squidmar images have no headings: each of
+their sections is one panel of the image, with no `title`. In the combinations
+each row is one `[highlight, base, shadow]` triplet (named by the layout's
+`columns`), and each section is one printed block.
 
 ```js
 import layouts from './data/vallejo-layouts.json' with { type: 'json' };
@@ -256,9 +266,33 @@ intent with black point compensation. Names are taken from the chart labels,
 with truncated words spelled out (`Cam.` → `Camouflage`, `Unif.` →
 `Uniform`, …).
 
+Squidmar Color has no published chart. Its source is the announcement images
+of its two sets, in `data/sources/`: the Mega Set (all 72 paints, headed "72
+New Paints") and the Essentials (30 of them, headed "30 New Paints").
+`scripts/extract_squidmar.py` finds each brush-stroke swatch and takes its
+dominant fill color, ignoring the printed code, the stroke's edges and the
+background. The colors come from the Mega Set image. The Essentials image is
+sampled as a cross-check: its 30 paints agree with the Mega Set values within
+5 RGB units per channel (mean ΔE2000 0.6). Metallics are drawn as gradients,
+so their `rgb` is the gradient's dominant mid-tone. Names are transcribed from
+the images, with `Fluoresc` spelled out as `Fluorescent`.
+
+Each extractor replaces only its own colors and layouts, so either can be
+re-run on its own. Layouts keep their place in the file, so to build it from
+nothing, run them in this order:
+
+```sh
+pip install -r scripts/requirements.txt
+python scripts/extract_vallejo.py game.pdf model.pdf data   # PDFs: see the script
+python scripts/extract_squidmar.py data/sources/squidmar-mega-set.webp \
+  data/sources/squidmar-essentials.webp data
+node scripts/add-oklch.js data/vallejo.json
+```
+
 The RGB values are what the official chart looks like on screen, not a
 measurement of dried paint. Vallejo notes that printed chart colors are only
-approximate.
+approximate. The Squidmar values are one step further removed: they are the
+colors of a compressed marketing image.
 
 ## Roadmap
 
