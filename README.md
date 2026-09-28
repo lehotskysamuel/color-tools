@@ -72,8 +72,7 @@ The views are linked:
 - Hovering shows the color's OKLCh, hex and ΔE<sub>OK</sub> from the picked color, in JND units.
 - Hatched areas are outside sRGB. No screen color exists there.
 
-The plots sit on near-white cards (near-black in dark mode), and the rest of the page chrome is achromatic too. A
-tinted surround shifts how the plotted colors look.
+The page chrome is deliberately achromatic. A tinted surround shifts how the plotted colors look.
 
 ### Vallejo paints
 
