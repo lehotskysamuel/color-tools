@@ -256,6 +256,12 @@ body {
   gap: 14px 10px;
 }
 
+/* Sets: no printed rows, so the swatches flow, about as large as a ten-column chart's. */
+.swatch-grid.is-set {
+  grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+  justify-content: stretch;
+}
+
 .swatch-block {
   display: grid;
   grid-template-columns: repeat(var(--triplet), minmax(0, var(--swatch-max)));

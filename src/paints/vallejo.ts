@@ -25,6 +25,14 @@ export interface Paint {
   display: string;
 }
 
+/** Something Vallejo sells that the catalog has no color for, such as a metallic or a varnish. */
+export interface OffCatalogItem {
+  code: string;
+  name: string;
+  /** metallic, Xpress Color, Special FX, medium, thinner or varnish: why the catalog has no color for it. */
+  kind: string;
+}
+
 export interface PaintSection {
   title?: string;
   rows: string[][];
@@ -34,9 +42,15 @@ export interface PaintSection {
 export interface PaintLayout {
   id: string;
   title: string;
+  /** Where the paints and their order come from. */
   source: string;
   /** Present on combination layouts, where each row is one [highlight, base, shadow] triplet. */
   columns?: string[];
+  /**
+   * Present on paint sets (./sets.ts). A set has no printed order: each section is one set, in a single row of
+   * codes in code order. Lists what the sets hold that the catalog has no color for.
+   */
+  notInCatalog?: OffCatalogItem[];
   sections: PaintSection[];
 }
 

@@ -1,8 +1,17 @@
+import { CUSTOM_SET_LAYOUTS, SET_LAYOUTS } from '../paints/sets';
 import { LAYOUTS, type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
 import { type Store, pickPaint } from '../state';
 import type { HoverHandler } from './slicePlot';
 
 const STORAGE_KEY = 'color-tools.vallejo-layout';
+
+/** The select's option groups. */
+const GROUPS: [label: string, layouts: readonly PaintLayout[]][] = [
+  ['Charts and images', LAYOUTS],
+  ['Paint sets', SET_LAYOUTS],
+  ['Custom sets', CUSTOM_SET_LAYOUTS],
+];
+const ALL_LAYOUTS = GROUPS.flatMap(([, layouts]) => layouts);
 
 export interface SwatchPaneElements {
   grid: HTMLElement;
@@ -16,9 +25,9 @@ export interface SwatchPaneElements {
 }
 
 /**
- * Vallejo paints laid out the way the official charts print them. The shown paints are drawn as dots in
- * the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which moves both
- * slices through it. A new layout starts with all of its paints shown.
+ * Vallejo paints laid out the way the official charts print them, or the paints of a set. The shown paints are
+ * drawn as dots in the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which
+ * moves both slices through it. A new layout starts with all of its paints shown.
  */
 export class SwatchPane {
   onHover: HoverHandler | null = null;
@@ -39,11 +48,16 @@ export class SwatchPane {
     this.grid = grid;
     this.note = note;
     this.count = count;
-    for (const layout of LAYOUTS) select.add(new Option(layout.title, layout.id));
-    this.layout = LAYOUTS.find((l) => l.id === readStoredLayout()) ?? LAYOUTS[0];
+    for (const [label, layouts] of GROUPS) {
+      const group = document.createElement('optgroup');
+      group.label = label;
+      for (const layout of layouts) group.append(new Option(layout.title, layout.id));
+      select.append(group);
+    }
+    this.layout = ALL_LAYOUTS.find((l) => l.id === readStoredLayout()) ?? ALL_LAYOUTS[0];
     select.value = this.layout.id;
     select.addEventListener('change', () => {
-      this.layout = LAYOUTS.find((l) => l.id === select.value) ?? LAYOUTS[0];
+      this.layout = ALL_LAYOUTS.find((l) => l.id === select.value) ?? ALL_LAYOUTS[0];
       storeLayout(this.layout.id);
       this.render();
     });
@@ -99,10 +113,11 @@ export class SwatchPane {
   }
 
   private render(): void {
-    const { sections, columns } = this.layout;
+    const { sections, columns, notInCatalog } = this.layout;
     const grid = this.grid;
     grid.replaceChildren();
     grid.classList.toggle('is-combinations', !!columns);
+    grid.classList.toggle('is-set', !!notInCatalog);
     // The hovered swatch is gone, and no pointerleave will fire for it.
     if (this.hovering) {
       this.hovering = false;
@@ -122,6 +137,24 @@ export class SwatchPane {
       }
       const triplet = columns.join(', ').replace(/, (?=[^,]*$)/, ' and ');
       this.note.textContent = `Each row is a ${triplet} triplet. Order as printed in ${this.layout.source}.`;
+    } else if (notInCatalog) {
+      // Sets have no printed order: the paints flow in code order, as many to a row as fit (style.css). Each set
+      // of a custom set starts a new row under its name.
+      grid.style.gridTemplateColumns = '';
+      for (const section of sections) {
+        if (section.title && sections.length > 1) grid.append(this.heading(section.title));
+        for (const code of section.rows.flat()) grid.append(this.swatch(code));
+      }
+      const set = sections.length > 1 ? 'sets' : 'set';
+      // "72.052 Silver (metallic)", but not "72.650 Gloss Polyurethane Varnish (varnish)".
+      const missing = notInCatalog.map(({ code, name, kind }) =>
+        name.toLowerCase().includes(kind.toLowerCase()) ? `${code} ${name}` : `${code} ${name} (${kind})`,
+      );
+      this.note.textContent =
+        `The paints of ${this.layout.source}, by code.` +
+        (missing.length
+          ? ` Also in the ${set}, but not in the data: ${missing.join(', ').replace(/, (?=[^,]*$)/, ' and ')}.`
+          : '');
     } else {
       // Charts: sections stacked, every printed row starting in the first column.
       const width = Math.max(...sections.flatMap((s) => s.rows.map((row) => row.length)));
@@ -129,9 +162,7 @@ export class SwatchPane {
       let r = 1;
       for (const section of sections) {
         if (section.title && sections.length > 1) {
-          const heading = document.createElement('h3');
-          heading.className = 'swatch-heading eyebrow';
-          heading.textContent = section.title;
+          const heading = this.heading(section.title);
           heading.style.gridRow = String(r++);
           grid.append(heading);
         }
@@ -145,6 +176,13 @@ export class SwatchPane {
     this.codes = [...new Set(sections.flatMap((s) => s.rows.flat()))];
     this.show(this.codes);
     this.markPicked();
+  }
+
+  private heading(title: string): HTMLHeadingElement {
+    const heading = document.createElement('h3');
+    heading.className = 'swatch-heading eyebrow';
+    heading.textContent = title;
+    return heading;
   }
 
   private swatch(code: string, row?: number, column?: number): HTMLButtonElement {
