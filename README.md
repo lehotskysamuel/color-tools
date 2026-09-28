@@ -242,7 +242,7 @@ src/
   color/coverage.test.ts
   paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
   paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab from the best field
-  paints/vallejo.test.ts  every layout code resolves, OKLab agrees with the stored OKLCh
+  paints/vallejo.test.ts  every layout code resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
@@ -302,7 +302,7 @@ import vallejo from './data/vallejo.json' with { type: 'json' };
 vallejo['70.995'];
 // {
 //   code: '70.995', name: 'German Grey', range: 'Model Color', type: 'acrylic',
-//   rgb: '#2E2E2C', cmyk: { c: 70, m: 60, y: 60, k: 70 },
+//   rgb: '#2E2E2C', webhex: '#2E2E2C', cmyk: { c: 70, m: 60, y: 60, k: 70 },
 //   cielab: { l: 23.21, a: -0.47, b: 1.05 },
 //   oklch: { l: 0.3377, c: 0.0031, h: 116.42 }
 // }
@@ -311,6 +311,11 @@ vallejo['70.995'];
 - `rgb`: `#RRGGBB`. For the charts, the print color as a screen shows it: clipped
   to sRGB, with the darkest print stretched to black. For Squidmar Color, sampled
   from its images.
+- `webhex`: `#RRGGBB`, the color the manufacturer shows for the paint on its
+  website, for comparing with other brands, most of which only publish that.
+  For Game Color and Model Color, the flat color band in each product image on
+  Vallejo's website. For Squidmar Color, the same value as `rgb`: its images are
+  what the manufacturer shows on the web.
 - `cmyk`: Vallejo's own print values from the chart, in percent; `null` for
   Squidmar Color, which has no published chart
 - `cielab`: CIELAB relative to D50 (2° observer), `l`, `a`, `b`. For the charts,
@@ -322,7 +327,8 @@ vallejo['70.995'];
 
 The page and the scripts take a paint's color from `cielab` when it has one, else
 from `rgb` (`src/paints/record.ts`). `cmyk` only means something together with the
-chart's ICC profile, so the extractor turns it into `cielab`.
+chart's ICC profile, so the extractor turns it into `cielab`. Nothing reads
+`webhex` yet.
 
 To recompute `oklch` after changing `rgb` values (Node 22.18 or later, which
 runs the TypeScript import directly):
@@ -398,15 +404,31 @@ sampled as a cross-check: its 30 paints agree with the Mega Set values within
 so their `rgb` is the gradient's dominant mid-tone. Names are transcribed from
 the images, with `Fluoresc` spelled out as `Fluorescent`.
 
-Each extractor replaces only its own colors and layouts, so either can be
-re-run on its own. Layouts keep their place in the file, so to build it from
-nothing, run them in this order:
+The `webhex` of Game Color and Model Color comes from Vallejo's website, which
+gives no color value as text or CSS. Each product page shows one image: the
+bottle, and behind it, in the top left corner, a band in the paint's color
+with a diagonal edge. `scripts/extract_vallejo_webhex.py` downloads the images
+from the site's uploads folder (the pages themselves sit behind a bot check)
+and takes the band's color. On every image except the washes' the band is one
+flat color. On a wash's image it fades from the color at its bottom left corner
+to white, and `webhex` is that corner's color. The images are sRGB, so the
+pixel values are what a browser shows. The script stops if a band is not flat,
+if an image is not sRGB, or if a color is more than 16 units per channel from
+the chart's `rgb`, which would mean the image shows another paint. These colors
+turn out to be the chart CMYK converted for display; see
+[Findings](#vallejos-web-colors-are-the-chart-converted-for-display).
+
+Each extractor replaces only its own colors and layouts, so any of them can be
+re-run on its own, and a re-run keeps `webhex`. Layouts keep their place in the
+file, so to build it from nothing, run them in this order (the `webhex` script
+compares with `rgb`, so it runs after the chart extractor):
 
 ```sh
 pip install -r scripts/requirements.txt
 python scripts/extract_vallejo.py game.pdf model.pdf data   # PDFs: see the script
 python scripts/extract_squidmar.py data/sources/squidmar-mega-set.webp \
   data/sources/squidmar-essentials.webp data
+python scripts/extract_vallejo_webhex.py data
 node scripts/add-oklch.js data/vallejo.json
 ```
 
@@ -445,10 +467,37 @@ dried paint                  no published measurements of the current ranges
   ▼
 printed chart: cmyk
   ├─ profile, relative colorimetric, float          → cielab   exact, not limited to sRGB (the page uses this)
-  └─ profile + black point compensation, 8-bit      → rgb      clipped to sRGB, darks stretched (kept, unused for the charts)
+  ├─ profile + black point compensation, 8-bit      → rgb      clipped to sRGB, darks stretched (kept, unused for the charts)
+  └─ Vallejo: the same, exact, shown on its website → webhex   like rgb, without the 8-bit error (for comparing brands)
       ▼
 OKLab                          exact, no limit: a coordinate system, not a device
 ```
+
+### Vallejo's web colors are the chart converted for display
+
+Most paint makers publish only an sRGB color on their websites, so comparing brands means comparing those, and
+`webhex` holds them. Vallejo's are not a separate source. An exact conversion of the chart CMYK to sRGB, relative
+colorimetric with black point compensation (the settings of `rgb`, in double precision through LittleCMS), matches
+the flat band of all 294 non-wash paints within 3 units per channel, and 222 of them within 1. Without black point
+compensation it misses by up to 29 (*one-off*). So:
+
+- `webhex` is within 2 units of `rgb` for 265 of the 294, and further only where Pillow's 8-bit conversion of `rgb`
+  is off, by up to 14 (72.122 Bile Green). The eight washes, read from the corner of a gradient, are within 5.
+- `webhex` has both errors of the hex (problems 1 and 2 below): the printed colors outside sRGB are clipped, and the
+  darks are stretched, so both blacks (72.051 and the 72.094 ink) are `#000000`. Its coverage is that of the old
+  hex, not of the printed colors:
+
+  | Paints | from `cielab` (the page) | from `rgb` | from `webhex` |
+  |---|---|---|---|
+  | Game Color and Model Color charts (302) | 45.7 % | 52.2 % | 52.6 % |
+  | Game Color (108) | 45.5 % | 51.9 % | 52.2 % |
+  | Model Color (194) | 30.2 % | 34.0 % | 34.1 % |
+  | All paints (374) | 56.9 % | 58.6 % | 59.0 % |
+
+  The `rgb` and `webhex` columns are *one-off*: `scripts/coverage.js` on a copy of the data without `cielab`, and
+  for `webhex` with it in place of `rgb`. Squidmar Color is 49.7 % in every column.
+- Figures from web colors compare brands on equal terms only as far as their web colors are made the same way.
+  How other brands make theirs is not known.
 
 ### Problems we hit, and what we did
 
@@ -517,7 +566,8 @@ Measurements of dried paint. From best to worst:
 4. RGB in a wide-gamut space, named. It removes the clipping but not the doubt about where the value came from.
    How much of Pointer's gamut each space can hold (*one-off*): sRGB 77.9 %, Display P3 90.7 %, Adobe RGB 92.3 %,
    Rec. 2020 99.9 %.
-5. An sRGB hex, as shops publish: clipped, and usually of unknown origin.
+5. An sRGB hex, as shops publish: clipped, and usually of unknown origin. Vallejo's (`webhex`) is its print CMYK
+   converted for display.
 
 Measured CIELAB goes into `cielab` and the page uses it as it is. Without published data, a handheld
 spectrophotometer (for example Nix Spectro) or colorimeter (for example Datacolor ColorReader) on drawdown cards,

@@ -43,6 +43,15 @@ describe('Vallejo data', () => {
     }
   });
 
+  it("has the manufacturer's web color for every paint, which for Squidmar Color is its rgb", () => {
+    const stored = catalog as Record<string, { rgb: string; webhex: string }>;
+    for (const paint of PAINTS.values()) {
+      const { rgb, webhex } = stored[paint.code];
+      expect(webhex).toMatch(/^#[0-9A-F]{6}$/);
+      if (paint.range === 'Squidmar Color') expect(webhex).toBe(rgb);
+    }
+  });
+
   it('computes OKLab from the best source, in agreement with the stored OKLCh', () => {
     const stored = catalog as Record<string, { oklch: { l: number; c: number; h: number | null } }>;
     for (const paint of PAINTS.values()) {
