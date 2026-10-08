@@ -265,8 +265,23 @@ body {
 
 .swatch-heading {
   grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 8px 0 0;
+}
+
+.swatch-heading h3 {
+  margin: 0 4px 0 0;
   font-weight: 500;
+}
+
+/* Per-section select all and none: much shorter than the pane-wide buttons. */
+.button.section-select {
+  font-size: 11px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 3px;
 }
 
 .swatch-heading:first-child {
