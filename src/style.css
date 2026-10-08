@@ -280,22 +280,30 @@ body {
   gap: 9px 5px;
 }
 
-/* A section's heading, followed by buttons that show or hide just its paints. */
-.swatch-section-head {
+/* A section's heading on the surface, above its chart. */
+.swatch-heading {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  margin-top: 10px;
+  margin: 10px 0 0;
 }
 
-.swatch-section-head:first-child {
-  margin-top: 0;
-}
-
-.swatch-heading {
+.swatch-heading h3 {
   margin: 0 4px 0 0;
   font-weight: 500;
+}
+
+/* Per-section select all and none: much shorter than the pane-wide buttons. */
+.button.section-select {
+  font-size: 11px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.swatch-heading:first-child {
+  margin-top: 0;
 }
 
 .swatch {
@@ -489,11 +497,6 @@ input[type='range']:focus-visible {
 
 .button:hover {
   background: var(--bg);
-}
-
-.button-small {
-  font-size: 12px;
-  padding: 1px 8px;
 }
 
 .button[aria-pressed='true'] {

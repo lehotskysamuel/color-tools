@@ -29,6 +29,8 @@ export class SwatchPane {
   private layout: PaintLayout;
   /** Codes of the paints in this layout, once each, in printed order. */
   private codes: string[] = [];
+  /** Codes of each section's paints, indexed by the section's select-all and select-none buttons. */
+  private sectionCodes: string[][] = [];
   private shown = new Set<string>();
   private hovering = false;
 
@@ -51,6 +53,17 @@ export class SwatchPane {
     showNone.addEventListener('click', () => this.show([]));
 
     grid.addEventListener('click', (e) => {
+      const select = (e.target as Element | null)?.closest<HTMLButtonElement>('.section-select');
+      if (select) {
+        const codes = this.sectionCodes[Number(select.dataset.section)];
+        const shown = new Set(this.shown);
+        for (const code of codes) {
+          if (select.dataset.select === 'all') shown.add(code);
+          else shown.delete(code);
+        }
+        this.show(shown);
+        return;
+      }
       const paint = this.paintAt(e.target);
       if (paint) this.toggle(paint);
     });
@@ -102,6 +115,7 @@ export class SwatchPane {
     const { sections, columns } = this.layout;
     const grid = this.grid;
     grid.replaceChildren();
+    this.sectionCodes = sections.map((s) => s.rows.flat());
     // The hovered swatch is gone, and no pointerleave will fire for it.
     if (this.hovering) {
       this.hovering = false;
@@ -127,49 +141,27 @@ export class SwatchPane {
       // Charts: sections stacked, every printed row starting in the first column. The heading goes above its
       // section's chart, so the swatches alone sit on the stage gray.
       const width = Math.max(...sections.flatMap((s) => s.rows.map((row) => row.length)));
-      for (const section of sections) {
-        if (section.title && sections.length > 1) grid.append(this.sectionHead(section.title, section.rows.flat()));
+      sections.forEach((section, i) => {
+        if (section.title && sections.length > 1) {
+          const heading = document.createElement('div');
+          heading.className = 'swatch-heading';
+          const title = document.createElement('h3');
+          title.className = 'eyebrow';
+          title.textContent = section.title;
+          heading.append(title, sectionSelect(i, 'all', section.title), sectionSelect(i, 'none', section.title));
+          grid.append(heading);
+        }
         const chart = document.createElement('div');
         chart.className = 'swatch-chart';
         chart.style.gridTemplateColumns = `repeat(${width}, minmax(0, var(--swatch-max)))`;
         section.rows.forEach((row, r) => row.forEach((code, c) => chart.append(this.swatch(code, r + 1, c + 1))));
         grid.append(chart);
-      }
+      });
       this.note.textContent = `Order as printed in ${this.layout.source}.`;
     }
     this.codes = [...new Set(sections.flatMap((s) => s.rows.flat()))];
     this.show(this.codes);
     this.markPicked();
-  }
-
-  /** A section's heading, with buttons that show or hide only that section's paints. Neither picks a paint. */
-  private sectionHead(title: string, codes: string[]): HTMLElement {
-    const head = document.createElement('div');
-    head.className = 'swatch-section-head';
-    const heading = document.createElement('h3');
-    heading.className = 'swatch-heading eyebrow';
-    heading.textContent = title;
-    head.append(heading);
-    for (const [text, label, visible] of [
-      ['All', 'Select all', true],
-      ['None', 'Select none', false],
-    ] as const) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'button button-small';
-      button.textContent = text;
-      button.setAttribute('aria-label', `${label}: ${title}`);
-      button.addEventListener('click', () => {
-        const shown = new Set(this.shown);
-        for (const code of codes) {
-          if (visible) shown.add(code);
-          else shown.delete(code);
-        }
-        this.show(shown);
-      });
-      head.append(button);
-    }
-    return head;
   }
 
   private swatch(code: string, row?: number, column?: number): HTMLButtonElement {
@@ -196,6 +188,17 @@ export class SwatchPane {
       button.classList.toggle('is-picked', button.dataset.code === code);
     }
   }
+}
+
+function sectionSelect(section: number, select: 'all' | 'none', title: string): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'button section-select';
+  button.dataset.section = String(section);
+  button.dataset.select = select;
+  button.textContent = select === 'all' ? 'All' : 'None';
+  button.setAttribute('aria-label', `Select ${select} in ${title}`);
+  return button;
 }
 
 function readStoredLayout(): string | null {
