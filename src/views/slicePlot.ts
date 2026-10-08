@@ -275,9 +275,9 @@ export abstract class SlicePlot {
     const tile = document.createElement('canvas');
     tile.width = tile.height = 8;
     const t = tile.getContext('2d')!;
-    t.fillStyle = this.theme.surface;
+    t.fillStyle = this.theme.stage;
     t.fillRect(0, 0, 8, 8);
-    t.strokeStyle = this.theme.hatch;
+    t.strokeStyle = this.theme.stageLine;
     t.lineWidth = 1;
     t.beginPath();
     t.moveTo(-2, 10);
@@ -298,8 +298,9 @@ export abstract class SlicePlot {
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    // The slice sits on the stage gray; the hatch marks the part of it outside sRGB.
     const m = this.margins;
-    ctx.fillStyle = this.hatchPattern() ?? this.theme.surface;
+    ctx.fillStyle = this.hatchPattern() ?? this.theme.stage;
     ctx.fillRect(m.left, m.top, this.plotWidth, this.plotHeight);
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(this.image, m.left, m.top, this.plotWidth, this.plotHeight);
@@ -388,7 +389,10 @@ export abstract class SlicePlot {
     ctx.stroke();
   }
 
-  /** Text with a halo in the surface color so it stays legible over the colored slice. */
+  /**
+   * A text label. Inside the plot, `chip` puts it on a small surface-colored tag, so text stays on the
+   * surface like the rest of the page and reads the same over the stage and the colored slice.
+   */
   protected label(
     text: string,
     x: number,
@@ -396,17 +400,26 @@ export abstract class SlicePlot {
     align: CanvasTextAlign,
     baseline: CanvasTextBaseline,
     color = this.theme.ink2,
-    halo = false,
+    chip = false,
   ): void {
     const ctx = this.ctx;
     ctx.font = `11px ${this.theme.monoFont}`;
     ctx.textAlign = align;
     ctx.textBaseline = baseline;
-    if (halo) {
-      ctx.lineWidth = 3;
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = this.theme.surface;
-      ctx.strokeText(text, x, y);
+    if (chip) {
+      const m = ctx.measureText(text);
+      const padX = 3;
+      const padY = 1;
+      ctx.beginPath();
+      ctx.roundRect(
+        x - m.actualBoundingBoxLeft - padX,
+        y - m.fontBoundingBoxAscent - padY,
+        m.actualBoundingBoxLeft + m.actualBoundingBoxRight + 2 * padX,
+        m.fontBoundingBoxAscent + m.fontBoundingBoxDescent + 2 * padY,
+        2,
+      );
+      ctx.fillStyle = this.theme.surface;
+      ctx.fill();
     }
     ctx.fillStyle = color;
     ctx.fillText(text, x, y);
