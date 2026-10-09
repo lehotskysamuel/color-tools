@@ -126,7 +126,7 @@ export class SwatchPane {
   }
 
   private render(): void {
-    const { sections, columns, notInCatalog } = this.layout;
+    const { sections, notInCatalog } = this.layout;
     const grid = this.grid;
     grid.replaceChildren();
     this.sectionCodes = sections.map((s) => s.rows.flat());
@@ -136,22 +136,7 @@ export class SwatchPane {
       this.onHover?.(null, 0, 0);
     }
 
-    if (columns) {
-      // Combination tables: each printed block is a column of [highlight, base, shadow] rows. The blocks sit
-      // side by side as on the chart when the pane is wide enough, and wrap when it is not (style.css).
-      const blocks = document.createElement('div');
-      blocks.className = 'swatch-blocks';
-      blocks.style.setProperty('--triplet', String(columns.length));
-      for (const section of sections) {
-        const block = document.createElement('div');
-        block.className = 'swatch-block';
-        for (const code of section.rows.flat()) block.append(this.swatch(code));
-        blocks.append(block);
-      }
-      grid.append(blocks);
-      const triplet = columns.join(', ').replace(/, (?=[^,]*$)/, ' and ');
-      this.note.textContent = `Each row is a ${triplet} triplet. Order as printed in ${this.layout.source}.`;
-    } else if (notInCatalog) {
+    if (notInCatalog) {
       // Sets have no printed order: the paints flow in code order, as many to a row as fit (style.css). A custom
       // set shows each of its sets under its own heading.
       sections.forEach((section, i) => {
@@ -207,7 +192,7 @@ export class SwatchPane {
     return button;
   }
 
-  /** Outlines every swatch of the picked paint; combination tables list some paints several times. */
+  /** Outlines every swatch of the picked paint; a custom set can hold a paint in more than one of its sets. */
   private markPicked(): void {
     const code = this.store.get().pickPaint?.code;
     for (const button of this.grid.querySelectorAll<HTMLButtonElement>('.swatch')) {

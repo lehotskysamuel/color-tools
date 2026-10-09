@@ -80,10 +80,9 @@ gray, CIE L\* 50, in both themes; only the text is on white, or black in the dar
 ### Vallejo paints
 
 The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
-**Layout** select switches between the six layouts in `data/vallejo-layouts.json` (Game Color chart and
-combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials) plus **All paints**, the
-charts and the Mega Set one after the other, which holds every paint in the catalog once. The page remembers the
-choice in `localStorage`.
+**Layout** select switches between the four layouts in `data/vallejo-layouts.json`: the Game Color chart, the
+Model Color chart, and the Squidmar Color Mega Set and Essentials. Every paint in the catalog is in at least one of
+them. The page remembers the choice in `localStorage`.
 
 The same select also offers the boxed **paint sets** and the **custom sets** of `data/vallejo-sets.json`. A set has
 no printed order, so its paints are shown in code order, as many to a row as fit. A custom set shows each of its
@@ -102,8 +101,8 @@ section's paints. None of these buttons picks a paint.
   name. Switching a paint off leaves the pick alone, so double-clicking a paint that is on (off, then on) picks it.
 - Clicking a paint's dot in any view picks that paint. Hovering a dot or a swatch shows the paint in the tooltip
   with its ΔE<sub>OK</sub> from the picked color.
-- The picked paint's swatch is outlined wherever it appears. The combination tables repeat paints, so a paint can
-  be outlined several times, which shows every triplet it belongs to.
+- The picked paint's swatch is outlined. A custom set whose sets share a paint shows it under each of them, and
+  outlines every one.
 - Picking a color of the space itself (not a dot) clears the picked paint.
 
 **Where the dots are drawn.**
@@ -175,7 +174,7 @@ colors except each group of a field with more than two values. Colors come from 
 `rgb`, as on the page. It also takes a JSON array of `"#rrggbb"` strings, so other paint ranges can be compared
 the same way. The table below comes from it.
 
-| Paints shown | Color from | Share of Pointer's gamut covered by their hull |
+| Paints | Color from | Share of Pointer's gamut covered by their hull |
 |---|---|---|
 | Game Color and Model Color charts (302) | `cielab` | 46 % |
 | Game Color chart (108) | `cielab` | 46 % |
@@ -251,7 +250,7 @@ src/
   color/coverage.ts       share of a gamut's OKLab volume inside a hull
   color/coverage.test.ts
   paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
-  paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab from the best field
+  paints/vallejo.ts       Vallejo paints and layouts from data/, with OKLab from the best field
   paints/vallejo.test.ts  every layout code resolves, OKLab agrees with the stored OKLCh
   paints/sets.ts          paint sets and custom sets from data/, as layouts for the swatch pane
   paints/sets.test.ts     every set is complete, its colors resolve, custom sets read their sets
@@ -352,26 +351,19 @@ The order the colors are printed in, as rows of codes. Every code is a key in
 | ------------------------- | ----------------------------------------------------- |
 | `gameColor`               | Game Color chart: main chart, Wash, Fluo, Ink         |
 | `modelColor`              | Model Color chart (its two inks sit in the main grid) |
-| `gameColorCombinations`   | 32 Highlight / Base / Shadow triplets in 3 blocks     |
-| `modelColorCombinations`  | 68 Highlight / Base / Shadow triplets in 4 blocks     |
 | `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints                |
 | `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72               |
 
 Each layout has `sections`, and each section has `rows`, an array of arrays of
 codes. In the charts a row is one printed row of swatches, and sections carry
 the chart heading as `title`. The Squidmar images have no headings: each of
-their sections is one panel of the image, with no `title`. In the combinations
-each row is one `[highlight, base, shadow]` triplet (named by the layout's
-`columns`), and each section is one printed block.
+their sections is one panel of the image, with no `title`.
 
 ```js
 import layouts from './data/vallejo-layouts.json' with { type: 'json' };
 
 layouts.gameColor.sections[0].rows[0];
 // ['72.001', '72.101', '72.098', '72.034', '72.003', '72.100', '72.107', '72.108', '72.099']
-
-layouts.gameColorCombinations.sections[0].rows[0].map((code) => vallejo[code].name);
-// ['Dead White', 'Off-White', 'Elfic Flesh']
 ```
 
 ### Source
@@ -382,9 +374,9 @@ Vallejo's official color charts:
 - [CC329 Model Color, Rev. 00 (March 2024)](https://acrylicosvallejo.com/wp-content/uploads/2024/03/CC329-R00-Model-Color-NewIC.pdf)
 
 The charts store each swatch as print CMYK (for Coated FOGRA39).
-`scripts/extract_vallejo.py` reads those values, the chart rows and the
-combination tables from the PDFs, and converts the CMYK through the charts'
-embedded Coated FOGRA39 ICC profile twice:
+`scripts/extract_vallejo.py` reads those values and the chart rows from the
+PDFs, and converts the CMYK through the charts' embedded Coated FOGRA39 ICC
+profile twice:
 
 - to `cielab` with relative colorimetric intent (paper white = L\* 100) and no
   black point compensation, so the darkest print keeps its own L\* 9.9. It runs
@@ -472,14 +464,14 @@ the paints with a color in `vallejo.json`, which are the ones the page shows.
 | `squidmarDarkFuture` | 72.202 Squidmar Dark Future                                 |    12 |     9 |
 | `squidmarFantasy`    | 72.203 Squidmar Fantasy                                     |    12 |    10 |
 | `squidmarSpecialFx`  | 72.207 Squidmar Special FX                                  |    12 |    10 |
-| `bsl`                | 72.183 BSL                                                  |    47 |    47 |
-| `starterValue`       | 72.215 Starter Value                                        |    10 |     9 |
-| `introduction`       | 72.299 Introduction                                         |    16 |    13 |
-| `advanced`           | 72.298 Advanced                                             |    16 |    13 |
-| `specialist`         | 72.188 Specialist                                           |    16 |    11 |
-| `wargamesBasics`     | 70.260 Wargames Basics                                      |     8 |     7 |
-| `wargameSpecial`     | 70.257 Wargame Special                                      |    16 |    14 |
-| `inspiration`        | 72.182 Inspiration                                          |    48 |    38 |
+| `bsl`                | 72.183 Vallejo BSL                                          |    47 |    47 |
+| `starterValue`       | 72.215 Vallejo Starter Value                                |    10 |     9 |
+| `introduction`       | 72.299 Vallejo Introduction                                 |    16 |    13 |
+| `advanced`           | 72.298 Vallejo Advanced                                     |    16 |    13 |
+| `specialist`         | 72.188 Vallejo Specialist                                   |    16 |    11 |
+| `wargamesBasics`     | 70.260 Vallejo Wargames Basics                              |     8 |     7 |
+| `wargameSpecial`     | 70.257 Vallejo Wargame Special                              |    16 |    14 |
+| `inspiration`        | 72.182 Vallejo Inspiration                                  |    48 |    38 |
 | `squidmarV1`         | Squidmar v1: Essential + Dark Future + Fantasy              |    36 |    31 |
 | `squidmarV2`         | Squidmar v2: Essential + Dark Future + Fantasy + Special FX |    48 |    41 |
 

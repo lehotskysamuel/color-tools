@@ -12,14 +12,14 @@ describe('Vallejo paint sets', () => {
       '72.202 Squidmar Dark Future': 12,
       '72.203 Squidmar Fantasy': 12,
       '72.207 Squidmar Special FX': 12,
-      '72.183 BSL': 47,
-      '72.215 Starter Value': 10,
-      '72.299 Introduction': 16,
-      '72.298 Advanced': 16,
-      '72.188 Specialist': 16,
-      '70.260 Wargames Basics': 8,
-      '70.257 Wargame Special': 16,
-      '72.182 Inspiration': 48,
+      '72.183 Vallejo BSL': 47,
+      '72.215 Vallejo Starter Value': 10,
+      '72.299 Vallejo Introduction': 16,
+      '72.298 Vallejo Advanced': 16,
+      '72.188 Vallejo Specialist': 16,
+      '70.260 Vallejo Wargames Basics': 8,
+      '70.257 Vallejo Wargame Special': 16,
+      '72.182 Vallejo Inspiration': 48,
     });
   });
 

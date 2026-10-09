@@ -11,25 +11,17 @@ describe('Vallejo data', () => {
     expect(missing).toEqual([]);
   });
 
-  it('has one layout per chart, combination table and Squidmar set, plus all paints together', () => {
+  it('has one layout per chart and Squidmar set', () => {
     expect(LAYOUTS.map((l) => l.id)).toEqual([
       'gameColor',
-      'gameColorCombinations',
       'modelColor',
-      'modelColorCombinations',
       'squidmarColorMegaSet',
       'squidmarColorEssentials',
-      'allPaints',
     ]);
-    for (const layout of LAYOUTS.filter((l) => l.columns)) {
-      for (const row of layout.sections.flatMap((s) => s.rows)) expect(row).toHaveLength(layout.columns!.length);
-    }
   });
 
-  it('shows every paint in the catalog exactly once in the combined layout', () => {
-    const all = LAYOUTS.find((l) => l.id === 'allPaints')!;
-    const codes = all.sections.flatMap((s) => s.rows.flat());
-    expect(new Set(codes).size).toBe(codes.length);
+  it('shows every paint in the catalog in some layout', () => {
+    const codes = LAYOUTS.flatMap((layout) => layout.sections.flatMap((s) => s.rows.flat()));
     expect(new Set(codes)).toEqual(new Set(PAINTS.keys()));
   });
 
