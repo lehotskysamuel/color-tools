@@ -73,9 +73,9 @@ matrix.onHover = (pair, clientX, clientY) => {
   }
   const { row, column } = pair;
   const dE = deltaEOK(row.lab, column.lab);
-  tip.rowSwatch.style.background = row.display;
+  tip.rowSwatch.style.background = row.webhex;
   tip.row.textContent = paintLabel(row);
-  tip.columnSwatch.style.background = column.display;
+  tip.columnSwatch.style.background = column.webhex;
   tip.column.textContent = paintLabel(column);
   tip.values.textContent = `D ${formatD(dE)} ΔE · J ${formatJ(dE)} JND`;
   tooltip.hidden = false;

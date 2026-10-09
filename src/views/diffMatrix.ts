@@ -96,7 +96,7 @@ export class DifferenceMatrix {
   private render(cell: number, row: number): void {
     const { paints, r0, r1, c0, c1 } = this;
     const n = paints.length;
-    const swatch = (paint: Paint) => `<span class="matrix-swatch" style="background:${paint.display}"></span>`;
+    const swatch = (paint: Paint) => `<span class="matrix-swatch" style="background:${paint.webhex}"></span>`;
     const title = (paint: Paint) => `title="${escapeHtml(paintLabel(paint))}"`;
     const gapCell = '<td class="matrix-gap" aria-hidden="true"></td>';
     const gapRow = (rows: number) =>

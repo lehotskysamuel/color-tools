@@ -15,19 +15,19 @@ export interface TooltipElements {
 export class Tooltip {
   constructor(private readonly els: TooltipElements) {}
 
-  /** `note` is appended to the hex line; colors outside sRGB that are not paints show no hex and no note. */
+  /** `note` is appended to the hex line; colors outside sRGB, which are never paints, show no hex and no note. */
   show(lab: Vec3, clientX: number, clientY: number, paint?: Paint, note?: string): void {
     const { root, name, swatch, main, sub } = this.els;
     name.textContent = paint ? paintLabel(paint) : '';
     name.hidden = !paint;
     const inGamut = isOklabInGamut(lab);
     main.textContent = formatOklch(oklabToOklch(lab));
-    if (inGamut || paint) {
-      // A paint outside sRGB still exists; show it as its nearest screen color.
-      const hex = paint ? paint.display : oklabToHex(lab);
+    if (inGamut) {
+      // A paint's color is its web hex, so it is always in sRGB.
+      const hex = paint ? paint.webhex : oklabToHex(lab);
       swatch.style.background = hex;
       swatch.style.visibility = 'visible';
-      sub.textContent = `${inGamut ? hex : `outside sRGB, shown as ${hex}`}${note ? ` · ${note}` : ''}`;
+      sub.textContent = `${hex}${note ? ` · ${note}` : ''}`;
     } else {
       swatch.style.visibility = 'hidden';
       sub.textContent = 'Outside sRGB. No screen color here.';

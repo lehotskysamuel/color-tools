@@ -1,5 +1,5 @@
-// Add `oklch` to every color in a code-keyed JSON file, computed from its best source: `cielab` when it has one,
-// else its `rgb` hex (the same rule as the page, src/paints/record.ts).
+// Add `oklch` to every color in a code-keyed JSON file, computed from its `webhex` (the field the page uses,
+// src/paints/record.ts).
 // Usage: node scripts/add-oklch.js data/vallejo.json   (Node 22.18+, which runs the .ts imports)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { oklabToOklch } from '../src/color/oklab.ts';

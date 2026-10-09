@@ -79,7 +79,7 @@ function renderControls(): void {
   if (document.activeElement !== hSlider) hSlider.value = String(Math.round(h) % 360);
   lValue.value = L.toFixed(3);
   hValue.value = `${h.toFixed(h % 1 === 0 ? 0 : 1)}°`;
-  // A paint can lie outside sRGB; the swatch then shows the nearest screen color.
+  // A color outside sRGB would show as its nearest screen color.
   const hex = oklabToDisplayHex(pick);
   pickSwatch.style.background = hex;
   pickOklch.value = formatOklch(oklabToOklch(pick));
