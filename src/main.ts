@@ -10,8 +10,8 @@ import {
 import { onSavedSetsChange } from './paints/customSets';
 import { paintLabel } from './paints/vallejo';
 import { type CutMode, createStore, initialState } from './state';
-import { initTabs } from './tabs';
 import { onThemeChange } from './theme';
+import { initViews } from './views';
 import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
 import { LightnessSlice } from './views/lightnessSlice';
@@ -111,7 +111,7 @@ const views = document.querySelector<HTMLElement>('.views')!;
 
 function layout(): void {
   const width = $('b2-host').clientWidth;
-  if (width === 0) return; // the deep-dive tab is hidden
+  if (width === 0) return; // the deep-dive is hidden
   // One column when the views area is narrow, two or three otherwise (container queries in style.css).
   const stacked = getComputedStyle(views).gridTemplateColumns.split(' ').length < 2;
   const b1Margins = lightness.sizeAt(0);
@@ -152,12 +152,12 @@ document.fonts?.ready.then(() => {
   hue.refreshTheme();
 });
 
-// Tabs. The comparator is built the first time it is shown: it computes every selected set's coverage and
-// creates a WebGL context per set.
+// The deep-dive and the comparator, both in the page menu. The comparator is built the first time it is shown: it
+// computes every selected set's coverage and creates a WebGL context per set.
 let comparator: SetComparator | null = null;
-initTabs((tab) => {
+initViews((view) => {
   tooltip.hide();
-  if (tab !== 'compare') return;
+  if (view !== 'compare') return;
   comparator ??= new SetComparator(
     {
       grid: $('compare-grid'),

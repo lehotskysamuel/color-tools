@@ -16,24 +16,15 @@
     <div class="page">
       <header class="masthead">
         <nav class="site-nav" aria-label="Pages">
-          <a href="./" aria-current="page">OKLCh Atlas</a>
+          <a href="./" data-view="deepdive" aria-current="page">OKLCh Atlas</a>
           <a href="./matrix.html">Difference matrix</a>
           <a href="./set-builder.html">Set Builder</a>
+          <a href="./#compare" data-view="compare">Set comparator</a>
         </nav>
-        <div class="title-bar">
-          <h1>OKLCh Atlas</h1>
-          <div class="tabs" role="tablist" aria-label="Views">
-            <button type="button" class="tab" role="tab" id="tab-deepdive" data-tab="deepdive" aria-controls="page-deepdive">
-              Set deep-dive
-            </button>
-            <button type="button" class="tab" role="tab" id="tab-compare" data-tab="compare" aria-controls="page-compare">
-              Set comparator
-            </button>
-          </div>
-        </div>
+        <h1 id="page-title">OKLCh Atlas</h1>
       </header>
 
-      <div class="tab-page" id="page-deepdive" role="tabpanel" aria-labelledby="tab-deepdive">
+      <div class="view-page" id="page-deepdive">
         <p class="lede">
           Every color an sRGB screen can show, placed in OKLab so that distance on the page matches how different two
           colors look. One unit is the same perceptual step on every axis of every view. Pick a paint to see where it
@@ -198,11 +189,11 @@
         </div>
       </div>
 
-      <div class="tab-page" id="page-compare" role="tabpanel" aria-labelledby="tab-compare" hidden>
+      <div class="view-page" id="page-compare" hidden>
         <p class="lede">
           Paint sets side by side. Each shows its paints and their hull inside Pointer's gamut of real surface colors,
-          the way the deep-dive first draws them, with the share of Pointer's gamut the hull covers and how many paints
-          of each type the set has. Pick each column's set from the same layouts as the deep-dive. Orbit or zoom any
+          the way the Atlas first draws them, with the share of Pointer's gamut the hull covers and how many paints
+          of each type the set has. Pick each column's set from the same layouts as the Atlas. Orbit or zoom any
           render and the others follow.
         </p>
 
@@ -217,7 +208,7 @@
 
         <footer class="notes">
           <p>
-            Every render is the deep-dive's gamut solid as it starts: Pointer's gamut as a wireframe, the hull of the
+            Every render is the Atlas's gamut solid as it starts: Pointer's gamut as a wireframe, the hull of the
             set's paints as a solid, every paint as a dot, with the labeled axes. Drag to orbit and scroll to zoom any
             of them. Hovering a color marks it in all of them, so you can see where a paint of
             one set lies against the hull of another.

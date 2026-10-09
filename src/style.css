@@ -115,52 +115,8 @@ body {
   text-wrap: balance;
 }
 
-/* The atlas's title and its two tabs, on the line that underlines the active tab. */
-.title-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 4px 32px;
-  border-bottom: 1px solid var(--line);
-}
-
-.title-bar h1 {
-  padding-bottom: 10px;
-}
-
-.tabs {
-  display: flex;
-  gap: 4px;
-}
-
-.tab {
-  font: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: -1px;
-  padding: 8px 12px 9px;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  background: none;
-  color: var(--ink-2);
-  cursor: pointer;
-}
-
-.tab:hover {
-  color: var(--ink);
-}
-
-.tab[aria-selected='true'] {
-  color: var(--ink);
-  border-bottom-color: var(--ink);
-}
-
-.tab:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: -2px;
-}
-
-.tab-page {
+/* The atlas's two views, the deep-dive and the comparator: one is shown at a time. */
+.view-page {
   display: grid;
   gap: 20px;
 }

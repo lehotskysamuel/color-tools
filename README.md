@@ -2,10 +2,11 @@
 
 Browser tools for seeing color the way people perceive it. The first one, **OKLCh Atlas**, draws the sRGB
 gamut and Pointer's gamut of real surface colors in OKLab, so that distance on screen matches perceived color
-difference, and measures how much of them a set of paints covers. It has two tabs: the **set deep-dive**, one
-paint set in three linked views, and the **[set comparator](#set-comparator)**, several paint sets side by side. The
-second tool, the [**Difference matrix**](#difference-matrix) (`matrix.html`), gives the perceived difference between
-every pair of paints. Links at the top of each page lead to the other.
+difference, and measures how much of them a set of paints covers: one paint set in three linked views. The
+[**Difference matrix**](#difference-matrix) (`matrix.html`) gives the perceived difference between every pair of
+paints, the [**Set Builder**](#set-builder) (`set-builder.html`) puts together custom sets, and the
+[**Set comparator**](#set-comparator) (`index.html#compare`) shows several paint sets side by side. One menu at the
+top of every page leads to all four: OKLCh Atlas, Difference matrix, Set Builder, Set comparator.
 
 ```sh
 npm install
@@ -58,7 +59,7 @@ about 0.02 is one just-noticeable difference (the threshold CSS Color 4 uses for
 
 ## The views
 
-The **Set deep-dive** tab. All three views use OKLab geometry with **one pixel scale for every axis**. In the 2D slices, a given on-screen
+All three views use OKLab geometry with **one pixel scale for every axis**. In the 2D slices, a given on-screen
 distance is the same perceptual difference everywhere, in both slices.
 
 | | View | Shows | Distances |
@@ -240,9 +241,9 @@ takes a share of it.
 
 ## Set comparator
 
-The **Set comparator** tab (`#compare` in the URL, so a reload keeps it and the back button returns to the
-deep-dive) puts paint sets side by side, one column each. Each column has its own **Layout** select, with the same
-layouts as the deep-dive's paint pane: ranges, paint sets and custom sets. A set counts each of its
+The **Set comparator** (`index.html#compare`) puts paint sets side by side, one column each. It shares the Atlas's
+page: the menu switches between the two without a reload, a reload keeps the comparator, and the back button returns
+to the Atlas. Each column has its own **Layout** select, with the same layouts as the Atlas's paint pane: ranges, paint sets and custom sets. A set counts each of its
 paints once, even when a custom set holds a paint in more than one of its sets.
 
 - It starts with two columns: Game Color chart and Squidmar Color.
@@ -257,8 +258,8 @@ Each column shows:
 
 | Part | Shows |
 |---|---|
-| **Render** | View A exactly as the deep-dive first draws it with that layout selected: Pointer's gamut as a wireframe, the hull of the set's paints as a solid, every paint as a dot, and the labeled axes, with the solid whole. There is no picked color, so no pick marker, and clicking picks nothing. |
-| **Pointer's gamut covered** | The share of Pointer's gamut's volume in OKLab inside the hull of the set's paints, as [measured for the deep-dive](#pointers-gamut-and-the-paint-hull), to one decimal. The bar is all of Pointer's gamut; its mark is sRGB's share (78 %) for scale. |
+| **Render** | View A exactly as the Atlas first draws it with that layout selected: Pointer's gamut as a wireframe, the hull of the set's paints as a solid, every paint as a dot, and the labeled axes, with the solid whole. There is no picked color, so no pick marker, and clicking picks nothing. |
+| **Pointer's gamut covered** | The share of Pointer's gamut's volume in OKLab inside the hull of the set's paints, as [measured for the Atlas](#pointers-gamut-and-the-paint-hull), to one decimal. The bar is all of Pointer's gamut; its mark is sRGB's share (78 %) for scale. |
 | **Colors** | How many paints the set has, and how many of each type (acrylic, ink, fluorescent, wash, metallic), every type listed so the rows line up across columns. A paint set also lists how many of its items have **no color data**, such as metallics and varnishes; they are not in the render or the coverage. |
 
 The renders are linked. Orbiting or zooming any of them moves all of them to the same view, **Reset view**
@@ -269,8 +270,8 @@ The caveat from [the coverage table](#pointers-gamut-and-the-paint-hull) applies
 from marketing images and are not directly comparable with the printed charts'.
 
 Each render has its own WebGL context, and a page gets only about 16 (Chrome's limit). So a column's context is
-released when the column is removed or switches set, and eight columns at most, plus the deep-dive's solid, keep
-the page well under the limit. The comparator itself is built the first time its tab is shown. If the starting
+released when the column is removed or switches set, and eight columns at most, plus the Atlas's solid, keep
+the page well under the limit. The comparator itself is built the first time it is shown. If the starting
 state cuts the solid, the cut faces come from a lightness and a hue slice at the starting L and h that are never
 put on screen.
 
@@ -356,7 +357,7 @@ src/
   selection.ts            ordered set of paint keys shared by the Set Builder's panes
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes),
                           and the starting state
-  tabs.ts                 the atlas's two tabs, and the comparator's #compare URL
+  views.ts                the atlas page's two views in the menu, and the comparator's #compare URL
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
   views/lightnessSlice.ts B.1
@@ -364,10 +365,10 @@ src/
   views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
   views/swatchPane.ts     paint swatches, the layout select, and which paints are shown
   views/segmented.ts      radio-button controls bound to the state
-  views/setComparator.ts  the comparator tab: one column per set, renders with a shared camera
-  views/tooltip.ts        the hover tooltip of the atlas (both tabs) and the Set Builder
+  views/setComparator.ts  the set comparator: one column per set, renders with a shared camera
+  views/tooltip.ts        the hover tooltip of the atlas, the comparator and the Set Builder
   views/diffMatrix.ts     the difference matrix table, rendering only the cells in view
-  main.ts                 atlas (index.html): wiring, tabs, layout, readout
+  main.ts                 atlas and comparator (index.html): wiring, views, layout, readout
   matrix.ts               difference matrix (matrix.html): paint set, sort order, tooltip
   setBuilder.ts           Set Builder (set-builder.html): three panes, the solid, saving and exporting the set
 ```

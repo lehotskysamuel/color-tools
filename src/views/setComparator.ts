@@ -12,7 +12,7 @@ const STORAGE_KEY = 'color-tools.compared-sets';
 const DEFAULT_SETS = ['gameColor', 'squidmarColor'];
 /** A comparison needs two sets, so the remove buttons show only above this many. */
 const MIN_SETS = 2;
-/** Each render has its own WebGL context, and a page gets only about 16; the deep-dive's solid takes one. */
+/** Each render has its own WebGL context, and a page gets only about 16; the Atlas's solid takes one. */
 const MAX_SETS = 8;
 /** Pixels per OKLab unit of the slice images on the cut faces: sharp up to about 1.5× zoom on a large render. */
 const CAP_SCALE = 600;
@@ -143,8 +143,8 @@ class SetCard {
 }
 
 /**
- * Paint sets side by side: each set's view A as the deep-dive first draws it, its coverage of Pointer's gamut,
- * and how many paints of each type it has. Each column picks its set from the same layouts as the deep-dive.
+ * Paint sets side by side: each set's view A as the Atlas first draws it, its coverage of Pointer's gamut,
+ * and how many paints of each type it has. Each column picks its set from the same layouts as the Atlas.
  * The renders share one camera, so orbiting or zooming any of them moves them all, and the color under the
  * pointer is marked in each.
  */
@@ -246,7 +246,7 @@ export class SetComparator {
   /** Every render the same size: as wide as its column, a little taller than wide, at most 70% of the window. */
   private layout(): void {
     const width = this.cards[0]?.host.clientWidth ?? 0;
-    if (width === 0) return; // the tab is hidden
+    if (width === 0) return; // the comparator is hidden
     const height = Math.max(240, Math.min(width * 1.1, window.innerHeight * 0.7));
     for (const card of this.cards) card.solid.setSize(card.host.clientWidth, height);
   }
