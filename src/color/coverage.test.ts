@@ -30,11 +30,11 @@ describe('coverage', () => {
   });
 
   // Regression values for the figures the page and scripts/coverage.js show; see the README for how they are defined.
-  it("puts sRGB at 78% of Pointer's gamut and Game Color with Model Color at 46%", () => {
+  it("puts sRGB at 78% of Pointer's gamut and Game Color with Model Color at 53%", () => {
     expect(srgbShareOfPointer()).toBeCloseTo(0.779, 2);
     const charts = [...PAINTS.values()].filter((p) => p.range === 'Game Color' || p.range === 'Model Color');
     const all = charts.map((p) => p.lab);
-    expect(colorSetCoverage(all)).toBeCloseTo(0.457, 2);
-    expect(colorSetCoverage(all, 'srgb')).toBeCloseTo(0.4, 2);
+    expect(colorSetCoverage(all)).toBeCloseTo(0.526, 2);
+    expect(colorSetCoverage(all, 'srgb')).toBeCloseTo(0.51, 2);
   });
 });

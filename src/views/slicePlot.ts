@@ -343,7 +343,7 @@ export abstract class SlicePlot {
       ctx.fill();
       ctx.beginPath();
       ctx.arc(x, y, PAINT_RADIUS - 1.25, 0, Math.PI * 2);
-      ctx.fillStyle = paint.display;
+      ctx.fillStyle = paint.webhex;
       ctx.fill();
     }
     ctx.globalAlpha = 1;

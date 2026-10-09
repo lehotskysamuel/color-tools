@@ -39,8 +39,9 @@ describe('set summary', () => {
   // The same figures as the README's coverage table.
   it("measures each set's coverage of Pointer's gamut", () => {
     const coverage = (id: string) => summarizeSet(layout(id)).pointerCoverage;
-    expect(coverage('gameColor')).toBeCloseTo(0.455, 2);
-    expect(coverage('modelColor')).toBeCloseTo(0.302, 2);
+    expect(coverage('gameColor')).toBeCloseTo(0.522, 2);
+    expect(coverage('modelColor')).toBeCloseTo(0.341, 2);
     expect(coverage('squidmarColorMegaSet')).toBeCloseTo(0.497, 2);
+    expect(coverage('kimeraKolorsBaseSet')).toBeCloseTo(0.38, 2);
   });
 });

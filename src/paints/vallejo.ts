@@ -1,7 +1,7 @@
 import catalog from '../../data/vallejo.json';
 import layoutData from '../../data/vallejo-layouts.json';
-import { type Vec3, oklabToDisplayHex } from '../color/oklab';
-import { type ColorRecord, type ColorSource, colorSource, recordOklab } from './record';
+import type { Vec3 } from '../color/oklab';
+import { type ColorRecord, recordOklab } from './record';
 
 export interface Paint {
   /** The paint's key in data/vallejo.json and in the layouts: its code, or its name when it has none. */
@@ -15,19 +15,14 @@ export interface Paint {
   /** The one pigment of a single-pigment paint (Kimera Kolors), such as "PR170". */
   pigment?: string;
   /**
-   * "#RRGGBB": the official chart's print color converted to sRGB. Squidmar Color has no chart; its colors are
-   * sampled from the announcement images. For Kimera Kolors, the color the maker's shop shows.
+   * "#RRGGBB": the color the maker shows on its website, which the page uses and draws the paint with (see
+   * ./record.ts). For Game Color and Model Color, the chart's print color converted for display. Squidmar Color has
+   * no chart; its colors are sampled from the announcement images. For Kimera Kolors, the color the maker's shop
+   * shows.
    */
-  rgb: string;
-  /** Which field `lab` comes from: `cielab` when the data has one, else `rgb` (see ./record.ts). */
-  source: ColorSource;
-  /**
-   * OKLab, from the best source, computed here so it is exact rather than the rounded `oklch` in the JSON.
-   * From `cielab` it can lie outside sRGB.
-   */
+  webhex: string;
+  /** OKLab of `webhex`, computed here so it is exact rather than the rounded `oklch` in the JSON. */
   lab: Vec3;
-  /** "#rrggbb" to draw the paint with: `rgb` when that is the source, else the nearest screen color of `lab`. */
-  display: string;
 }
 
 /** Something Vallejo sells that the catalog has no color for, such as a metallic or a varnish. */
@@ -67,11 +62,8 @@ interface RawPaint extends ColorRecord {
 
 export const PAINTS: ReadonlyMap<string, Paint> = new Map(
   Object.entries(catalog as Record<string, RawPaint>).map(([id, raw]) => {
-    const { code, name, range, type, pigment, rgb } = raw;
-    const source = colorSource(raw);
-    const lab = recordOklab(raw);
-    const display = source === 'rgb' ? rgb : oklabToDisplayHex(lab);
-    return [id, { id, code, name, range, type, ...(pigment ? { pigment } : {}), rgb, source, lab, display }];
+    const { code, name, range, type, pigment, webhex } = raw;
+    return [id, { id, code, name, range, type, ...(pigment ? { pigment } : {}), webhex, lab: recordOklab(raw) }];
   }),
 );
 

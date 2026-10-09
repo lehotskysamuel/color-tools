@@ -119,11 +119,11 @@ section's paints. None of these buttons picks a paint.
   dot. A dot's position is exact only for a paint that lies on the plane; at the band's edge it can be off by up
   to 0.04.
 
-Every paint sits at its best-known color: `cielab` when the data has one, else `rgb` (see
-[`data/vallejo.json`](#datavallejojson)). Ten chart colors, mostly teals and turquoises, and three measured Kimera
-Kolors (Warm Yellow, Cold Yellow, Phthalo Green) lie outside sRGB. They sit at their true position and are drawn in
-the nearest screen color of the same lightness and hue, and the tooltip and the readout say that they are outside
-sRGB.
+Every paint sits at its `webhex`, the color the maker shows on its website (see
+[`data/vallejo.json`](#datavallejojson)). It is not the most accurate color the data has, but it is the only one
+every range has, made the same way for each: for screens, clipped to sRGB, with the darkest color shown as black.
+Mixing sources made the ranges incomparable, so every paint carries the same kind of error instead (see
+[Findings](#why-the-page-uses-the-web-colors)). Every paint is therefore inside sRGB.
 
 ### Pointer's gamut and the paint hull
 
@@ -174,31 +174,26 @@ node scripts/coverage.js data/vallejo.json
 ```
 
 It prints the coverage of Pointer's gamut and of sRGB for all colors, for each `range` and `type`, and for all
-colors except each group of a field with more than two values. Colors come from `cielab` when present, else
-`rgb`, as on the page. It also takes a JSON array of `"#rrggbb"` strings, so other paint ranges can be compared
-the same way. The table below comes from it.
+colors except each group of a field with more than two values. Colors come from `webhex`, as on the page. It also
+takes a JSON array of `"#rrggbb"` strings, so other paint ranges can be compared the same way. The table below
+comes from it.
 
-| Paints | Color from | Share of Pointer's gamut covered by their hull |
-|---|---|---|
-| Game Color and Model Color charts (302) | `cielab` | 46 % |
-| Game Color chart (108) | `cielab` | 46 % |
-| Model Color chart (194) | `cielab` | 30 % |
-| Squidmar Color (72) | `rgb` | 50 % |
-| Kimera Kolors base set (13) | `cielab`, measured | 24 % |
-| All paints (387) | both | 59 % |
-| *sRGB itself, for comparison* | | *78 %* |
+| Paints | Share of Pointer's gamut covered by their hull |
+|---|---|
+| Game Color and Model Color charts (302) | 53 % |
+| Game Color chart (108) | 52 % |
+| Model Color chart (194) | 34 % |
+| Squidmar Color (72) | 50 % |
+| Kimera Kolors base set (13) | 38 % |
+| All paints (387) | 60 % |
+| *sRGB itself, for comparison* | *78 %* |
 
-The chart figures describe the printed charts. They are lower than the 52 % the sRGB hex values give, because the
-hex conversion made two errors that pulled in opposite directions. It clipped the ten printed colors outside sRGB
-to its edge, which lowered the figure. Its black point compensation stretched the chart's darkest print (L\* 9.9)
-down to pure black and every dark color with it, which inflated the hull more. What remains is mostly a gap among
-dark colors: CMYK cannot print dark saturated colors, so the charts say little about how far dark paints reach.
-
-The Squidmar figure is not comparable. Its colors are sampled from marketing images, which are made for screens,
-with pure black and possibly boosted saturation, so its 50 % and the 59 % for all paints overstate what the data
-supports. The Kimera figure is the only one from measured paint, but it is of 13 pots at full strength, and a set
-of single pigments is meant for mixing (see [Kimera Kolors](#kimera-kolors)). [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut) has the details and
-the sources.
+These figures compare the ranges as their makers show them on screen, not the paint. Web colors are clipped to
+sRGB, which lowers them, and show the darkest color as pure black, which stretches the hull into dark saturated
+colors and raises them more. Where the data has a better color, the figure is lower: 46 % for the charts' print
+colors (`cielab`) and 24 % for the measured Kimera Kolors. The error is the same kind for every range, but not
+necessarily the same size. [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut) has
+the details and the sources.
 
 Page layout, by width:
 
@@ -264,8 +259,7 @@ OKLab distance ΔE<sub>OK</sub> divided by 0.02 (`JND` in `src/color/oklab.ts`),
   choice in `localStorage`, separately from the atlas.
 - The table is symmetric, with zeros on the shaded diagonal. The header row and column stick while it scrolls.
   Hovering a cell highlights its row and column and shows both paints with their ΔE<sub>OK</sub> (D) and J.
-- Each paint has the same color as in the atlas: `cielab` when present, else `rgb`. For the ten chart colors
-  outside sRGB, the swatch shows the nearest screen color, but the distance uses the real color.
+- Each paint has the same color as in the atlas: its `webhex`.
 
 All paints make 387 × 387 = 149 769 cells. Rendered as one plain table, they took seconds to lay out on every
 layout switch. So `src/views/diffMatrix.ts` renders only the rows and columns in view, plus 8 on each side, with
@@ -317,8 +311,8 @@ src/
   color/hull.test.ts
   color/coverage.ts       share of a gamut's OKLab volume inside a hull
   color/coverage.test.ts
-  paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
-  paints/vallejo.ts       the paints and layouts from data/, with OKLab from the best field
+  paints/record.ts        which field gives a paint's color: webhex (shared with the scripts)
+  paints/vallejo.ts       the paints and layouts from data/, with OKLab from webhex
   paints/vallejo.test.ts  every layout entry resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
   paints/sets.ts          paint sets and custom sets from data/, as layouts; the layout selects' groups
   paints/sets.test.ts     every set is complete, its colors resolve, custom sets read their sets
@@ -353,8 +347,8 @@ src/
   their hull says how the charts spread, not how far real paint reaches. The charts are limited to what CMYK inks
   can print, which is weakest for dark saturated colors, and Vallejo notes that printed colors are only
   approximate. Squidmar Color comes from marketing images. No published measurements of dried paint were found for
-  the current Vallejo ranges. Kimera Kolors are the exception: their `cielab` is measured dried paint. Measured
-  CIELAB or spectral data would go into `cielab` and be used as it is. See
+  the current Vallejo ranges. Kimera Kolors are the exception: their `cielab` is measured dried paint, but the
+  page uses their web colors like every other range's. See
   [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut).
 
 ## Data
@@ -427,15 +421,16 @@ vallejo['The Red'];
   color, not limited to sRGB. `null` for Squidmar Color, which has no such data.
   For Kimera Kolors, measured dried paint (artistpigments.org); measured values
   of other paints would go here too.
-- `oklch`: computed by `scripts/add-oklch.js` from `cielab` when present, else
-  from `rgb`; `l` (0–1), `c`, `h` (degrees, `null` for achromatic colors)
+- `oklch`: computed by `scripts/add-oklch.js` from `webhex`; `l` (0–1), `c`, `h`
+  (degrees, `null` for achromatic colors)
 
-The page and the scripts take a paint's color from `cielab` when it has one, else
-from `rgb` (`src/paints/record.ts`). `cmyk` only means something together with the
-chart's ICC profile, so the extractor turns it into `cielab`. Nothing reads
-`webhex` yet.
+The page and the scripts take a paint's color from `webhex`
+(`src/paints/record.ts`). `rgb`, `cmyk` and `cielab` are kept but not read: they
+are more accurate for some ranges, but not every range has them (see
+[Findings](#why-the-page-uses-the-web-colors)). `cmyk` only means something
+together with the chart's ICC profile, so the extractor turns it into `cielab`.
 
-To recompute `oklch` after changing `rgb` values (Node 22.18 or later, which
+To recompute `oklch` after changing `webhex` values (Node 22.18 or later, which
 runs the TypeScript import directly):
 
 ```sh
@@ -731,6 +726,9 @@ The press figure is the hull of an 11-step CMYK grid within the 330 % ink limit,
 overstates a gamut that is not convex: the same method gives 84 % for sRGB instead of 78 %. So the charts already
 show most of what print can show, and the figure measures the printed charts, not the paint.
 
+The page shows 53 % for the same charts, because it uses their web colors so that every range is measured the same
+way (see [Why the page uses the web colors](#why-the-page-uses-the-web-colors)).
+
 ### Where the colors come from, and what each step loses
 
 ```
@@ -738,9 +736,9 @@ dried paint                  no published measurements of the current ranges
   │ Vallejo picks CMYK        limited to what the press prints, and only an imitation
   ▼
 printed chart: cmyk
-  ├─ profile, relative colorimetric, float          → cielab   exact, not limited to sRGB (the page uses this)
-  ├─ profile + black point compensation, 8-bit      → rgb      clipped to sRGB, darks stretched (kept, unused for the charts)
-  └─ Vallejo: the same, exact, shown on its website → webhex   like rgb, without the 8-bit error (for comparing brands)
+  ├─ profile, relative colorimetric, float          → cielab   exact, not limited to sRGB (kept, unused)
+  ├─ profile + black point compensation, 8-bit      → rgb      clipped to sRGB, darks stretched (kept, unused)
+  └─ Vallejo: the same, exact, shown on its website → webhex   like rgb, without the 8-bit error (the page uses this)
       ▼
 OKLab                          exact, no limit: a coordinate system, not a device
 ```
@@ -759,17 +757,38 @@ compensation it misses by up to 29 (*one-off*). So:
   darks are stretched, so both blacks (72.051 and the 72.094 ink) are `#000000`. Its coverage is that of the old
   hex, not of the printed colors:
 
-  | Paints | from `cielab` (the page) | from `rgb` | from `webhex` |
+  | Paints | from `cielab` | from `rgb` | from `webhex` (the page) |
   |---|---|---|---|
   | Game Color and Model Color charts (302) | 45.7 % | 52.2 % | 52.6 % |
   | Game Color (108) | 45.5 % | 51.9 % | 52.2 % |
   | Model Color (194) | 30.2 % | 34.0 % | 34.1 % |
   | Vallejo and Squidmar paints (374) | 56.9 % | 58.6 % | 59.0 % |
 
-  The `rgb` and `webhex` columns are *one-off*: `scripts/coverage.js` on a copy of the data without `cielab`, and
-  for `webhex` with it in place of `rgb`. Squidmar Color is 49.7 % in every column.
+  The `cielab` and `rgb` columns are *one-off*: the figures from before the page switched to `webhex`, and
+  `scripts/coverage.js` on a copy of the data with `rgb` in place of `webhex`. Squidmar Color is 49.7 % in every
+  column.
 - Figures from web colors compare brands on equal terms only as far as their web colors are made the same way.
   How other brands make theirs is not known.
+
+### Why the page uses the web colors
+
+The page first used each paint's best color: `cielab` for the charts and Kimera Kolors, the hex for Squidmar
+Color, which has nothing else. That made the ranges incomparable. The charts' `cielab` is free of the hex's
+errors, Squidmar's hex is not, and Kimera's `cielab` is a measurement of real paint. Each range was measured with
+a different ruler, and the rulers changed the ranking (*one-off*):
+
+| Paints | Best color per range (before) | `webhex` (now) |
+|---|---|---|
+| Game Color (108) | 45.5 % (`cielab`, print) | 52.2 % |
+| Squidmar Color (72) | 49.7 % (hex) | 49.7 % |
+| Kimera Kolors (13) | 23.6 % (`cielab`, measured) | 38.0 % |
+| Model Color (194) | 30.2 % (`cielab`, print) | 34.1 % |
+
+With the best colors, Squidmar Color came out ahead of Game Color and Kimera behind Model Color; with web colors
+both flip. Every range has a web color, and each is made for screens: clipped to sRGB and with a pure black. So
+the page uses `webhex` for every paint. The figures are higher than the paint deserves, but the error is the same
+kind for every set. It is not necessarily the same size: Kimera's web colors cover 38 % where the measured paint
+covers 24 %, and how much each maker boosts its images is not known.
 
 ### Problems we hit, and what we did
 
@@ -778,8 +797,8 @@ compensation it misses by up to 29 (*one-off*). So:
    70.838 Emerald, 70.840 Light Turquoise, 70.841 Andrea Blue, 72.023 Electric Blue, 72.119 Aquamarine,
    72.160 Fluorescent Blue, 72.161 Fluorescent Cold Green, 73.208 Yellow (wash), and 72.101 Off-White (only
    just). The conversion clipped them to sRGB's edge. OKLab was never the limit; it just never received the
-   real values. *Fix:* the extractor also stores `cielab`, converted straight from the CMYK, and the page and the
-   scripts use it before `rgb`.
+   real values. *Fix:* the extractor also stores `cielab`, converted straight from the CMYK. The page and the
+   scripts used it before `rgb`, until they [switched to `webhex`](#why-the-page-uses-the-web-colors).
 2. **Black point compensation inflated the coverage.** The hex conversion used it, as displays do: it stretches
    the press's darkest print (L\* 9.9) to pure black and pulls every dark color down with it. That puts the hull
    into dark saturated colors the chart never shows. An early estimate from CIELAB made with the same setting
@@ -801,8 +820,9 @@ compensation it misses by up to 29 (*one-off*). So:
    precision by LittleCMS (`scripts/lcms.py`). `rgb` is kept as it was.
 4. **Squidmar Color has no chart.** Its colors are sampled from marketing images, which are made for screens, with
    pure black and possibly boosted saturation. Its 72 colors alone cover 50 %, more than both charts together, so
-   figures that include it are not comparable. *What we did:* nothing to the data; it has no `cielab`, and the
-   README says so wherever its figures appear.
+   figures that include it are not comparable. *What we did:* nothing to the data; it has no `cielab`. Later the
+   page [switched every range to its web colors](#why-the-page-uses-the-web-colors), so that the ranges are
+   compared on the same kind of data.
 5. **"Covered" is not "mixable".** Light mixes linearly in CIE XYZ and linear RGB, so a hull there is exactly the
    set of optical mixes; built there, the charts' hull covers 46.8 % instead of 45.7 % (*one-off*), so the choice
    of space barely matters. Paint does not mix linearly in any three-number color space: the result depends on
@@ -841,7 +861,7 @@ Measurements of dried paint. From best to worst:
 5. An sRGB hex, as shops publish: clipped, and usually of unknown origin. Vallejo's (`webhex`) is its print CMYK
    converted for display.
 
-Measured CIELAB goes into `cielab` and the page uses it as it is. Without published data, a handheld
+Measured CIELAB goes into `cielab`. The page would only use it once every range has it. Without published data, a handheld
 spectrophotometer (for example Nix Spectro) or colorimeter (for example Datacolor ColorReader) on drawdown cards,
 painted the same way for every paint and fully dry, would do.
 

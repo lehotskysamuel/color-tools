@@ -3,9 +3,8 @@
 // Usage: node scripts/coverage.js data/vallejo.json   (Node 22.18+, which runs the .ts imports)
 //
 // The file is a code-keyed object like data/vallejo.json, or an array. Each color is a "#rrggbb" string or an
-// object with an `rgb` hex and optionally `cielab` (D50), which is used when present, as on the page
-// (src/paints/record.ts). When colors have `range` or `type` fields, each group is reported too, and for a field
-// with more than two values, everything except each group.
+// object with a `webhex`, as on the page (src/paints/record.ts). When colors have `range` or `type` fields, each
+// group is reported too, and for a field with more than two values, everything except each group.
 import { readFileSync } from 'node:fs';
 import { colorSetCoverage, srgbShareOfPointer } from '../src/color/coverage.ts';
 import { recordOklab } from '../src/paints/record.ts';
@@ -20,7 +19,7 @@ if (!path) {
 
 const raw = JSON.parse(readFileSync(path, 'utf8'));
 const colors = (Array.isArray(raw) ? raw : Object.values(raw)).map((c) => {
-  const color = typeof c === 'string' ? { rgb: c } : c;
+  const color = typeof c === 'string' ? { webhex: c } : c;
   return { ...color, lab: recordOklab(color) };
 });
 
@@ -44,7 +43,5 @@ const rows = [
 ];
 
 const widths = rows[0].map((_, i) => Math.max(...rows.map((row) => row[i].length)));
-const fromLab = colors.filter((c) => c.cielab).length;
-console.log("Share of each gamut's volume in OKLab inside the convex hull of the colors.");
-console.log(`Colors from cielab: ${fromLab}, from rgb: ${colors.length - fromLab}.\n`);
+console.log("Share of each gamut's volume in OKLab inside the convex hull of the colors.\n");
 for (const row of rows) console.log(row.map((cell, i) => (i === 0 ? cell.padEnd(widths[i]) : cell.padStart(widths[i]))).join('   '));

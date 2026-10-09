@@ -48,7 +48,6 @@ describe('Vallejo data', () => {
       const measured = paint.range === 'Kimera Kolors';
       expect(stored[paint.id].cmyk !== null).toBe(chart);
       expect(stored[paint.id].cielab !== null).toBe(chart || measured);
-      expect(paint.source).toBe(chart || measured ? 'cielab' : 'rgb');
     }
   });
 
@@ -77,10 +76,10 @@ describe('Vallejo data', () => {
     }
   });
 
-  it('computes OKLab from the best source, in agreement with the stored OKLCh', () => {
+  it('computes OKLab from the web color, in agreement with the stored OKLCh', () => {
     const stored = catalog as Record<string, { oklch: { l: number; c: number; h: number | null } }>;
     for (const paint of PAINTS.values()) {
-      if (paint.source === 'rgb') expect(oklabToHex(paint.lab)).toBe(paint.rgb.toLowerCase());
+      expect(oklabToHex(paint.lab)).toBe(paint.webhex.toLowerCase());
       const [L, C, h] = oklabToOklch(paint.lab);
       const { oklch } = stored[paint.id];
       expect(L).toBeCloseTo(oklch.l, 3);
@@ -89,15 +88,8 @@ describe('Vallejo data', () => {
     }
   });
 
-  it('draws each paint in its own color, or the nearest screen color when it lies outside sRGB', () => {
-    let outside = 0;
-    for (const paint of PAINTS.values()) {
-      if (paint.source === 'rgb') expect(paint.display).toBe(paint.rgb);
-      else if (isOklabInGamut(paint.lab)) expect(paint.display).toBe(oklabToHex(paint.lab));
-      else outside++;
-    }
-    // The charts print ten paints outside sRGB: mostly teals, turquoises and cyan blues (Off-White only just).
-    // Three Kimera Kolors are measured outside it: Warm Yellow, Cold Yellow and Phthalo Green.
-    expect(outside).toBe(13);
+  // The tooltip shows a paint's hex only for colors inside sRGB.
+  it('puts every paint inside sRGB', () => {
+    for (const paint of PAINTS.values()) expect(isOklabInGamut(paint.lab)).toBe(true);
   });
 });
