@@ -1,5 +1,7 @@
-import { type Vec3, formatOklch, isOklabInGamut, oklabToHex, oklabToOklch } from '../color/oklab';
+import { JND, type Vec3, deltaEOK, formatOklch, isOklabInGamut, oklabToHex, oklabToOklch } from '../color/oklab';
 import { type Paint, paintLabel } from '../paints/vallejo';
+import type { Store } from '../state';
+import type { HoverHandler } from './slicePlot';
 
 export interface TooltipElements {
   root: HTMLElement;
@@ -41,4 +43,41 @@ export class Tooltip {
   hide(): void {
     this.els.root.hidden = true;
   }
+}
+
+/** Builds the tooltip's elements at the end of the page. */
+export function createTooltip(): Tooltip {
+  const div = (className: string) => {
+    const el = document.createElement('div');
+    el.className = className;
+    return el;
+  };
+  const root = div('tooltip');
+  root.setAttribute('role', 'status');
+  root.hidden = true;
+  const swatch = div('tooltip-swatch');
+  const name = div('tooltip-name');
+  const main = div('mono');
+  const sub = div('mono tooltip-sub');
+  const text = div('tooltip-text');
+  text.append(name, main, sub);
+  root.append(swatch, text);
+  document.body.append(root);
+  return new Tooltip({ root, name, swatch, main, sub });
+}
+
+/**
+ * The hover handler of the views and the paint swatches: writes the hovered color to the store and shows it in the
+ * tooltip with its ΔE_OK from the picked color.
+ */
+export function pickHoverHandler(store: Store, tooltip: Tooltip): HoverHandler {
+  return (lab, clientX, clientY, paint) => {
+    store.set({ hover: lab });
+    if (!lab) {
+      tooltip.hide();
+      return;
+    }
+    const dE = deltaEOK(lab, store.get().pick);
+    tooltip.show(lab, clientX, clientY, paint, `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`);
+  };
 }

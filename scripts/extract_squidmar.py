@@ -18,7 +18,12 @@ Colors come from the Mega Set image. The Essentials image is sampled too, as
 a check: each of its paints must match the Mega Set value within
 MAX_SHEET_DIFF.
 
-The images have no headings, so each layout gets one section per paint type
+The Mega Set holds the whole range, so its image gives the range's layout,
+`squidmarColor`. The two boxes themselves are paint sets in
+data/vallejo-sets.json (`squidmarColorMegaSet`, `squidmarColorEssentials`);
+the script checks that their colors are the paints of the two images.
+
+The images have no headings, so the layout gets one section per paint type
 (SECTION_TITLES), in the image's reading order: a printed row that holds two
 types is split between their sections.
 
@@ -27,7 +32,9 @@ mid-tone. There is no print CMYK or other color data, so `cmyk` and `cielab`
 are null and the page uses `rgb`. The images are what the manufacturer shows
 on the web, so `webhex` holds the same value as `rgb`.
 """
+import json
 import sys
+from pathlib import Path
 
 import numpy as np
 from PIL import Image
@@ -62,9 +69,9 @@ MAX_SHEET_DIFF = 8
 # Transcribed from the images: one line per printed row of swatches, a blank
 # line between the image's panels.
 SHEETS = {
-    "squidmarColorMegaSet": {
-        "title": "Squidmar Color Mega Set",
-        "source": 'Squidmar Color Mega Set announcement image ("72 New Paints")',
+    "squidmarColor": {
+        "title": "Squidmar Color",
+        "source": 'the Squidmar Color Mega Set announcement image ("72 New Paints"), which holds the whole range',
         "top": 330,         # first pixel row below the headline
         "threshold": 18,    # the panels are near-black, not pure black
         "max_height": 52,
@@ -85,8 +92,6 @@ SHEETS = {
 """,
     },
     "squidmarColorEssentials": {
-        "title": "Squidmar Color Essentials",
-        "source": 'Squidmar Color Essentials announcement image ("30 New Paints")',
         "top": 400,
         "threshold": 12,
         "max_height": 84,   # Pitch Black's glow merges with its label; clip it
@@ -203,8 +208,8 @@ def type_sections(rows):
 
 
 def main(mega_set, essentials, out_dir):
-    paints, mega_layout = sample(mega_set, SHEETS["squidmarColorMegaSet"])
-    subset, essentials_layout = sample(essentials, SHEETS["squidmarColorEssentials"])
+    paints, range_layout = sample(mega_set, SHEETS["squidmarColor"])
+    subset, _ = sample(essentials, SHEETS["squidmarColorEssentials"])
 
     colors = {}
     for code, name, (r, g, b) in paints:
@@ -235,10 +240,13 @@ def main(mega_set, essentials, out_dir):
         if diff > MAX_SHEET_DIFF:
             raise ValueError(f"{code}: images disagree by {diff} ({rgb} vs {mega_rgb[code]})")
 
-    layouts = {
-        key: {"title": SHEETS[key]["title"], "source": SHEETS[key]["source"], "sections": layout}
-        for key, layout in (("squidmarColorMegaSet", mega_layout), ("squidmarColorEssentials", essentials_layout))
-    }
+    sets = json.loads((Path(out_dir) / "vallejo-sets.json").read_text(encoding="utf-8"))
+    for key, sampled in (("squidmarColorMegaSet", paints), ("squidmarColorEssentials", subset)):
+        if sets[key]["colors"] != sorted(code for code, _, _ in sampled):
+            raise ValueError(f"{key} in vallejo-sets.json does not list the paints of its image")
+
+    sheet = SHEETS["squidmarColor"]
+    layouts = {"squidmarColor": {"title": sheet["title"], "source": sheet["source"], "sections": range_layout}}
     vallejo_data.update(out_dir, {RANGE}, dict(sorted(colors.items())), layouts)
     print(f"wrote {len(colors)} colors and {len(layouts)} layouts to {out_dir}")
 

@@ -1,25 +1,24 @@
 import './style.css';
 import {
   AB_RANGE,
-  JND,
-  type Vec3,
-  deltaEOK,
   formatOklab,
   formatOklch,
   isOklabInGamut,
   oklabToDisplayHex,
   oklabToOklch,
 } from './color/oklab';
-import { type Paint, paintLabel } from './paints/vallejo';
-import { type AppState, type CutMode, type Gamut, type ShapeStyle, createStore, initialState } from './state';
+import { onSavedSetsChange } from './paints/customSets';
+import { paintLabel } from './paints/vallejo';
+import { type CutMode, createStore, initialState } from './state';
 import { initTabs } from './tabs';
 import { onThemeChange } from './theme';
 import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
 import { LightnessSlice } from './views/lightnessSlice';
+import { SHAPE_CONTROLS, bindSegmented } from './views/segmented';
 import { SetComparator } from './views/setComparator';
 import { SwatchPane } from './views/swatchPane';
-import { Tooltip } from './views/tooltip';
+import { createTooltip, pickHoverHandler } from './views/tooltip';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -45,7 +44,10 @@ const swatches = new SwatchPane(
     showNone: $<HTMLButtonElement>('show-none'),
   },
   store,
+  { storageKey: 'color-tools.vallejo-layout' },
 );
+// Sets saved in the Set Builder, in another tab, show up in the layout select.
+onSavedSetsChange(() => swatches.refreshLayouts());
 
 // Controls
 const lSlider = $<HTMLInputElement>('l-slider');
@@ -56,19 +58,10 @@ lSlider.addEventListener('input', () => store.set({ L: Number(lSlider.value) }))
 hSlider.addEventListener('input', () => store.set({ h: Number(hSlider.value) }));
 $('reset-view').addEventListener('click', () => solid.resetView());
 
-/** Segmented controls: each is a fieldset of radios whose value is written to the state. */
-const segmented: { id: string; value: (s: AppState) => string; patch: (value: string) => Partial<AppState> }[] = [
+const checkSegmented = bindSegmented(store, [
   { id: 'cut-mode', value: (s) => s.cut, patch: (v) => ({ cut: v as CutMode }) },
-  { id: 'gamut', value: (s) => s.gamut, patch: (v) => ({ gamut: v as Gamut }) },
-  { id: 'gamut-style', value: (s) => s.gamutStyle, patch: (v) => ({ gamutStyle: v as ShapeStyle }) },
-  { id: 'hull', value: (s) => (s.hull ? 'on' : 'off'), patch: (v) => ({ hull: v === 'on' }) },
-  { id: 'hull-style', value: (s) => s.hullStyle, patch: (v) => ({ hullStyle: v as ShapeStyle }) },
-];
-for (const { id, patch } of segmented) {
-  for (const input of document.querySelectorAll<HTMLInputElement>(`#${id} input`)) {
-    input.addEventListener('change', () => input.checked && store.set(patch(input.value)));
-  }
-}
+  ...SHAPE_CONTROLS,
+]);
 const hullStyle = $<HTMLFieldSetElement>('hull-style');
 
 // Picked-color readout
@@ -94,10 +87,7 @@ function renderControls(): void {
   pickOklab.value = formatOklab(pick);
   pickPaintOut.value = pickPaint ? paintLabel(pickPaint) : '';
   readout.classList.toggle('has-paint', pickPaint !== null);
-  for (const { id, value } of segmented) {
-    const radio = document.querySelector<HTMLInputElement>(`#${id} input[value="${value(state)}"]`);
-    if (radio) radio.checked = true;
-  }
+  checkSegmented();
   hullStyle.disabled = !state.hull;
 }
 
@@ -108,23 +98,8 @@ store.subscribe((_s, changed) => {
 renderControls();
 
 // Hover tooltip, shared by the three views, the paint swatches and the set comparator
-const tooltip = new Tooltip({
-  root: $('tooltip'),
-  name: $('tip-name'),
-  swatch: $('tip-swatch'),
-  main: $('tip-main'),
-  sub: $('tip-sub'),
-});
-
-function showHover(lab: Vec3 | null, clientX: number, clientY: number, paint?: Paint): void {
-  store.set({ hover: lab });
-  if (!lab) {
-    tooltip.hide();
-    return;
-  }
-  const dE = deltaEOK(lab, store.get().pick);
-  tooltip.show(lab, clientX, clientY, paint, `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`);
-}
+const tooltip = createTooltip();
+const showHover = pickHoverHandler(store, tooltip);
 
 lightness.onHover = showHover;
 hue.onHover = showHover;

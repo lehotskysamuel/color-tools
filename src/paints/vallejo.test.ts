@@ -11,17 +11,11 @@ describe('Vallejo data', () => {
     expect(missing).toEqual([]);
   });
 
-  it('has one layout per chart, Squidmar set and Kimera set', () => {
-    expect(LAYOUTS.map((l) => l.id)).toEqual([
-      'gameColor',
-      'modelColor',
-      'squidmarColorMegaSet',
-      'squidmarColorEssentials',
-      'kimeraKolorsBaseSet',
-    ]);
+  it('has one layout per range: the two charts, Squidmar Color and the Kimera set', () => {
+    expect(LAYOUTS.map((l) => l.id)).toEqual(['gameColor', 'modelColor', 'squidmarColor', 'kimeraKolorsBaseSet']);
   });
 
-  it('groups the Squidmar Color layouts by paint type, one section per type', () => {
+  it('groups the Squidmar Color layout by paint type, one section per type', () => {
     const titles = {
       acrylic: 'Squidmar Color',
       metallic: 'Squidmar Color Metallic',

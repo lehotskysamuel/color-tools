@@ -82,12 +82,14 @@ gray, CIE L\* 50, in both themes; only the text is on white, or black in the dar
 
 ### Paints
 
-The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
-**Layout** select switches between the five layouts in `data/vallejo-layouts.json`: the Game Color chart, the
-Model Color chart, the Squidmar Color Mega Set and Essentials, and the Kimera Kolors base set. Every paint in the
-catalog is in at least one of them. The page remembers the choice in `localStorage`.
+The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. Under
+**Ranges**, the **Layout** select switches between the four layouts in `data/vallejo-layouts.json`, one per range:
+the Game Color chart, the Model Color chart, Squidmar Color (all 72 paints, as the Mega Set image prints them) and
+the Kimera Kolors base set. Every paint in the catalog is in one of them. The page remembers the choice in
+`localStorage`.
 
-The same select also offers the boxed **paint sets** and the **custom sets** of `data/vallejo-sets.json`. A set has
+The same select also offers the boxed **paint sets** of `data/vallejo-sets.json`, the **custom sets** of
+`data/custom-sets/`, and the custom sets saved in this browser by the [Set Builder](#set-builder). A set has
 no printed order, so its paints are shown in code order, as many to a row as fit. A custom set shows each of its
 sets under its name, with the colors read from that set, and that set's **All** / **None** buttons switch it on and
 off within the custom set. The note under the swatches names what a set holds that the catalog has no color for
@@ -200,6 +202,31 @@ supports. The Kimera figure is the only one from measured paint, but it is of 13
 of single pigments is meant for mixing (see [Kimera Kolors](#kimera-kolors)). [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut) has the details and
 the sources.
 
+### Set Builder
+
+`set-builder.html` (linked from the top of the Atlas) builds your own set of paints. It has four columns: three
+paint panes, each with its own **Layout** select, **Select all** / **Select none** and section **All** / **None**
+buttons as in the Atlas, and the gamut solid (view A, without cuts).
+
+- The three panes share one selection. Clicking a swatch adds the paint to the set or takes it out, and the
+  buttons add or remove all of the pane's (or the section's) paints. A paint in the set is on in every pane that
+  shows it. Changing a pane's layout leaves the set alone.
+- The solid draws the set's paints as dots, with their hull and its coverage.
+- Under the columns, **Your set** lists the paints in the order they were added, each swatch with its code and
+  name, and the total. Clicking a paint there takes it out.
+- **Editing** starts a new set, or opens a set saved in this browser or a custom set of the data. The set on
+  screen, saved or not, is kept as a draft between visits.
+- **Save** stores the set in `localStorage` (key `color-tools.custom-sets`), over the saved set it was opened
+  from. **Save As** stores it as a new set, adding " (copy)" to the name if it was not changed. **Delete** removes
+  the saved set, **Clear** empties the selection.
+- Custom sets of the data are read-only: opened, they can be changed on screen, but only **Save As** keeps them,
+  as a new set in this browser. **Save** and **Delete** stay disabled.
+- Saved sets appear under **Custom sets** in every layout select, on every page, marked "(saved here)".
+- **Export** shows the set as the contents of a file for `data/custom-sets/` to copy, with the file's name. Saved
+  in the repository, it becomes a read-only custom set for everyone (see
+  [`data/custom-sets/`](#datacustom-sets)). A saved set, or a set of colors from the data, keeps its key, so
+  exporting it again replaces its file.
+
 Page layout, by width:
 
 | Width | Layout |
@@ -215,10 +242,10 @@ takes a share of it.
 
 The **Set comparator** tab (`#compare` in the URL, so a reload keeps it and the back button returns to the
 deep-dive) puts paint sets side by side, one column each. Each column has its own **Layout** select, with the same
-layouts as the deep-dive's paint pane: charts and images, paint sets and custom sets. A set counts each of its
+layouts as the deep-dive's paint pane: ranges, paint sets and custom sets. A set counts each of its
 paints once, even when a custom set holds a paint in more than one of its sets.
 
-- It starts with two columns: Game Color chart and Squidmar Color Mega Set.
+- It starts with two columns: Game Color chart and Squidmar Color.
 - **+ Add set** adds a column with the first layout no column shows yet, up to eight columns.
 - With three or more columns, each has a **×** that removes it. Two always stay, since a comparison needs two.
 - The page remembers the columns in `localStorage`.
@@ -320,10 +347,13 @@ src/
   paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
   paints/vallejo.ts       the paints and layouts from data/, with OKLab from the best field
   paints/vallejo.test.ts  every layout entry resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
-  paints/sets.ts          paint sets and custom sets from data/, as layouts; the layout selects' groups
+  paints/sets.ts          paint sets and the custom-sets/ files from data/, as layouts
   paints/sets.test.ts     every set is complete, its colors resolve, custom sets read their sets
+  paints/customSets.ts    custom sets saved in the browser, export as JSON; the layout selects' groups
+  paints/customSets.test.ts  keys, saving, damaged storage, export round trip, the custom-sets/ files
   paints/summary.ts       a layout's paints once each, paints per type, coverage of Pointer's gamut
   paints/summary.test.ts
+  selection.ts            ordered set of paint keys shared by the Set Builder's panes
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes),
                           and the starting state
   tabs.ts                 the atlas's two tabs, and the comparator's #compare URL
@@ -333,11 +363,13 @@ src/
   views/hueSlice.ts       B.2
   views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
   views/swatchPane.ts     paint swatches, the layout select, and which paints are shown
+  views/segmented.ts      radio-button controls bound to the state
   views/setComparator.ts  the comparator tab: one column per set, renders with a shared camera
-  views/tooltip.ts        the atlas's hover tooltip, shared by both tabs
+  views/tooltip.ts        the hover tooltip of the atlas (both tabs) and the Set Builder
   views/diffMatrix.ts     the difference matrix table, rendering only the cells in view
   main.ts                 atlas (index.html): wiring, tabs, layout, readout
   matrix.ts               difference matrix (matrix.html): paint set, sort order, tooltip
+  setBuilder.ts           Set Builder (set-builder.html): three panes, the solid, saving and exporting the set
 ```
 
 ## Known limits
@@ -444,20 +476,23 @@ node scripts/add-oklch.js data/vallejo.json
 
 ### `data/vallejo-layouts.json`
 
-The order the colors are printed in, as rows of keys (codes, or names for Kimera
-Kolors). Every one is a key in `vallejo.json`.
+One layout per range, in the order its colors are printed, as rows of keys
+(codes, or names for Kimera Kolors). Every one is a key in `vallejo.json`.
 
-| key                       | contents                                              |
-| ------------------------- | ----------------------------------------------------- |
-| `gameColor`               | Game Color chart: main chart, Wash, Fluo, Ink         |
-| `modelColor`              | Model Color chart (its two inks sit in the main grid) |
-| `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints, by type       |
-| `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72, by type      |
-| `kimeraKolorsBaseSet`     | Kimera Kolors base set: 13 paints in 2 rows           |
+| key                   | contents                                                        |
+| --------------------- | --------------------------------------------------------------- |
+| `gameColor`           | Game Color chart: main chart, Wash, Fluo, Ink                   |
+| `modelColor`          | Model Color chart (its two inks sit in the main grid)           |
+| `squidmarColor`       | Squidmar Color: all 72 paints, by type, from the Mega Set image |
+| `kimeraKolorsBaseSet` | Kimera Kolors base set: 13 paints in 2 rows                     |
+
+The two Squidmar Color boxes, the Mega Set and the Essentials, are paint sets
+in [`vallejo-sets.json`](#datavallejo-setsjson). The Mega Set holds the whole
+range, so its image gives the range's layout.
 
 Each layout has `sections`, and each section has `rows`, an array of arrays of
 keys. In the charts a row is one printed row of swatches, and sections carry
-the chart heading as `title`. The Squidmar images have no headings, so their
+the chart heading as `title`. The Squidmar image has no headings, so its
 sections are the paint types, titled like the Game Color chart's: Squidmar
 Color (the 48 plain acrylics), Metallic (74.249–255), Fluo (74.256–260) and Ink
 (74.261–272); Squidmar Color has no washes. Each section keeps the image's rows
@@ -503,9 +538,11 @@ of its two sets, in `data/sources/`: the Mega Set (all 72 paints, headed "72
 New Paints") and the Essentials (30 of them, headed "30 New Paints").
 `scripts/extract_squidmar.py` finds each brush-stroke swatch and takes its
 dominant fill color, ignoring the printed code, the stroke's edges and the
-background. The colors come from the Mega Set image. The Essentials image is
-sampled as a cross-check: its 30 paints agree with the Mega Set values within
-5 RGB units per channel (mean ΔE2000 0.6). Metallics are drawn as gradients,
+background. The colors and the `squidmarColor` layout come from the Mega Set
+image. The Essentials image is sampled as a cross-check: its 30 paints agree
+with the Mega Set values within 5 RGB units per channel (mean ΔE2000 0.6). The
+script also checks that the two sets in `vallejo-sets.json` list the paints of
+their images. Metallics are drawn as gradients,
 so their `rgb` is the gradient's dominant mid-tone. Names are transcribed from
 the images, with `Fluoresc` spelled out as `Fluorescent`.
 
@@ -545,7 +582,7 @@ marketing image.
 
 ### `data/vallejo-sets.json`
 
-Boxed Vallejo paint sets, and custom sets made of them. Each key is a set.
+Boxed Vallejo paint sets. Each key is a set.
 
 A **paint set** lists its paints by code:
 
@@ -563,45 +600,63 @@ sets.squidmarFantasy;
 // }
 ```
 
-- `code`: Vallejo's product code for the set.
+- `code`: Vallejo's product code for the set, or `null` for the two Squidmar Color boxes, which have no published
+  code yet (they are released on 30.10.2026). A set without a code is listed by its title alone.
 - `colors`: the set's paints that `vallejo.json` has, in code order. Every code is a key there.
 - `notInCatalog`: the rest of the set, which `vallejo.json` has no color for, with its name and its `kind`:
   `metallic` (left out of the charts' data), `Xpress Color` and `Special FX` (their swatches are gradients and
   photo textures, not one flat color), or `medium`, `thinner` and `varnish`, which are not colors. None of these
   codes is in `vallejo.json`; one that gets a color there moves to `colors`.
 
-A **custom set** lists sets, not colors, and its colors are always read from those sets:
-
-```js
-sets.squidmarV1;
-// { title: 'Squidmar v1', sets: ['squidmarEssential', 'squidmarDarkFuture', 'squidmarFantasy'] }
-
-sets.squidmarV1.sets.flatMap((id) => sets[id].colors);
-```
-
-Its `sets` are paint sets, never other custom sets. In the table, *items* counts everything in the set and *drawn*
+In the table, *items* counts everything in the set and *drawn*
 the paints with a color in `vallejo.json`, which are the ones the page shows.
 
-| key                  | set                                                         | items | drawn |
-| -------------------- | ----------------------------------------------------------- | ----: | ----: |
-| `squidmarEssential`  | 72.201 Squidmar Essential                                   |    12 |    12 |
-| `squidmarDarkFuture` | 72.202 Squidmar Dark Future                                 |    12 |     9 |
-| `squidmarFantasy`    | 72.203 Squidmar Fantasy                                     |    12 |    10 |
-| `squidmarSpecialFx`  | 72.207 Squidmar Special FX                                  |    12 |    10 |
-| `bsl`                | 72.183 Vallejo BSL                                          |    47 |    47 |
-| `starterValue`       | 72.215 Vallejo Starter Value                                |    10 |     9 |
-| `introduction`       | 72.299 Vallejo Introduction                                 |    16 |    13 |
-| `advanced`           | 72.298 Vallejo Advanced                                     |    16 |    13 |
-| `specialist`         | 72.188 Vallejo Specialist                                   |    16 |    11 |
-| `wargamesBasics`     | 70.260 Vallejo Wargames Basics                              |     8 |     7 |
-| `wargameSpecial`     | 70.257 Vallejo Wargame Special                              |    16 |    14 |
-| `inspiration`        | 72.182 Vallejo Inspiration                                  |    48 |    38 |
-| `squidmarV1`         | Squidmar v1: Essential + Dark Future + Fantasy              |    36 |    31 |
-| `squidmarV2`         | Squidmar v2: Essential + Dark Future + Fantasy + Special FX |    48 |    41 |
+| key                       | set                            | items | drawn |
+| ------------------------- | ------------------------------ | ----: | ----: |
+| `squidmarEssential`       | 72.201 Squidmar Essential      |    12 |    12 |
+| `squidmarDarkFuture`      | 72.202 Squidmar Dark Future    |    12 |     9 |
+| `squidmarFantasy`         | 72.203 Squidmar Fantasy        |    12 |    10 |
+| `squidmarSpecialFx`       | 72.207 Squidmar Special FX     |    12 |    10 |
+| `squidmarColorMegaSet`    | Squidmar Color Mega Set        |    72 |    72 |
+| `squidmarColorEssentials` | Squidmar Color Essentials      |    30 |    30 |
+| `bsl`                     | 72.183 Vallejo BSL             |    47 |    47 |
+| `starterValue`            | 72.215 Vallejo Starter Value   |    10 |     9 |
+| `introduction`            | 72.299 Vallejo Introduction    |    16 |    13 |
+| `advanced`                | 72.298 Vallejo Advanced        |    16 |    13 |
+| `specialist`              | 72.188 Vallejo Specialist      |    16 |    11 |
+| `wargamesBasics`          | 70.260 Vallejo Wargames Basics |     8 |     7 |
+| `wargameSpecial`          | 70.257 Vallejo Wargame Special |    16 |    14 |
+| `inspiration`             | 72.182 Vallejo Inspiration     |    48 |    38 |
 
-The contents come from a comparison table of these twelve sets, compiled from Vallejo's set pages (September
-2026). Names are taken from `vallejo.json`, so where the set pages differ (72.044 "Dark Fleshtone", 72.091 "Sepia
+The contents of the twelve coded sets come from a comparison table compiled from Vallejo's set pages (September
+2026), and those of the two Squidmar Color boxes from their announcement images (see [Source](#source)). Names are taken from `vallejo.json`, so where the set pages differ (72.044 "Dark Fleshtone", 72.091 "Sepia
 Ink") the chart's name is used.
+
+### `data/custom-sets/`
+
+Custom sets, one file each. The file's name without `.json` is the set's key, camelCase like the other keys
+(`squidmarV1.json` is `squidmarV1`). The page reads every file in the folder (`import.meta.glob` in
+`src/paints/sets.ts`), so adding a set means adding a file. A custom set lists either paint sets or colors.
+
+One that lists **sets** reads its colors from those sets of `vallejo-sets.json`, and shows each under its name:
+
+```js
+// data/custom-sets/squidmarV1.json
+{ "title": "Squidmar v1", "sets": ["squidmarEssential", "squidmarDarkFuture", "squidmarFantasy"] }
+```
+
+One that lists **colors** is made in the [Set Builder](#set-builder), whose **Export** button writes the file. Its
+`colors` are keys of `vallejo.json` in the order they were picked, which is also the order the page shows them in:
+
+```js
+// data/custom-sets/myGreens.json
+{ "title": "My greens", "colors": ["72.029", "72.030", "70.850"] }
+```
+
+| file              | set                                                         | items | drawn |
+| ----------------- | ----------------------------------------------------------- | ----: | ----: |
+| `squidmarV1.json` | Squidmar v1: Essential + Dark Future + Fantasy              |    36 |    31 |
+| `squidmarV2.json` | Squidmar v2: Essential + Dark Future + Fantasy + Special FX |    48 |    41 |
 
 ### Kimera Kolors
 

@@ -69,9 +69,9 @@
       }
     ]
   },
-  "squidmarColorMegaSet": {
-    "title": "Squidmar Color Mega Set",
-    "source": "Squidmar Color Mega Set announcement image (\"72 New Paints\")",
+  "squidmarColor": {
+    "title": "Squidmar Color",
+    "source": "the Squidmar Color Mega Set announcement image (\"72 New Paints\"), which holds the whole range",
     "sections": [
       {
         "title": "Squidmar Color",
@@ -104,28 +104,6 @@
         "rows": [
           ["74.261", "74.262", "74.263", "74.264", "74.265", "74.266"],
           ["74.267", "74.268", "74.269", "74.270", "74.271", "74.272"]
-        ]
-      }
-    ]
-  },
-  "squidmarColorEssentials": {
-    "title": "Squidmar Color Essentials",
-    "source": "Squidmar Color Essentials announcement image (\"30 New Paints\")",
-    "sections": [
-      {
-        "title": "Squidmar Color",
-        "rows": [
-          ["74.201", "74.203", "74.204", "74.207", "74.208"],
-          ["74.221", "74.225", "74.226", "74.229", "74.230"],
-          ["74.241", "74.243", "74.244", "74.246", "74.248"],
-          ["74.210", "74.212", "74.214", "74.217", "74.220"],
-          ["74.232", "74.234", "74.235", "74.239", "74.240"]
-        ]
-      },
-      {
-        "title": "Squidmar Color Metallic",
-        "rows": [
-          ["74.250", "74.251", "74.253", "74.254", "74.255"]
         ]
       }
     ]

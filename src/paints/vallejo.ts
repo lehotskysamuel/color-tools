@@ -54,6 +54,8 @@ export interface PaintLayout {
    * codes in code order. Lists what the sets hold that the catalog has no color for.
    */
   notInCatalog?: OffCatalogItem[];
+  /** Replaces the note the swatch pane writes from `source`; custom sets from the Set Builder have no code order. */
+  note?: string;
   sections: PaintSection[];
 }
 

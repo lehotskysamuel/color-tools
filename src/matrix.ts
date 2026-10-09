@@ -1,6 +1,6 @@
 import './style.css';
 import { deltaEOK } from './color/oklab';
-import { ALL_LAYOUTS, appendLayoutGroups } from './paints/sets';
+import { appendLayoutGroups } from './paints/customSets';
 import { type Paint, PAINTS, paintLabel } from './paints/vallejo';
 import { DifferenceMatrix, formatD, formatJ } from './views/diffMatrix';
 
@@ -16,7 +16,7 @@ const count = $('matrix-count');
 
 // All paints, then the same groups of layouts as the atlas's paint pane.
 select.add(new Option('All paints', ALL_PAINTS));
-appendLayoutGroups(select);
+const ALL_LAYOUTS = appendLayoutGroups(select);
 
 /**
  * By code ascending. Every code is "NN.NNN", so comparing them as strings orders them by number. Paints

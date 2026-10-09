@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_LAYOUTS, CUSTOM_SET_LAYOUTS } from './sets';
+import { allLayouts } from './customSets';
+import { CUSTOM_SET_LAYOUTS } from './sets';
 import { PAINT_TYPES, layoutPaints, summarizeSet } from './summary';
 
+const ALL_LAYOUTS = allLayouts();
 const layout = (id: string) => ALL_LAYOUTS.find((l) => l.id === id)!;
 const counts = (id: string) => Object.fromEntries([...summarizeSet(layout(id)).types].filter(([, n]) => n > 0));
 

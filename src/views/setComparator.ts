@@ -1,5 +1,5 @@
 import { srgbShareOfPointer } from '../color/coverage';
-import { ALL_LAYOUTS, appendLayoutGroups } from '../paints/sets';
+import { allLayouts, appendLayoutGroups } from '../paints/customSets';
 import { PAINT_TYPES, summarizeSet } from '../paints/summary';
 import { type Store, createStore, initialState } from '../state';
 import { GamutSolid, type SolidView } from './gamutSolid';
@@ -9,7 +9,7 @@ import type { HoverHandler } from './slicePlot';
 import type { Tooltip } from './tooltip';
 
 const STORAGE_KEY = 'color-tools.compared-sets';
-const DEFAULT_SETS = ['gameColor', 'squidmarColorMegaSet'];
+const DEFAULT_SETS = ['gameColor', 'squidmarColor'];
 /** A comparison needs two sets, so the remove buttons show only above this many. */
 const MIN_SETS = 2;
 /** Each render has its own WebGL context, and a page gets only about 16; the deep-dive's solid takes one. */
@@ -84,7 +84,7 @@ class SetCard {
 
   /** Shows a set, replacing the one shown before. */
   show(id: string): void {
-    const layout = ALL_LAYOUTS.find((l) => l.id === id) ?? ALL_LAYOUTS[0];
+    const layout = allLayouts().find((l) => l.id === id) ?? allLayouts()[0];
     const { paints, types, notInCatalog, pointerCoverage } = summarizeSet(layout);
     this.select.value = layout.id;
     this.select.title = layout.title; // a narrow column cuts the name short
@@ -194,7 +194,7 @@ export class SetComparator {
     els.add.addEventListener('click', () => {
       // The first set no column shows yet, so a new column adds something to compare.
       const shown = new Set(this.cards.map((card) => card.layoutId));
-      const card = this.add((ALL_LAYOUTS.find((l) => !shown.has(l.id)) ?? ALL_LAYOUTS[0]).id);
+      const card = this.add((allLayouts().find((l) => !shown.has(l.id)) ?? allLayouts()[0]).id);
       card.select.focus();
       this.save();
     });
@@ -265,7 +265,7 @@ function readStoredSets(): string[] | null {
   try {
     const ids: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null');
     if (!Array.isArray(ids)) return null;
-    const known = ids.filter((id) => ALL_LAYOUTS.some((l) => l.id === id)).slice(0, MAX_SETS);
+    const known = ids.filter((id) => allLayouts().some((l) => l.id === id)).slice(0, MAX_SETS);
     return known.length >= MIN_SETS ? known : null;
   } catch {
     return null;
