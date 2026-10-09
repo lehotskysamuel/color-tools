@@ -1,6 +1,7 @@
 import './style.css';
 import {
   AB_RANGE,
+  JND,
   type Vec3,
   deltaEOK,
   formatOklab,
@@ -17,9 +18,6 @@ import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
 import { LightnessSlice } from './views/lightnessSlice';
 import { SwatchPane } from './views/swatchPane';
-
-/** ΔE_OK of roughly one just-noticeable difference (the value CSS Color 4 uses for gamut mapping). */
-const JND = 0.02;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
