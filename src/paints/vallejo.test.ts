@@ -21,6 +21,21 @@ describe('Vallejo data', () => {
     ]);
   });
 
+  it('groups the Squidmar Color layouts by paint type, one section per type', () => {
+    const titles = {
+      acrylic: 'Squidmar Color',
+      metallic: 'Squidmar Color Metallic',
+      fluorescent: 'Squidmar Color Fluo',
+      ink: 'Squidmar Color Ink',
+    };
+    for (const layout of LAYOUTS.filter((l) => l.id.startsWith('squidmarColor'))) {
+      for (const section of layout.sections) {
+        const types = new Set(section.rows.flat().map((id) => PAINTS.get(id)!.type));
+        expect([...types].map((type) => titles[type as keyof typeof titles])).toEqual([section.title]);
+      }
+    }
+  });
+
   it('shows every paint in the catalog in some layout', () => {
     const ids = LAYOUTS.flatMap((layout) => layout.sections.flatMap((s) => s.rows.flat()));
     expect(new Set(ids)).toEqual(new Set(PAINTS.keys()));

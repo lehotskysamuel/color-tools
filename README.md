@@ -378,14 +378,18 @@ Kolors). Every one is a key in `vallejo.json`.
 | ------------------------- | ----------------------------------------------------- |
 | `gameColor`               | Game Color chart: main chart, Wash, Fluo, Ink         |
 | `modelColor`              | Model Color chart (its two inks sit in the main grid) |
-| `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints                |
-| `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72               |
+| `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints, by type       |
+| `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72, by type      |
 | `kimeraKolorsBaseSet`     | Kimera Kolors base set: 13 paints in 2 rows           |
 
 Each layout has `sections`, and each section has `rows`, an array of arrays of
 keys. In the charts a row is one printed row of swatches, and sections carry
-the chart heading as `title`. The Squidmar images have no headings: each of
-their sections is one panel of the image, with no `title`. The Kimera set is one
+the chart heading as `title`. The Squidmar images have no headings, so their
+sections are the paint types, titled like the Game Color chart's: Squidmar
+Color (the 48 plain acrylics), Metallic (74.249–255), Fluo (74.256–260) and Ink
+(74.261–272); Squidmar Color has no washes. Each section keeps the image's rows
+in reading order, and the one row that holds two types (Ungodly Copper and the
+fluorescents) is split between them. The Kimera set is one
 section of two rows, as its circles are printed on the box, without the satin
 medium.
 
