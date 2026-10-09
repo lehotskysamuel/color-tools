@@ -7,7 +7,6 @@ interface KimeraColor extends ColorRecord {
   name: string;
   pigment: string;
   webhex: string;
-  cielabSource: string | null;
   oklch: { l: number; c: number; h: number | null };
 }
 
@@ -24,10 +23,8 @@ describe('Kimera data', () => {
     }
   });
 
-  it('names the stand-in behind every cielab, and has none for PR170, PO34 and PY151', () => {
-    for (const [, color] of colors) expect(color.cielabSource === null).toBe(color.cielab === null);
-    const without = colors.filter(([, color]) => !color.cielab).map(([, color]) => color.pigment);
-    expect(without.sort()).toEqual(['PO34', 'PR170', 'PY151']);
+  it('has a measured CIELAB for every color', () => {
+    for (const [, color] of colors) expect(color.cielab).toEqual({ l: expect.any(Number), a: expect.any(Number), b: expect.any(Number) });
   });
 
   it('stores OKLCh computed from the best source', () => {

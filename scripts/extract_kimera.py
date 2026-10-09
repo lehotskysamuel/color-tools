@@ -2,223 +2,136 @@
 
 Usage:
     pip install -r scripts/requirements.txt
-    curl -A "Mozilla/5.0" -o kolors-charts.pdf \\
-        https://www.pegasoworld.com/wp-content/uploads/2026/05/kolors-charts.pdf
-    python scripts/extract_kimera.py kolors-charts.pdf data
+    python scripts/extract_kimera.py data/sources/kimera-base-set.jpg data
     node scripts/add-oklch.js data/kimera.json
-
-It reads data/sources/pigment-spectra.json (see extract_pigment_spectra.py).
 
 Kimera Kolors (Kimera Models, sold through Pegaso World, made by Camerini &
 Co) are acrylics with one pigment each and no white. The base set has 13
 colors and a satin medium, which has no color and is left out. They have no
 product codes, so the file is keyed by name. Names and pigments are the list
-on the base set's page in the maker's shop (BASE_SET). The chart prints two
-of the pigments differently, and wrongly: Warm Yellow as PY85 (the shop names
-it Diarylide Yellow HR, which is PY83) and Red Oxide as PR130 (the shop:
-"PR101 (130)").
+on the base set's page in the maker's shop
+(https://www.pegasoworld.com/product/kimera-kolors-acrylic-set/).
 
-The maker's shop gives no color value as text or CSS. Its product photos show
-the paint through the translucent bottle, lighter and bluer than the chart
-shows it, so they are not used. The maker's color chart ("Kimera Kolors
-Charts", on its resources page) shows scans of hand-painted swatches: a
-square that goes from the paint at full strength at the top to a thin wash at
-the bottom, with a black line under it to show how well it covers, and strips
-mixed with white below. `webhex` is the full-strength top of the square: the
-median of a band just below its top edge, right of the black line, in the
-chart's own CMYK, converted for display through the chart's profile (U.S.
-Sheetfed Uncoated v2), relative colorimetric with black point compensation.
-That is how Vallejo's web colors are made from its chart. `rgb` holds the same
-value.
+`webhex` (and `rgb`, the same value) comes from the base set's image on that
+page (https://www.pegasoworld.com/wp-content/uploads/2022/10/Base-set.jpg,
+kept in data/sources/). It shows a flat circle in each paint's color, labeled
+with its pigment, in two columns (CIRCLES). The script finds the 14 circles,
+the satin medium's among them, and takes the median of a disc inside each
+outline. The image has no color profile, so browsers show it as sRGB.
 
-The White is white paint on white paper, so its square cannot be told from
-the paper. Its band is taken at the offset where the others' squares start,
-and holds the paper's color.
-
-No measurement of the Kimera paints themselves was found. A pigment has no
-single color: grade, particle size, binder, pigment load and film thickness
-all change it. So `cielab` is a stand-in: the measured full-strength film
-of a Golden acrylic with the same pigment (for PB15:2, the nearest one,
-PB15:0), drawn down thick enough to hide or nearly (STAND_INS), computed from
-its spectrum for illuminant D50 and the 2 degree observer (ASTM E308).
-`cielabSource` names it. Three pigments have no usable measurement (PR170,
-PO34, PY151), so their `cielab` is null. Transparent pigments are nearly
-black as a film that hides; a thin layer over a light primer looks much
-lighter and more colorful than their `cielab` says.
+`cielab` is measured: artistpigments.org painted each paint at full strength
+on Hahnemühle Echt Bütten paper and measured it with an X-Rite i1Pro 3 (45/0,
+M1, D50 and the 2 degree observer, mean of 3 readings). Its pages sit behind
+a bot check, so the values are transcribed (MEASURED). The site licenses its
+data CC BY-NC 4.0. It lists the two phthalo blues' pigments the other way
+round from the maker; its measurements fit the paints' names (the green
+shade is the greener), so they are matched by name.
 """
-import io
-import json
 import sys
-import warnings
 from pathlib import Path
 
 import numpy as np
-import pdfplumber
 from PIL import Image
-from pdfminer.pdftypes import resolve1
-
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")  # colour-science warns that matplotlib is missing
-    import colour
-# ASTM E308 at 10 nm works with each spectrum's own range; colour-science
-# reports that on every call.
-colour.utilities.filter_warnings(colour_runtime_warnings=True)
+from scipy import ndimage as ndi
 
 import vallejo_data
-from lcms import CmykToSrgb
 
 RANGE = "Kimera Kolors"
 OUT_FILE = "kimera.json"
-SPECTRA_FILE = "sources/pigment-spectra.json"
 
-# From https://www.pegasoworld.com/product/kimera-kolors-acrylic-set/, with the
-# chart's label for each color.
-BASE_SET = [
-    # name, pigment, chart label
-    ("The White", "PW6", "The White"),
-    ("Carbon Black", "PBk7", "Carbon Black"),
-    ("The Red", "PR170", "The Red"),
-    ("Orange", "PO34", "Orange"),
-    ("Warm Yellow", "PY83", "Warm Yellow"),
-    ("Cold Yellow", "PY151", "Cold yellow"),
-    ("Phthalo Blue (red shade)", "PB15:2", "Phthalo Blue Red S."),
-    ("Phthalo Blue (green shade)", "PB15:4", "Phthalo Blue Green S."),
-    ("Magenta", "PR122", "Magenta"),
-    ("Phthalo Green", "PG7", "Phthalo Green"),
-    ("Violet", "PV23", "Violet"),
-    ("Red Oxide", "PR101", "Red Oxide"),
-    ("Yellow Oxide", "PY42", "Yellow Oxide"),
+# From the shop's list: name, pigment, and the paint's page on
+# artistpigments.org (https://artistpigments.org/brands/kimera-kimera-kolors/...)
+# with its CIELAB (D50, 2 degree observer), as published there in June 2026.
+MEASURED = [
+    ("The White", "PW6", "chzkk-the-white", (96.66, -0.31, 2.82)),
+    ("Carbon Black", "PBk7", "svfde-carbon-black", (21.03, -0.24, -0.71)),
+    ("The Red", "PR170", "n3ys7-the-red", (45.04, 66.53, 41.25)),
+    ("Orange", "PO34", "djzg5-orange", (56.26, 65.90, 59.42)),
+    ("Warm Yellow", "PY83", "634o0-warm-yellow", (77.90, 36.86, 90.93)),
+    ("Cold Yellow", "PY151", "xc4qh-cold-yellow", (90.92, 0.62, 98.65)),
+    ("Phthalo Blue (red shade)", "PB15:2", "jmmh4-phthalo-blue-red-shade", (24.98, 8.04, -36.78)),
+    ("Phthalo Blue (green shade)", "PB15:4", "epeg5-phthalo-blue-green-shade", (28.03, 1.74, -39.40)),
+    ("Magenta", "PR122", "no3m5-magenta", (37.53, 55.95, 9.62)),
+    ("Phthalo Green", "PG7", "wsyhf-phtalo-green", (30.31, -32.28, -0.98)),
+    ("Violet", "PV23", "z2yve-violet", (22.26, 8.07, -9.93)),
+    ("Red Oxide", "PR101", "q51x7-red-ochre", (38.90, 30.95, 20.24)),
+    ("Yellow Oxide", "PY42", "k7o76-yellow-ochre", (69.30, 20.62, 61.42)),
 ]
 
-# The paint in SPECTRA_FILE that stands in for each pigment. Golden's Phthalo
-# Blue (Red Shade) is PB15:0: the same red-shade (alpha) copper phthalocyanine
-# as PB15:2, without the treatment that keeps PB15:2 from recrystallizing and
-# flocculating. The others have the same pigment.
-STAND_INS = {
-    "PW6": "Golden Matte Fluid Titanium White",
-    "PBk7": "Golden Matte Fluid Carbon Black",
-    "PV23": "Golden Matte Fluid Dioxazine Purple",
-    "PG7": "Golden Matte Fluid Phthalo Green (Blue Shade)",
-    "PB15:4": "Golden Matte Fluid Phthalo Blue (Green Shade)",
-    "PB15:2": "Golden Heavy Body Phthalo Blue (Red Shade)",
-    "PR122": "Golden Matte Fluid Quinacridone Magenta",
-    "PR101": "Golden Matte Fluid Red Oxide",
-    "PY83": "Golden Matte Fluid Diarylide Yellow",
-    "PY42": "Golden Heavy Body Yellow Oxide",
-}
+# The circles' labels as printed, column by column, and the paint each stands
+# for (None: the satin medium). The image labels Red Oxide by its pigment
+# grade, PR130.
+CIRCLES = [
+    [("PW6", "The White"), ("PY151", "Cold Yellow"), ("PY83", "Warm Yellow"), ("SATIN", None),
+     ("PY42", "Yellow Oxide"), ("PO34", "Orange"), ("PR170", "The Red")],
+    [("PR130", "Red Oxide"), ("PR122", "Magenta"), ("PV23", "Violet"), ("PBK7", "Carbon Black"),
+     ("PB15.2", "Phthalo Blue (red shade)"), ("PB15.4", "Phthalo Blue (green shade)"), ("PG7", "Phthalo Green")],
+]
 
-# A swatch's label is printed just above its scan.
-LABEL_GAP = 25  # points
-# The band sampled for the full-strength color, in scan pixels: rows below the
-# square's top edge, columns as a share of the width (the black line is left
-# of them).
-BAND_ROWS = (8, 40)
-BAND_COLUMNS = (0.3, 0.85)
-# A row belongs to the square when its ink, summed over C, M, Y and K, exceeds
-# the paper's by this much (percent). Squares start in the top fifth of the scan.
-SQUARE_INK = 16
-SQUARE_SEARCH = 0.2
-# White on white paper: no square to find, so the band is taken where the
-# other squares start.
-PAPER_WHITE = {"The White"}
+# The circles sit in the left third of the image's upper half, on a light
+# background. A circle is a blob of pixels this far from the background (in any
+# channel), outline included, whose box is between these sizes (in pixels).
+SEARCH = (slice(0, 0.5), slice(0, 1 / 3))  # rows, columns, as shares of the image
+FROM_BACKGROUND = 40
+CIRCLE_SIZE = (40, 60)
+# The disc sampled inside each outline, and the largest spread of its 5th to
+# 95th percentiles per channel: JPEG noise on a flat fill stays under 8.
+SAMPLE_RADIUS = 12
+MAX_SPREAD = 10
 
 
-def output_intent_profile(pdf):
-    intent = resolve1(resolve1(pdf.doc.catalog["OutputIntents"])[0])
-    return resolve1(intent["DestOutputProfile"]).get_data()
+def find_circles(pixels):
+    """Centers (x, y) of the circles, as [[column 1, top to bottom], [column 2, ...]]."""
+    height, width = pixels.shape[:2]
+    rows = slice(int(SEARCH[0].start * height), int(SEARCH[0].stop * height))
+    columns = slice(int(SEARCH[1].start * width), int(SEARCH[1].stop * width))
+    region = pixels[rows, columns]
+    background = np.median(region.reshape(-1, 3), axis=0)
+    labels, _ = ndi.label(np.abs(region - background).max(axis=2) > FROM_BACKGROUND)
+    centers = []
+    for box in ndi.find_objects(labels):
+        h, w = box[0].stop - box[0].start, box[1].stop - box[1].start
+        if CIRCLE_SIZE[0] <= h <= CIRCLE_SIZE[1] and CIRCLE_SIZE[0] <= w <= CIRCLE_SIZE[1]:
+            centers.append(((box[1].start + box[1].stop) / 2 + columns.start, (box[0].start + box[0].stop) / 2 + rows.start))
+    xs = sorted(x for x, _ in centers)
+    split = (xs[0] + xs[-1]) / 2
+    return [sorted((c for c in centers if (c[0] < split) == left), key=lambda c: c[1]) for left in (True, False)]
 
 
-def swatch_scans(page):
-    """{chart label: CMYK scan as a float array of ink percentages}. The chart's
-    "How to read the chart" box repeats The Red below the swatches, so the
-    first swatch with a label, in reading order, is kept."""
-    words = page.extract_words()
-    scans = {}
-    for image in sorted(page.images, key=lambda i: (round(i["top"]), i["x0"])):
-        above = [
-            w for w in words
-            if image["top"] - LABEL_GAP < w["bottom"] <= image["top"] + 1
-            and image["x0"] - 5 <= (w["x0"] + w["x1"]) / 2 <= image["x1"] + 5
-        ]
-        if not above:
-            continue
-        name_line = min(round(w["top"]) for w in above)
-        label = " ".join(w["text"] for w in sorted(above, key=lambda w: w["x0"]) if round(w["top"]) == name_line)
-        if label in scans:
-            continue
-        # Adobe CMYK JPEGs store the ink inverted.
-        pixels = np.asarray(Image.open(io.BytesIO(image["stream"].get_rawdata())))
-        scans[label] = (255 - pixels.astype(float)) / 255 * 100
-    return scans
+def disc_color(pixels, center, where):
+    x, y = (round(v) for v in center)
+    yy, xx = np.mgrid[-SAMPLE_RADIUS:SAMPLE_RADIUS + 1, -SAMPLE_RADIUS:SAMPLE_RADIUS + 1]
+    window = pixels[y - SAMPLE_RADIUS:y + SAMPLE_RADIUS + 1, x - SAMPLE_RADIUS:x + SAMPLE_RADIUS + 1]
+    values = window[yy ** 2 + xx ** 2 <= SAMPLE_RADIUS ** 2]
+    spread = np.percentile(values, 95, axis=0) - np.percentile(values, 5, axis=0)
+    if spread.max() > MAX_SPREAD:
+        raise ValueError(f"{where}: the circle is not one flat color (spread {spread})")
+    return tuple(int(round(v)) for v in np.median(values, axis=0))
 
 
-def square_top(ink):
-    columns = ink[:, slice(*(int(ink.shape[1] * f) for f in BAND_COLUMNS))].sum(axis=2).mean(axis=1)
-    paper = np.median(columns[:8])
-    for y in range(8, int(len(columns) * SQUARE_SEARCH)):
-        if (columns[y:y + 5] > paper + SQUARE_INK).all():
-            return y
-    return None
-
-
-def full_strength(ink, top):
-    rows = slice(top + BAND_ROWS[0], top + BAND_ROWS[1])
-    columns = slice(*(int(ink.shape[1] * f) for f in BAND_COLUMNS))
-    return np.median(ink[rows, columns].reshape(-1, 4), axis=0)
-
-
-def spectrum_to_cielab(spectrum):
-    """CIELAB (D50, 2 degree observer) of a reflectance spectrum in percent,
-    through ASTM E308 weights, relative to the same integration of a perfect
-    white."""
-    start, end, step = spectrum["nm"]
-    nm = range(start, end + 1, step)
-    cmfs = colour.MSDS_CMFS["CIE 1931 2 Degree Standard Observer"]
-    d50 = colour.SDS_ILLUMINANTS["D50"]
-
-    def xyz(values):
-        return colour.sd_to_XYZ(colour.SpectralDistribution(dict(zip(nm, values))), cmfs, d50, method="ASTM E308")
-
-    white = xyz(np.ones(len(nm)))
-    L, a, b = colour.XYZ_to_Lab(xyz(np.array(spectrum["reflectance"]) / 100) / 100, colour.XYZ_to_xy(white / 100))
-    return {"l": round(float(L), 2), "a": round(float(a), 2), "b": round(float(b), 2)}
-
-
-def cielab_source(paint, spectrum):
-    return f"{paint} ({spectrum['pigment']}); {spectrum['dataset'].split(':')[0]}"
-
-
-def main(chart_pdf, out_dir):
-    pdf = pdfplumber.open(chart_pdf)
-    to_srgb = CmykToSrgb(output_intent_profile(pdf))
-    scans = swatch_scans(pdf.pages[0])
-
-    tops = {}
-    for name, _, label in BASE_SET:
-        if label not in scans:
-            raise ValueError(f"no swatch labeled {label!r} on the chart")
-        tops[name] = square_top(scans[label])
-        if (tops[name] is None) != (name in PAPER_WHITE):
-            raise ValueError(f"{name}: square top {tops[name]}")
-    usual_top = int(np.median([t for t in tops.values() if t is not None]))
-
-    spectra = json.loads((Path(out_dir) / SPECTRA_FILE).read_text(encoding="utf-8"))
+def main(image_path, out_dir):
+    pixels = np.asarray(Image.open(image_path).convert("RGB")).astype(int)
+    found = find_circles(pixels)
+    if [len(c) for c in found] != [len(c) for c in CIRCLES]:
+        raise ValueError(f"found {[len(c) for c in found]} circles per column, expected {[len(c) for c in CIRCLES]}")
+    web = {}
+    for column, labels in zip(found, CIRCLES):
+        for center, (label, name) in zip(column, labels):
+            color = disc_color(pixels, center, label)
+            if name:
+                web[name] = "#{:02X}{:02X}{:02X}".format(*color)
 
     colors = {}
-    for name, pigment, label in BASE_SET:
-        cmyk = full_strength(scans[label], tops[name] if tops[name] is not None else usual_top)
-        hex_color = "#{:02X}{:02X}{:02X}".format(*to_srgb(cmyk))
-        stand_in = STAND_INS.get(pigment)
+    for name, pigment, _, (L, a, b) in MEASURED:
         colors[name] = {
             "name": name,
             "range": RANGE,
             "type": "acrylic",
             "pigment": pigment,
-            "rgb": hex_color,
-            "webhex": hex_color,
+            "rgb": web[name],
+            "webhex": web[name],
             "cmyk": None,
-            "cielab": spectrum_to_cielab(spectra[stand_in]) if stand_in else None,
-            "cielabSource": cielab_source(stand_in, spectra[stand_in]) if stand_in else None,
+            "cielab": {"l": L, "a": a, "b": b},
         }
 
     path = Path(out_dir) / OUT_FILE

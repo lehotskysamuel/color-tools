@@ -16,7 +16,7 @@ LAYOUTS_FILE = "vallejo-layouts.json"
 KEPT_FIELDS = ("webhex",)
 
 # Key order within a color, whichever script wrote it.
-FIELD_ORDER = ("code", "name", "range", "type", "pigment", "rgb", "webhex", "cmyk", "cielab", "cielabSource", "oklch")
+FIELD_ORDER = ("code", "name", "range", "type", "pigment", "rgb", "webhex", "cmyk", "cielab", "oklch")
 
 
 def _ordered(color):

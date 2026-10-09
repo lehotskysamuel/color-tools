@@ -247,7 +247,7 @@ src/
   paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
   paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab from the best field
   paints/vallejo.test.ts  every layout code resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
-  paints/kimera.test.ts   data/kimera.json: 13 colors, a pigment and webhex each, stand-ins named, OKLCh agrees
+  paints/kimera.test.ts   data/kimera.json: 13 colors, each with a pigment, webhex and cielab; OKLCh agrees
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
@@ -450,101 +450,98 @@ white. The set's satin medium has no color and is left out. They have no
 product codes, so the file is keyed by name. The page does not show them yet;
 `scripts/coverage.js` reads the file.
 
-| name | pigment | `webhex` | `cielab` (D50) | `cielab` stand-in |
-| --- | --- | --- | --- | --- |
-| The White | PW6 | `#F6F5F4` | 96.3 / −0.5 / 0.9 | Golden Matte Fluid Titanium White, Okumura 2005 |
-| Carbon Black | PBk7 | `#252223` | 26.1 / 0.2 / −0.2 | Golden Matte Fluid Carbon Black, Okumura 2005 |
-| The Red | PR170 | `#D93634` | — | none found |
-| Orange | PO34 | `#DE573D` | — | none found |
-| Warm Yellow | PY83 | `#F1AE22` | 78.5 / 29.0 / 88.8 | Golden Matte Fluid Diarylide Yellow, Okumura 2005 |
-| Cold Yellow | PY151 | `#FDDD18` | — | none found |
-| Phthalo Blue (red shade) | PB15:2 | `#292D67` | 23.6 / 5.3 / −10.4 | Golden Heavy Body Phthalo Blue (Red Shade), PB15:0, Golden 2014 |
-| Phthalo Blue (green shade) | PB15:4 | `#283676` | 23.1 / 9.7 / −21.8 | Golden Matte Fluid Phthalo Blue (Green Shade), Okumura 2005 |
-| Magenta | PR122 | `#A12238` | 30.6 / 29.8 / 4.3 | Golden Matte Fluid Quinacridone Magenta, Okumura 2005 |
-| Phthalo Green | PG7 | `#1B4044` | 25.3 / −4.6 / −7.4 | Golden Matte Fluid Phthalo Green (Blue Shade), Okumura 2005 |
-| Violet | PV23 | `#3D2E2A` | 23.9 / 2.9 / 0.2 | Golden Matte Fluid Dioxazine Purple, Okumura 2005 |
-| Red Oxide | PR101 | `#913A2E` | 39.0 / 33.9 / 25.5 | Golden Matte Fluid Red Oxide, Okumura 2005 |
-| Yellow Oxide | PY42 | `#EBA91B` | 64.8 / 14.0 / 48.4 | Golden Heavy Body Yellow Oxide, Golden 2014 |
+| name | pigment | `webhex` | `cielab` (D50) |
+| --- | --- | --- | --- |
+| The White | PW6 | `#FFFFFF` | 96.66 / −0.31 / 2.82 |
+| Carbon Black | PBk7 | `#1D1D1B` | 21.03 / −0.24 / −0.71 |
+| The Red | PR170 | `#CE1719` | 45.04 / 66.53 / 41.25 |
+| Orange | PO34 | `#EE7002` | 56.26 / 65.90 / 59.42 |
+| Warm Yellow | PY83 | `#F1BB01` | 77.90 / 36.86 / 90.93 |
+| Cold Yellow | PY151 | `#FEED01` | 90.92 / 0.62 / 98.65 |
+| Phthalo Blue (red shade) | PB15:2 | `#0E357A` | 24.98 / 8.04 / −36.78 |
+| Phthalo Blue (green shade) | PB15:4 | `#005081` | 28.03 / 1.74 / −39.40 |
+| Magenta | PR122 | `#E6007E` | 37.53 / 55.95 / 9.62 |
+| Phthalo Green | PG7 | `#007348` | 30.31 / −32.28 / −0.98 |
+| Violet | PV23 | `#5C1969` | 22.26 / 8.07 / −9.93 |
+| Red Oxide | PR101 | `#AC3D05` | 38.90 / 30.95 / 20.24 |
+| Yellow Oxide | PY42 | `#CE9A08` | 69.30 / 20.62 / 61.42 |
 
-The fields are those of `data/vallejo.json`, without `code`, plus two:
+The fields are those of `data/vallejo.json`, without `code`, plus `pigment`:
 
 - `pigment`: the Colour Index name, from the list on the base set's page in
-  the maker's shop.
-- `webhex` (and `rgb`, the same value): the color the maker's own chart shows.
-  The shop gives no color value as text or CSS, and its product photos show
-  the paint through the translucent bottle, lighter and bluer than the chart
-  (Carbon Black reads `#384455` there), so they are not used. The chart
-  ("Kimera Kolors Charts" on the maker's resources page) is scans of
-  hand-painted swatches, each a square that goes from the paint at full
-  strength to a thin wash. `webhex` is the full-strength top of the square,
-  converted from the chart's CMYK the way Vallejo's web colors are made from
-  its chart (relative colorimetric with black point compensation). The chart
-  is printed for uncoated paper, which cannot show dark saturated colors:
-  Violet comes out near-black brown, though its tints with white are plainly
-  violet. The White is white on white paper, so its value is the paper's.
+  the [maker's shop](https://www.pegasoworld.com/product/kimera-kolors-acrylic-set/).
+- `webhex` (and `rgb`, the same value): the shop gives no color value as text
+  or CSS. The base set's
+  [image](https://www.pegasoworld.com/wp-content/uploads/2022/10/Base-set.jpg)
+  on that page, kept in `data/sources/kimera-base-set.jpg`, shows a flat circle
+  in each paint's color, labeled with its pigment. `scripts/extract_kimera.py`
+  finds the circles and takes the median inside each outline. The image has no
+  color profile, so browsers show it as sRGB. These are designed colors, not
+  matches of the paint: Carbon Black is `#1D1D1B`, the usual screen rendering
+  of plain print black, and Magenta is `#E6007E`, process magenta.
 - `cmyk`: `null`.
-- `cielab`: a **stand-in**, not a measurement of the Kimera paint. No
-  published measurement of Kimera Kolors was found. A pigment has no single
-  color: its grade, particle size, binder, concentration and the film's
-  thickness all change it. So `cielab` is the measured full-strength film of a
-  Golden acrylic with the same pigment (for PB15:2, the nearest one, PB15:0),
-  computed from its reflectance spectrum for D50 and the 2° observer (ASTM
-  E308). `null` for The Red (PR170), Orange (PO34) and Cold Yellow (PY151),
-  which no usable dataset covers.
-- `cielabSource`: the stand-in paint and its dataset.
-- `oklch`: from `cielab` when present, else from `rgb`, as for Vallejo.
+- `cielab`: measured by
+  [artistpigments.org](https://artistpigments.org/brands/kimera-kimera-kolors)
+  (licensed CC BY-NC 4.0): each paint painted by hand at full strength on
+  Hahnemühle Echt Bütten paper, measured with an X-Rite i1Pro 3, 45°/0°, M1, D50
+  and the 2° observer, mean of 3 readings. Its pages sit behind a bot check, so
+  the values are transcribed in the script. The site calls Red Oxide and Yellow
+  Oxide "Red Ochre" and "Yellow Ochre", and gives the two phthalo blues each
+  other's pigment. The maker's list and image agree with each other (PB15:2 is
+  the red shade, PB15:4 the green shade), and the measurements fit the names
+  (the green shade is the greener, h 272.5° against 282.3°), so they are matched
+  by name.
+- `oklch`: from `cielab`, as for Vallejo.
 
-The pigment list and the chart disagree twice, and the shop's list is used: the
-chart prints Warm Yellow as PY85 (the shop names Diarylide Yellow HR, which is
-PY83) and Red Oxide as PR130 (the shop: "PR101 (130)", probably the Bayferrox
-130 grade).
-
-The stand-in spectra are in `data/sources/pigment-spectra.json`, taken by
-`scripts/extract_pigment_spectra.py` from two datasets of Golden acrylics,
-whose pigments Golden publishes:
-
-- Y. Okumura, "Developing a spectral and colorimetric database of artist paint
-  materials", MS thesis, RIT Munsell Color Science Laboratory (2005), data at
-  [rit-mcsl.org](https://www.rit-mcsl.org/StudentResearch/paint_research.zip):
-  Golden Matte Fluid Acrylics drawn down thick enough to hide, unvarnished,
-  measured with specular excluded, 360–750 nm. Eight of the pigments.
-- Golden Heavy Body Acrylics, 10 mil drawdowns over white (2014), from
-  [realtimerendering.com](https://www.realtimerendering.com/golden.html), now
-  only on the Wayback Machine: 400–700 nm. The white card shows through the
-  more transparent colors, Golden notes. Yellow Oxide and Phthalo Blue (Red
-  Shade), which the thesis lacks.
-
-The same integration reproduces the CIELAB that Golden's file gives for all its
-78 paints within 0.06, and the thesis's masstone of Carbon Black (L\* 26.1).
-The six pigments both datasets have agree within 0.6–3.5 ΔE\*ab. Other
-sources were checked and not used (September 2026):
-
-- The CHSOS Pigments Checker has PR170 and PY151, but in thin films (its
-  phthalo green is L\* 66), and its two spectrometers differ by 15–20 in b\*
-  on the same swatches.
-- handprint.com has watercolors only.
-- The pigment data sheets checked (Lanxess Bayferrox 130, Kronos, Orion carbon
-  blacks) give only differences from the maker's own standard.
-- artistpigments.org lists 33 Kimera Kolors, 13 of them with measured CIELAB
-  (D50, 2°). Measurements of these paints would replace the stand-ins, but the
-  site sits behind a bot check that the scripts cannot pass, so which 13 is not
-  known here.
+Warm Yellow, Cold Yellow and Phthalo Green are measured outside sRGB. The
+maker's chart (on its [resources page](https://www.pegasoworld.com/kimera-kolors-content/))
+prints two pigments differently, and the shop's list is used: Warm Yellow as
+PY85 (the shop names it Diarylide Yellow HR, which is PY83), and Red Oxide as
+PR130, as the base set's image does too (the shop: "PR101 (130)", probably the
+Bayferrox 130 grade of PR101).
 
 To rebuild (Node 22.18 or later for the last step):
 
 ```sh
 pip install -r scripts/requirements.txt
-python scripts/extract_pigment_spectra.py paint_research.zip GoldenSpectra.zip data/sources  # downloads: see the script
-python scripts/extract_kimera.py kolors-charts.pdf data                                      # chart: see the script
+python scripts/extract_kimera.py data/sources/kimera-base-set.jpg data
 node scripts/add-oklch.js data/kimera.json
 ```
 
-The stand-ins are opaque films, and the transparent pigments (the phthalos,
-Magenta, Violet) are nearly black that way: a thin layer over a light primer,
-or a mix with white, is far lighter and more colorful. So the hull of the 13
-paints says little about a set meant for mixing. It covers 12.5 % of Pointer's
-gamut from the best source of each paint (10 stand-ins, 3 web colors), and
-17.2 % from `webhex` alone.
+**How far the web colors are from the paint** (*one-off*, ΔE<sub>OK</sub> from
+the measured `cielab`; 0.02 is one just-noticeable difference):
+
+| Web color | Mean | Largest |
+| --- | --- | --- |
+| The base set image's circles (`webhex`) | 0.065 | 0.144, Magenta |
+| The maker's chart: scans of hand-painted swatches, full-strength top | 0.041 | 0.070, Phthalo Green |
+| The shop's product photos: the paint through the bottle | 0.074 | 0.111, Magenta |
+
+The circles differ from the chart swatches by 0.075 on average and from the
+photos by 0.101. Their Magenta, Phthalo Green and Violet are far more colorful
+than the paint, so they cover 38.0 % of Pointer's gamut, while the measured
+colors cover 23.6 %. Like other single-pigment sets, the hull of the 13 pots
+says little about what mixing reaches: the transparent pigments (the phthalos,
+Magenta, Violet) are dark at full strength and much lighter and more colorful
+thinned or mixed with white.
+
+**Stand-ins from other brands, before the measurements were found.** A pigment
+has no single color: its grade, particle size, binder, concentration and the
+film's thickness all change it. For a while `cielab` held a Golden acrylic with
+the same pigment, from Y. Okumura's spectral database of Golden Matte Fluid
+Acrylics (RIT Munsell Color Science Laboratory, 2005,
+[data](https://www.rit-mcsl.org/StudentResearch/paint_research.zip)) and
+Golden's own spectra of Heavy Body drawdowns over white (2014,
+[realtimerendering.com](https://www.realtimerendering.com/golden.html)).
+Against the measurements (*one-off*), Golden Heavy Body is close for Carbon
+Black, Diarylide Yellow (PY83) and Red Oxide: within ΔE<sub>OK</sub> 0.02–0.04
+(ΔE\*ab 4.8–6.3). It is not for the transparent pigments and Yellow Oxide: its
+phthalos, Quinacridone Magenta, Dioxazine Purple and Yellow Oxide are 10–26
+units of C\* duller (ΔE\*ab 13–29), at about the same lightness. The likely
+cause is the film, not the brand: a drawdown thick enough to hide the card
+shows these pigments' dull masstone, and a hand-painted coat is probably
+thinner. That data has no Golden Heavy Body paint with PW6, PR170, PO34 or
+PY151.
 
 ## Findings: paint data and Pointer's gamut
 
