@@ -98,7 +98,7 @@ section of a chart or set is sorted on its own. The choice is one for all pages,
 
 A paint with chroma below 0.01 (half a just-noticeable difference) counts as a gray: its hue is noise, so the hue
 sorts put it after the colors instead of scattering the whites, grays and blacks around the circle. Ties go by
-code. In a two-level sort each bucket starts a row of its own in the swatch grids. **Your set** in the Set
+code. In a two-level sort each bucket starts a row of its own in the swatch grids, with a line between buckets. **Your set** in the Set
 Builder keeps the order the paints were added. `src/paints/sort.ts` has the orders.
 
 ### Paints

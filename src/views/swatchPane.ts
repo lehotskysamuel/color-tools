@@ -268,7 +268,7 @@ export class SwatchPane {
   }
 }
 
-/** Ends a bucket's row: an empty row across the chart, so the next bucket starts on a new one, a gap apart. */
+/** Ends a bucket's row: a line across the chart, so the next bucket starts on a new row below it. */
 function bucketBreak(): HTMLDivElement {
   const div = document.createElement('div');
   div.className = 'swatch-break';

@@ -329,9 +329,14 @@ body {
   justify-self: stretch;
 }
 
-/* Between the buckets of a two-level sort: an empty row, so each bucket starts a row of its own. */
+/*
+ * Between the buckets of a two-level sort: a line across the chart, like <hr>, so each bucket starts a row of its
+ * own. The stage is the same gray in both themes, so the line's color is fixed.
+ */
 .swatch-break {
   grid-column: 1 / -1;
+  margin-block: 2px;
+  border-top: 1px solid rgb(0 0 0 / 0.3);
 }
 
 /* A section's heading on the surface, above its chart. */
