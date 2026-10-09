@@ -65,7 +65,7 @@ export class LightnessSlice extends SlicePlot {
       const y0 = cy - Math.sin(rad) * (R - 0.012) * s;
       const x1 = cx + Math.cos(rad) * R * s;
       const y1 = cy - Math.sin(rad) * R * s;
-      this.line(x0, y0, x1, y1, theme.ink3);
+      this.line(x0, y0, x1, y1, theme.ink2);
     }
     this.label('0°', right + 6, cy, 'left', 'middle', theme.ink2);
     this.label('90°', cx, top - 6, 'center', 'bottom', theme.ink2);
