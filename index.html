@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>OKLCh Atlas</title>
-    <meta name="description" content="The sRGB gamut and Pointer's gamut of real surface colors in OKLCh: a 3D solid plus lightness and hue slices where distance on screen matches perceived color difference, with Vallejo paint swatches and how much of each gamut they cover, and a side-by-side comparison of paint sets." />
+    <meta name="description" content="The sRGB gamut and Pointer's gamut of real surface colors in OKLCh: a 3D solid plus lightness and hue slices where distance on screen matches perceived color difference, with Vallejo and Kimera paint swatches and how much of each gamut they cover, and a side-by-side comparison of paint sets." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,22 +15,28 @@
   <body>
     <div class="page">
       <header class="masthead">
-        <h1>OKLCh Atlas</h1>
-        <div class="tabs" role="tablist" aria-label="Pages">
-          <button type="button" class="tab" role="tab" id="tab-deepdive" data-tab="deepdive" aria-controls="page-deepdive">
-            Set deep-dive
-          </button>
-          <button type="button" class="tab" role="tab" id="tab-compare" data-tab="compare" aria-controls="page-compare">
-            Set comparator
-          </button>
+        <nav class="site-nav" aria-label="Pages">
+          <a href="./" aria-current="page">OKLCh Atlas</a>
+          <a href="./matrix.html">Difference matrix</a>
+        </nav>
+        <div class="title-bar">
+          <h1>OKLCh Atlas</h1>
+          <div class="tabs" role="tablist" aria-label="Views">
+            <button type="button" class="tab" role="tab" id="tab-deepdive" data-tab="deepdive" aria-controls="page-deepdive">
+              Set deep-dive
+            </button>
+            <button type="button" class="tab" role="tab" id="tab-compare" data-tab="compare" aria-controls="page-compare">
+              Set comparator
+            </button>
+          </div>
         </div>
       </header>
 
       <div class="tab-page" id="page-deepdive" role="tabpanel" aria-labelledby="tab-deepdive">
         <p class="lede">
           Every color an sRGB screen can show, placed in OKLab so that distance on the page matches how different two
-          colors look. One unit is the same perceptual step on every axis of every view. Pick a Vallejo paint to see
-          where it sits, and compare the paints' hull with Pointer's gamut of real surface colors.
+          colors look. One unit is the same perceptual step on every axis of every view. Pick a paint to see where it
+          sits, and compare the paints' hull with Pointer's gamut of real surface colors.
         </p>
 
         <div class="workspace">
@@ -49,7 +55,7 @@
 
           <aside class="swatch-pane" aria-labelledby="paints-title">
             <header class="panel-head">
-              <h2 id="paints-title">Vallejo paints</h2>
+              <h2 id="paints-title">Paints</h2>
             </header>
             <div class="controls">
               <label class="slider-label" for="layout-select">Layout</label>
@@ -70,7 +76,7 @@
             <p class="stat">
               Game Color and Model Color are Vallejo's printed charts: the print CMYK converted to CIELAB, which can
               lie outside sRGB (those paints show as the nearest screen color). Squidmar Color is sampled from
-              marketing images. None of them are measurements of dried paint.
+              marketing images. Kimera Kolors are measured dried paint, from artistpigments.org (CC BY-NC 4.0).
             </p>
           </aside>
 
@@ -195,16 +201,17 @@
         <p class="lede">
           Paint sets side by side. Each shows its paints and their hull inside Pointer's gamut of real surface colors,
           the way the deep-dive first draws them, with the share of Pointer's gamut the hull covers and how many paints
-          of each type the set has. Orbit or zoom any render and the others follow.
+          of each type the set has. Pick each column's set from the same layouts as the deep-dive. Orbit or zoom any
+          render and the others follow.
         </p>
 
         <div class="compare-bar">
-          <span class="eyebrow" id="compare-sets-label">Sets</span>
-          <div class="set-picker" id="compare-sets" role="group" aria-labelledby="compare-sets-label"></div>
+          <button type="button" class="button add-set" id="compare-add">
+            <span class="add-set-icon" aria-hidden="true">+</span> Add set
+          </button>
           <button type="button" class="button compare-reset" id="compare-reset">Reset view</button>
         </div>
 
-        <p class="stat" id="compare-empty" hidden>Select one or more sets above.</p>
         <div class="compare-grid" id="compare-grid"></div>
 
         <footer class="notes">
@@ -217,8 +224,10 @@
           <p>
             The coverage is the share of Pointer's gamut's volume in OKLab that lies inside the hull of the set's
             paints; the mark on each bar is sRGB's own share. A hull measures spread, not which colors the paints can
-            mix. The Game Color and Model Color sets come from Vallejo's printed charts. Squidmar Color is sampled
-            from marketing images made for screens, so its figures are not directly comparable with the charts'.
+            mix. The Game Color and Model Color sets come from Vallejo's printed charts and Kimera Kolors from
+            measurements of dried paint. Squidmar Color is sampled from marketing images made for screens, so its
+            figures are not directly comparable with the others'. A paint set counts only the paints the catalog has
+            a color for; the rest, such as varnishes, are listed as having no color data.
           </p>
         </footer>
       </div>

@@ -1,6 +1,7 @@
 import './style.css';
 import {
   AB_RANGE,
+  JND,
   type Vec3,
   deltaEOK,
   formatOklab,
@@ -19,9 +20,6 @@ import { LightnessSlice } from './views/lightnessSlice';
 import { SetComparator } from './views/setComparator';
 import { SwatchPane } from './views/swatchPane';
 import { Tooltip } from './views/tooltip';
-
-/** ΔE_OK of roughly one just-noticeable difference (the value CSS Color 4 uses for gamut mapping). */
-const JND = 0.02;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -187,9 +185,8 @@ initTabs((tab) => {
   if (tab !== 'compare') return;
   comparator ??= new SetComparator(
     {
-      picker: $('compare-sets'),
       grid: $('compare-grid'),
-      empty: $('compare-empty'),
+      add: $<HTMLButtonElement>('compare-add'),
       reset: $<HTMLButtonElement>('compare-reset'),
     },
     tooltip,

@@ -678,6 +678,16 @@ export class GamutSolid {
     this.requestRender();
   }
 
+  /** Releases the WebGL context, of which a page gets only about 16. The solid draws nothing afterwards. */
+  dispose(): void {
+    cancelAnimationFrame(this.frame);
+    cancelAnimationFrame(this.hoverFrame);
+    this.frame = this.hoverFrame = -1; // never 0 again, so no new frame is requested
+    this.controls.dispose();
+    this.renderer.dispose();
+    this.renderer.forceContextLoss();
+  }
+
   private refreshTexture(texture: CanvasTexture): void {
     const img = texture.image as HTMLCanvasElement;
     const last = texture.userData as { w?: number; h?: number };

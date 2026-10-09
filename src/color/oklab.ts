@@ -87,7 +87,10 @@ export function isOklabInGamut(lab: Vec3, eps = GAMUT_EPSILON): boolean {
   return isLinearInGamut(oklabToLinearSrgb(lab), eps);
 }
 
-/** Perceptual difference between two OKLab colors. ~0.02 is roughly one just-noticeable difference. */
+/** ΔE_OK of roughly one just-noticeable difference (the value CSS Color 4 uses for gamut mapping). */
+export const JND = 0.02;
+
+/** Perceptual difference between two OKLab colors. ~0.02 (JND) is roughly one just-noticeable difference. */
 export function deltaEOK(p: Vec3, q: Vec3): number {
   return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]);
 }

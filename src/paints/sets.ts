@@ -1,31 +1,81 @@
-/** What the set comparator shows about a paint set, apart from the render. */
-import { colorSetCoverage } from '../color/coverage';
-import { type Paint, type PaintLayout, PAINTS } from './vallejo';
+import setData from '../../data/vallejo-sets.json';
+import { LAYOUTS, type OffCatalogItem, type PaintLayout } from './vallejo';
 
-/** Each paint of a layout once, in printed order. The combination tables repeat paints. */
-export function layoutPaints(layout: PaintLayout): Paint[] {
-  const codes = new Set(layout.sections.flatMap((s) => s.rows.flat()));
-  return [...codes].map((code) => PAINTS.get(code)!);
+/** A boxed set of paints as Vallejo sells it. See the `data/vallejo-sets.json` section of the README. */
+export interface PaintSet {
+  id: string;
+  title: string;
+  /** Vallejo's product code for the set. */
+  code: string;
+  /** Codes of the set's paints that the catalog has a color for, in code order. */
+  colors: string[];
+  /** The rest of the set. */
+  notInCatalog: OffCatalogItem[];
 }
 
-/** Every paint type in the catalog, the most common first. */
-export const PAINT_TYPES: readonly string[] = (() => {
-  const counts = new Map<string, number>();
-  for (const { type } of PAINTS.values()) counts.set(type, (counts.get(type) ?? 0) + 1);
-  return [...counts].sort((p, q) => q[1] - p[1]).map(([type]) => type);
-})();
-
-export interface SetSummary {
-  paints: Paint[];
-  /** How many paints of each type, for every type in PAINT_TYPES and in its order, zero included. */
-  types: Map<string, number>;
-  /** Share of Pointer's gamut's volume that the paints' hull covers, or null when the hull has no volume. */
-  pointerCoverage: number | null;
+/** Several sets as one. It lists sets, not colors: its colors are always read from those sets. */
+export interface CustomSet {
+  id: string;
+  title: string;
+  /** Ids of paint sets, never of other custom sets. */
+  sets: string[];
 }
 
-export function summarizeSet(layout: PaintLayout): SetSummary {
-  const paints = layoutPaints(layout);
-  const types = new Map(PAINT_TYPES.map((type) => [type, 0]));
-  for (const { type } of paints) types.set(type, types.get(type)! + 1);
-  return { paints, types, pointerCoverage: colorSetCoverage(paints.map((p) => p.lab), 'pointer') };
+type RawSet = Omit<PaintSet, 'id'> | Omit<CustomSet, 'id'>;
+
+const entries = Object.entries(setData as Record<string, RawSet>);
+
+export const SETS: ReadonlyMap<string, PaintSet> = new Map(
+  entries.flatMap(([id, set]) => ('colors' in set ? [[id, { id, ...set }] as const] : [])),
+);
+
+export const CUSTOM_SETS: ReadonlyMap<string, CustomSet> = new Map(
+  entries.flatMap(([id, set]) => ('sets' in set ? [[id, { id, ...set }] as const] : [])),
+);
+
+/** The sets a custom set is made of, with their colors. */
+export function customSetParts(custom: CustomSet): PaintSet[] {
+  return custom.sets.map((id) => SETS.get(id)!);
+}
+
+const setTitle = (set: PaintSet) => `${set.title} (${set.code})`;
+
+/** One section per set. Items missing from several sets are listed once. */
+function setLayout(id: string, title: string, parts: PaintSet[]): PaintLayout {
+  const codes = parts.map((set) => set.code).join(', ').replace(/, (?=[^,]*$)/, ' and ');
+  const notInCatalog = new Map(parts.flatMap((set) => set.notInCatalog.map((item) => [item.code, item] as const)));
+  return {
+    id,
+    title,
+    source: `Vallejo set${parts.length > 1 ? 's' : ''} ${codes}`,
+    notInCatalog: [...notInCatalog.values()],
+    sections: parts.map((set) => ({ title: setTitle(set), rows: [set.colors] })),
+  };
+}
+
+export const SET_LAYOUTS: readonly PaintLayout[] = [...SETS.values()].map((set) =>
+  setLayout(set.id, setTitle(set), [set]),
+);
+
+export const CUSTOM_SET_LAYOUTS: readonly PaintLayout[] = [...CUSTOM_SETS.values()].map((custom) =>
+  setLayout(custom.id, custom.title, customSetParts(custom)),
+);
+
+/** The groups of the layout selects: the atlas's paint pane, the set comparator and the difference matrix. */
+export const LAYOUT_GROUPS: readonly (readonly [label: string, layouts: readonly PaintLayout[]])[] = [
+  ['Charts and images', LAYOUTS],
+  ['Paint sets', SET_LAYOUTS],
+  ['Custom sets', CUSTOM_SET_LAYOUTS],
+];
+
+export const ALL_LAYOUTS: readonly PaintLayout[] = LAYOUT_GROUPS.flatMap(([, layouts]) => layouts);
+
+/** Adds one option group per entry of LAYOUT_GROUPS to a select. */
+export function appendLayoutGroups(select: HTMLSelectElement): void {
+  for (const [label, layouts] of LAYOUT_GROUPS) {
+    const group = document.createElement('optgroup');
+    group.label = label;
+    for (const layout of layouts) group.append(new Option(layout.title, layout.id));
+    select.append(group);
+  }
 }

@@ -18,9 +18,14 @@ Colors come from the Mega Set image. The Essentials image is sampled too, as
 a check: each of its paints must match the Mega Set value within
 MAX_SHEET_DIFF.
 
+The images have no headings, so each layout gets one section per paint type
+(SECTION_TITLES), in the image's reading order: a printed row that holds two
+types is split between their sections.
+
 Metallics are drawn as gradients, so their color is the gradient's dominant
 mid-tone. There is no print CMYK or other color data, so `cmyk` and `cielab`
-are null and the page uses `rgb`.
+are null and the page uses `rgb`. The images are what the manufacturer shows
+on the web, so `webhex` holds the same value as `rgb`.
 """
 import sys
 
@@ -39,6 +44,12 @@ TYPES = [
     (261, 272, "ink"),
 ]
 EXPECTED_COUNTS = {"acrylic": 48, "metallic": 7, "fluorescent": 5, "ink": 12}
+SECTION_TITLES = {
+    "acrylic": "Squidmar Color",
+    "metallic": "Squidmar Color Metallic",
+    "fluorescent": "Squidmar Color Fluo",
+    "ink": "Squidmar Color Ink",
+}
 
 # Words the images truncate to fit the label width.
 ABBREVIATIONS = {"Fluoresc": "Fluorescent"}
@@ -49,7 +60,7 @@ ABBREVIATIONS = {"Fluoresc": "Fluorescent"}
 MAX_SHEET_DIFF = 8
 
 # Transcribed from the images: one line per printed row of swatches, a blank
-# line between the image's panels. Each panel becomes one layout section.
+# line between the image's panels.
 SHEETS = {
     "squidmarColorMegaSet": {
         "title": "Squidmar Color Mega Set",
@@ -177,8 +188,18 @@ def sample(path, sheet):
         for ((y0, y1, x0, x1), mask), (code, name) in zip(swatch_row, name_row):
             inner = ndi.binary_erosion(mask, structure=np.ones((5, 5)))
             paints.append((code, name, dominant_color(img[y0:y1, x0:x1][inner])))
-    layout = [{"rows": [[code for code, _ in row] for row in section]} for section in sections]
-    return paints, layout
+    return paints, type_sections(names)
+
+
+def type_sections(rows):
+    """Printed rows of (code, name) -> one titled section per paint type."""
+    sections = []
+    for _, _, kind in TYPES:
+        kept = [[code for code, _ in row if paint_type(code) == kind] for row in rows]
+        kept = [row for row in kept if row]
+        if kept:
+            sections.append({"title": SECTION_TITLES[kind], "rows": kept})
+    return sections
 
 
 def main(mega_set, essentials, out_dir):
@@ -189,12 +210,14 @@ def main(mega_set, essentials, out_dir):
     for code, name, (r, g, b) in paints:
         if code in colors:
             raise ValueError(f"duplicate code {code}")
+        hex_color = f"#{r:02X}{g:02X}{b:02X}"
         colors[code] = {
             "code": code,
             "name": expand(name),
             "range": RANGE,
             "type": paint_type(code),
-            "rgb": f"#{r:02X}{g:02X}{b:02X}",
+            "rgb": hex_color,
+            "webhex": hex_color,
             "cmyk": None,
             "cielab": None,
         }
