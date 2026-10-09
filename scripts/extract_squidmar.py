@@ -20,7 +20,8 @@ MAX_SHEET_DIFF.
 
 Metallics are drawn as gradients, so their color is the gradient's dominant
 mid-tone. There is no print CMYK or other color data, so `cmyk` and `cielab`
-are null and the page uses `rgb`.
+are null and the page uses `rgb`. The images are what the manufacturer shows
+on the web, so `webhex` holds the same value as `rgb`.
 """
 import sys
 
@@ -189,12 +190,14 @@ def main(mega_set, essentials, out_dir):
     for code, name, (r, g, b) in paints:
         if code in colors:
             raise ValueError(f"duplicate code {code}")
+        hex_color = f"#{r:02X}{g:02X}{b:02X}"
         colors[code] = {
             "code": code,
             "name": expand(name),
             "range": RANGE,
             "type": paint_type(code),
-            "rgb": f"#{r:02X}{g:02X}{b:02X}",
+            "rgb": hex_color,
+            "webhex": hex_color,
             "cmyk": None,
             "cielab": None,
         }

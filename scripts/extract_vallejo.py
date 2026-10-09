@@ -24,6 +24,9 @@ profile (Coated FOGRA39):
   Adobe default for displaying CMYK documents. Colors outside sRGB end up on
   its edge.
 
+`webhex`, the color Vallejo's website shows, comes from
+scripts/extract_vallejo_webhex.py and is kept when this script re-runs.
+
 The charts also print Highlight / Base / Shadow combination tables; they are
 not extracted.
 """

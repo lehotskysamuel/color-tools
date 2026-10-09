@@ -25,9 +25,9 @@ export interface SwatchPaneElements {
 }
 
 /**
- * Vallejo paints laid out the way the official charts print them, or the paints of a set. The shown paints are
- * drawn as dots in the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which
- * moves both slices through it. A new layout starts with all of its paints shown.
+ * Paints laid out the way their makers print them, or the paints of a set. The shown paints are drawn as dots in
+ * the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which moves both slices
+ * through it. A new layout starts with all of its paints shown.
  */
 export class SwatchPane {
   onHover: HoverHandler | null = null;
@@ -36,10 +36,10 @@ export class SwatchPane {
   private readonly note: HTMLElement;
   private readonly count: HTMLElement;
   private layout: PaintLayout;
-  /** Codes of the paints in this layout, once each, in printed order. */
-  private codes: string[] = [];
-  /** Codes of each section's paints, indexed by the section's select-all and select-none buttons. */
-  private sectionCodes: string[][] = [];
+  /** Ids of the paints in this layout, once each, in printed order. */
+  private ids: string[] = [];
+  /** Ids of each section's paints, indexed by the section's select-all and select-none buttons. */
+  private sectionIds: string[][] = [];
   private shown = new Set<string>();
   private hovering = false;
 
@@ -63,17 +63,17 @@ export class SwatchPane {
       storeLayout(this.layout.id);
       this.render();
     });
-    showAll.addEventListener('click', () => this.show(this.codes));
+    showAll.addEventListener('click', () => this.show(this.ids));
     showNone.addEventListener('click', () => this.show([]));
 
     grid.addEventListener('click', (e) => {
       const select = (e.target as Element | null)?.closest<HTMLButtonElement>('.section-select');
       if (select) {
-        const codes = this.sectionCodes[Number(select.dataset.section)];
+        const ids = this.sectionIds[Number(select.dataset.section)];
         const shown = new Set(this.shown);
-        for (const code of codes) {
-          if (select.dataset.select === 'all') shown.add(code);
-          else shown.delete(code);
+        for (const id of ids) {
+          if (select.dataset.select === 'all') shown.add(id);
+          else shown.delete(id);
         }
         this.show(shown);
         return;
@@ -101,35 +101,35 @@ export class SwatchPane {
   /** Hiding a paint leaves the pick alone, so double-clicking a shown paint (hide, show) picks it. */
   private toggle(paint: Paint): void {
     const shown = new Set(this.shown);
-    if (shown.delete(paint.code)) {
+    if (shown.delete(paint.id)) {
       this.show(shown);
     } else {
-      shown.add(paint.code);
+      shown.add(paint.id);
       this.show(shown);
       pickPaint(this.store, paint);
     }
   }
 
-  private show(codes: Iterable<string>): void {
-    this.shown = new Set(codes);
-    const paints = this.codes.filter((code) => this.shown.has(code)).map((code) => PAINTS.get(code)!);
+  private show(ids: Iterable<string>): void {
+    this.shown = new Set(ids);
+    const paints = this.ids.filter((id) => this.shown.has(id)).map((id) => PAINTS.get(id)!);
     this.store.set({ paints });
-    this.count.textContent = `${paints.length} of ${this.codes.length} shown`;
+    this.count.textContent = `${paints.length} of ${this.ids.length} shown`;
     for (const button of this.grid.querySelectorAll<HTMLButtonElement>('.swatch')) {
-      button.setAttribute('aria-pressed', String(this.shown.has(button.dataset.code!)));
+      button.setAttribute('aria-pressed', String(this.shown.has(button.dataset.id!)));
     }
   }
 
   private paintAt(target: EventTarget | null): Paint | null {
     const button = (target as Element | null)?.closest<HTMLButtonElement>('.swatch');
-    return (button && PAINTS.get(button.dataset.code!)) ?? null;
+    return (button && PAINTS.get(button.dataset.id!)) ?? null;
   }
 
   private render(): void {
     const { sections, notInCatalog } = this.layout;
     const grid = this.grid;
     grid.replaceChildren();
-    this.sectionCodes = sections.map((s) => s.rows.flat());
+    this.sectionIds = sections.map((s) => s.rows.flat());
     // The hovered swatch is gone, and no pointerleave will fire for it.
     if (this.hovering) {
       this.hovering = false;
@@ -143,7 +143,7 @@ export class SwatchPane {
         if (section.title && sections.length > 1) grid.append(heading(i, section.title));
         const chart = document.createElement('div');
         chart.className = 'swatch-chart swatch-flow';
-        for (const code of section.rows.flat()) chart.append(this.swatch(code));
+        for (const id of section.rows.flat()) chart.append(this.swatch(id));
         grid.append(chart);
       });
       const set = sections.length > 1 ? 'sets' : 'set';
@@ -165,22 +165,22 @@ export class SwatchPane {
         const chart = document.createElement('div');
         chart.className = 'swatch-chart';
         chart.style.gridTemplateColumns = `repeat(${width}, minmax(0, var(--swatch-max)))`;
-        section.rows.forEach((row, r) => row.forEach((code, c) => chart.append(this.swatch(code, r + 1, c + 1))));
+        section.rows.forEach((row, r) => row.forEach((id, c) => chart.append(this.swatch(id, r + 1, c + 1))));
         grid.append(chart);
       });
       this.note.textContent = `Order as printed in ${this.layout.source}.`;
     }
-    this.codes = [...new Set(sections.flatMap((s) => s.rows.flat()))];
-    this.show(this.codes);
+    this.ids = [...new Set(sections.flatMap((s) => s.rows.flat()))];
+    this.show(this.ids);
     this.markPicked();
   }
 
-  private swatch(code: string, row?: number, column?: number): HTMLButtonElement {
-    const paint = PAINTS.get(code)!;
+  private swatch(id: string, row?: number, column?: number): HTMLButtonElement {
+    const paint = PAINTS.get(id)!;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'swatch';
-    button.dataset.code = code;
+    button.dataset.id = id;
     // Only the color: a hidden paint's swatch shrinks by clipping the background to the content box.
     button.style.backgroundColor = paint.display;
     if (row && column) {
@@ -194,9 +194,9 @@ export class SwatchPane {
 
   /** Outlines every swatch of the picked paint; a custom set can hold a paint in more than one of its sets. */
   private markPicked(): void {
-    const code = this.store.get().pickPaint?.code;
+    const id = this.store.get().pickPaint?.id;
     for (const button of this.grid.querySelectorAll<HTMLButtonElement>('.swatch')) {
-      button.classList.toggle('is-picked', button.dataset.code === code);
+      button.classList.toggle('is-picked', button.dataset.id === id);
     }
   }
 }
