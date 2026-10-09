@@ -15,12 +15,18 @@
   <body>
     <div class="page">
       <header class="masthead">
-        <nav class="site-nav" aria-label="Pages">
-          <a href="./">OKLCh Atlas</a>
-          <a href="./matrix.html">Difference matrix</a>
-          <a href="./set-builder.html" aria-current="page">Set Builder</a>
-          <a href="./#compare">Set comparator</a>
-        </nav>
+        <div class="masthead-bar">
+          <nav class="site-nav" aria-label="Pages">
+            <a href="./">OKLCh Atlas</a>
+            <a href="./matrix.html">Difference matrix</a>
+            <a href="./set-builder.html" aria-current="page">Set Builder</a>
+            <a href="./#compare">Set comparator</a>
+          </nav>
+          <label class="sort-by" id="sort-by">
+            <span class="slider-label">Sort by</span>
+            <select class="select" id="sort-select"></select>
+          </label>
+        </div>
         <h1>Set Builder</h1>
         <p class="lede">
           Put together your own set of paints. Choose a chart or a set in each of the three columns and click paints

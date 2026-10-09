@@ -1,8 +1,10 @@
 import './style.css';
 import { deltaEOK } from './color/oklab';
 import { appendLayoutGroups } from './paints/customSets';
-import { type Paint, PAINTS, paintLabel } from './paints/vallejo';
+import { sortPaints } from './paints/sort';
+import { PAINTS, paintLabel } from './paints/vallejo';
 import { DifferenceMatrix, formatD, formatJ } from './views/diffMatrix';
+import { bindSortSelect } from './views/sortSelect';
 
 const STORAGE_KEY = 'color-tools.matrix-layout';
 /** Every paint in the catalog, once: the default, and the matrix's own choice beside the atlas's layouts. */
@@ -18,22 +20,17 @@ const count = $('matrix-count');
 select.add(new Option('All paints', ALL_PAINTS));
 const ALL_LAYOUTS = appendLayoutGroups(select);
 
-/**
- * By code ascending. Every code is "NN.NNN", so comparing them as strings orders them by number. Paints
- * without a code (Kimera Kolors) come last, by name.
- */
-function byCode(p: Paint, q: Paint): number {
-  if (p.code && q.code) return p.code < q.code ? -1 : p.code > q.code ? 1 : 0;
-  if (p.code || q.code) return p.code ? -1 : 1;
-  return p.name.localeCompare(q.name);
-}
+// A matrix has no printed order: "As printed" is not offered.
+const sort = bindSortSelect($<HTMLSelectElement>('sort-select'), { printed: false });
+sort.subscribe(() => show(select.value));
 
 function show(id: string): void {
   const layout = ALL_LAYOUTS.find((l) => l.id === id);
   select.value = layout ? layout.id : ALL_PAINTS;
   // Sets can share paints; each paint gets one row and one column.
   const ids = layout ? new Set(layout.sections.flatMap((s) => s.rows.flat())) : PAINTS.keys();
-  const paints = [...ids].map((paintId) => PAINTS.get(paintId)!).sort(byCode);
+  const unsorted = [...ids].map((paintId) => PAINTS.get(paintId)!);
+  const paints = sortPaints(unsorted, sort.get()).flat();
   const n = paints.length;
   count.textContent = `${n} paints · ${((n * (n - 1)) / 2).toLocaleString('en')} pairs`;
   matrix.setPaints(paints);

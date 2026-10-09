@@ -1,8 +1,10 @@
 import { layoutGroups } from '../paints/customSets';
+import { SORT_ORDERS, sortPaints } from '../paints/sort';
 import { type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
 import { Selection } from '../selection';
 import { type Store, pickPaint } from '../state';
 import type { HoverHandler } from './slicePlot';
+import type { SortControl } from './sortSelect';
 
 export interface SwatchPaneElements {
   grid: HTMLElement;
@@ -26,10 +28,12 @@ export interface SwatchPaneOptions {
    * layout changes, and its owner writes the store.
    */
   selection?: Selection;
+  /** The page's "Sort by" select. Every section is sorted on its own; "As printed" keeps the layout's order. */
+  sort: SortControl;
 }
 
 /**
- * Paints laid out the way their makers print them, or the paints of a set. The shown paints are drawn as dots in
+ * The paints of a chart or a set, in the page's Sort by order or as printed. The shown paints are drawn as dots in
  * the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which moves both slices
  * through it. A new layout starts with all of its paints shown, unless the pane shares its selection (the Set
  * Builder), where showing means adding the paint to the set being built.
@@ -44,6 +48,7 @@ export class SwatchPane {
   private readonly defaultLayout: number;
   private readonly selection: Selection;
   private readonly owned: boolean;
+  private readonly sort: SortControl;
   private layouts: PaintLayout[] = [];
   private layout!: PaintLayout;
   /** Ids of the paints in this layout, once each, in printed order. */
@@ -55,7 +60,7 @@ export class SwatchPane {
   constructor(
     { grid, select, note, count, showAll, showNone }: SwatchPaneElements,
     private readonly store: Store,
-    { storageKey, defaultLayout = 0, selection }: SwatchPaneOptions,
+    { storageKey, defaultLayout = 0, selection, sort }: SwatchPaneOptions,
   ) {
     this.grid = grid;
     this.select = select;
@@ -64,6 +69,13 @@ export class SwatchPane {
     this.defaultLayout = defaultLayout;
     this.owned = !selection;
     this.selection = selection ?? new Selection();
+    this.sort = sort;
+    // A new order keeps the shown paints as they are.
+    sort.subscribe(() => {
+      this.drawGrid();
+      this.showSelection();
+      this.markPicked();
+    });
     this.fillSelect(readStoredLayout(storageKey));
     select.addEventListener('change', () => {
       this.layout = this.layoutById(select.value);
@@ -155,7 +167,17 @@ export class SwatchPane {
     return (button && PAINTS.get(button.dataset.id!)) ?? null;
   }
 
+  /** Draws a new layout and, unless the selection is shared, shows all of its paints. */
   private render(): void {
+    this.drawGrid();
+    this.ids = [...new Set(this.layout.sections.flatMap((s) => s.rows.flat()))];
+    if (this.owned) this.selection.set(this.ids);
+    this.showSelection();
+    this.markPicked();
+  }
+
+  /** The swatches of the layout in the chosen order, and the note that says what that order is. */
+  private drawGrid(): void {
     const { sections, notInCatalog } = this.layout;
     const grid = this.grid;
     grid.replaceChildren();
@@ -166,9 +188,24 @@ export class SwatchPane {
       this.onHover?.(null, 0, 0);
     }
 
-    if (notInCatalog) {
-      // Sets have no printed order: the paints flow in code order, as many to a row as fit (style.css). A custom
-      // set shows each of its sets under its own heading.
+    const order = this.sort.get();
+    if (order !== 'printed') {
+      // Sorted: the paints flow across the pane, as many to a row as fit (style.css). A two-level sort starts
+      // each bucket on a new row. A custom set shows each of its sets under its own heading.
+      sections.forEach((section, i) => {
+        if (section.title && sections.length > 1) grid.append(heading(i, section.title));
+        const chart = document.createElement('div');
+        chart.className = 'swatch-chart swatch-flow';
+        sortPaints(section.rows.flat().map((id) => PAINTS.get(id)!), order).forEach((group, g) => {
+          if (g > 0) chart.append(bucketBreak());
+          for (const paint of group) chart.append(this.swatch(paint.id));
+        });
+        grid.append(chart);
+      });
+      const how = SORT_ORDERS.find((o) => o.id === order)!.note;
+      this.note.textContent = `The paints of ${this.layout.source}, ${how}.` + this.missingNote();
+    } else if (notInCatalog) {
+      // Sets have no printed order: the paints flow in the order they are stored, code order for Vallejo's sets.
       sections.forEach((section, i) => {
         if (section.title && sections.length > 1) grid.append(heading(i, section.title));
         const chart = document.createElement('div');
@@ -176,16 +213,7 @@ export class SwatchPane {
         for (const id of section.rows.flat()) chart.append(this.swatch(id));
         grid.append(chart);
       });
-      const set = sections.length > 1 ? 'sets' : 'set';
-      // "72.052 Silver (metallic)", but not "72.650 Gloss Polyurethane Varnish (varnish)".
-      const missing = notInCatalog.map(({ code, name, kind }) =>
-        name.toLowerCase().includes(kind.toLowerCase()) ? `${code} ${name}` : `${code} ${name} (${kind})`,
-      );
-      this.note.textContent =
-        (this.layout.note ?? `The paints of ${this.layout.source}, by code.`) +
-        (missing.length
-          ? ` Also in the ${set}, but not in the data: ${missing.join(', ').replace(/, (?=[^,]*$)/, ' and ')}.`
-          : '');
+      this.note.textContent = (this.layout.note ?? `The paints of ${this.layout.source}, by code.`) + this.missingNote();
     } else {
       // Charts: sections stacked, every printed row starting in the first column. The heading goes above its
       // section's chart, so the swatches alone sit on the stage gray.
@@ -200,10 +228,18 @@ export class SwatchPane {
       });
       this.note.textContent = `Order as printed in ${this.layout.source}.`;
     }
-    this.ids = [...new Set(sections.flatMap((s) => s.rows.flat()))];
-    if (this.owned) this.selection.set(this.ids);
-    this.showSelection();
-    this.markPicked();
+  }
+
+  /** What a set holds that the catalog has no color for, as a sentence; empty for charts. */
+  private missingNote(): string {
+    const { sections, notInCatalog } = this.layout;
+    if (!notInCatalog?.length) return '';
+    const set = sections.length > 1 ? 'sets' : 'set';
+    // "72.052 Silver (metallic)", but not "72.650 Gloss Polyurethane Varnish (varnish)".
+    const missing = notInCatalog.map(({ code, name, kind }) =>
+      name.toLowerCase().includes(kind.toLowerCase()) ? `${code} ${name}` : `${code} ${name} (${kind})`,
+    );
+    return ` Also in the ${set}, but not in the data: ${missing.join(', ').replace(/, (?=[^,]*$)/, ' and ')}.`;
   }
 
   private swatch(id: string, row?: number, column?: number): HTMLButtonElement {
@@ -230,6 +266,14 @@ export class SwatchPane {
       button.classList.toggle('is-picked', button.dataset.id === id);
     }
   }
+}
+
+/** Ends a bucket's row: an empty row across the chart, so the next bucket starts on a new one, a gap apart. */
+function bucketBreak(): HTMLDivElement {
+  const div = document.createElement('div');
+  div.className = 'swatch-break';
+  div.setAttribute('aria-hidden', 'true');
+  return div;
 }
 
 /** A section's title with its select-all and select-none buttons. */

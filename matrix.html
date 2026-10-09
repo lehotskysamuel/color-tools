@@ -15,17 +15,23 @@
   <body>
     <div class="page">
       <header class="masthead">
-        <nav class="site-nav" aria-label="Pages">
-          <a href="./">OKLCh Atlas</a>
-          <a href="./matrix.html" aria-current="page">Difference matrix</a>
-          <a href="./set-builder.html">Set Builder</a>
-          <a href="./#compare">Set comparator</a>
-        </nav>
+        <div class="masthead-bar">
+          <nav class="site-nav" aria-label="Pages">
+            <a href="./">OKLCh Atlas</a>
+            <a href="./matrix.html" aria-current="page">Difference matrix</a>
+            <a href="./set-builder.html">Set Builder</a>
+            <a href="./#compare">Set comparator</a>
+          </nav>
+          <label class="sort-by" id="sort-by">
+            <span class="slider-label">Sort by</span>
+            <select class="select" id="sort-select"></select>
+          </label>
+        </div>
         <h1>Difference matrix</h1>
         <p class="lede">
-          How different every pair of paints looks. Each paint is a row and, in the same order, a column, sorted by
-          code. Where two paints meet, <b>J</b> is their distance in just-noticeable differences: their OKLab
-          distance ΔE<sub>OK</sub> divided by 0.02.
+          How different every pair of paints looks. Each paint is a row and, in the same order, a column, sorted as
+          chosen under Sort by. Where two paints meet, <b>J</b> is their distance in just-noticeable differences:
+          their OKLab distance ΔE<sub>OK</sub> divided by 0.02.
         </p>
       </header>
 
@@ -40,7 +46,8 @@
         </div>
         <p class="stat">
           Hover a cell to see both paints and their ΔE<sub>OK</sub>. The table is symmetric: the row and column of
-          a paint hold the same values. Paints without a code (Kimera Kolors) come last.
+          a paint hold the same values. Sorted by code, paints without one (Kimera Kolors) come last; sorted by hue,
+          the grays do.
         </p>
       </section>
 

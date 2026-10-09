@@ -15,12 +15,18 @@
   <body>
     <div class="page">
       <header class="masthead">
-        <nav class="site-nav" aria-label="Pages">
-          <a href="./" data-view="deepdive" aria-current="page">OKLCh Atlas</a>
-          <a href="./matrix.html">Difference matrix</a>
-          <a href="./set-builder.html">Set Builder</a>
-          <a href="./#compare" data-view="compare">Set comparator</a>
-        </nav>
+        <div class="masthead-bar">
+          <nav class="site-nav" aria-label="Pages">
+            <a href="./" data-view="deepdive" aria-current="page">OKLCh Atlas</a>
+            <a href="./matrix.html">Difference matrix</a>
+            <a href="./set-builder.html">Set Builder</a>
+            <a href="./#compare" data-view="compare">Set comparator</a>
+          </nav>
+          <label class="sort-by" id="sort-by">
+            <span class="slider-label">Sort by</span>
+            <select class="select" id="sort-select"></select>
+          </label>
+        </div>
         <h1 id="page-title">OKLCh Atlas</h1>
       </header>
 

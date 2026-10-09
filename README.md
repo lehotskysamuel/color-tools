@@ -81,9 +81,30 @@ The page chrome is deliberately achromatic. A tinted surround shifts how the plo
 or dark one. So every color (the slices, the solid, the paint swatches, the picked color) sits on the same middle
 gray, CIE L\* 50, in both themes; only the text is on white, or black in the dark theme.
 
+### Sort by
+
+Every page with paints has a **Sort by** select in its top right corner. It orders every paint grid on the page:
+the Atlas's paint pane, the Set Builder's three columns and the rows and columns of the difference matrix. Each
+section of a chart or set is sorted on its own. The choice is one for all pages, remembered in `localStorage`.
+
+| Option | Order |
+|---|---|
+| **Color code** (the default) | by code, as 74.228; paints without one (Kimera Kolors) last, by name |
+| **Hue** | by OKLCh hue h, the angle of (a, b), from 0° up; the grays last, light to dark |
+| **Value** | by lightness L, light to dark |
+| **Value, then hue** | one row per tenth of lightness (90–100 %, 80–90 %, …), the lightest first, each row by hue |
+| **Hue, then value** | one row per tenth of the hue circle (0–36°, 36–72°, …), then a row of grays, each by lightness |
+| **As printed** | the layout's own order: a chart as its maker prints it, a set as it is stored. Not in the matrix |
+
+A paint with chroma below 0.01 (half a just-noticeable difference) counts as a gray: its hue is noise, so the hue
+sorts put it after the colors instead of scattering the whites, grays and blacks around the circle. Ties go by
+code. In a two-level sort each bucket starts a row of its own in the swatch grids. **Your set** in the Set
+Builder keeps the order the paints were added. `src/paints/sort.ts` has the orders.
+
 ### Paints
 
-The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. Under
+The pane to the left of the views shows the paints from `data/vallejo.json`, in the order chosen under
+[**Sort by**](#sort-by). Under
 **Ranges**, the **Layout** select switches between the four layouts in `data/vallejo-layouts.json`, one per range:
 the Game Color chart, the Model Color chart, Squidmar Color (all 72 paints, as the Mega Set image prints them) and
 the Kimera Kolors base set. Every paint in the catalog is in one of them. The page remembers the choice in
@@ -91,7 +112,8 @@ the Kimera Kolors base set. Every paint in the catalog is in one of them. The pa
 
 The same select also offers the boxed **paint sets** of `data/vallejo-sets.json`, the **custom sets** of
 `data/custom-sets/`, and the custom sets saved in this browser by the [Set Builder](#set-builder). A set has
-no printed order, so its paints are shown in code order, as many to a row as fit. A custom set shows each of its
+no printed order, so under **As printed** its paints are shown as stored (code order for Vallejo's sets), as many to
+a row as fit. A custom set shows each of its
 sets under its name, with the colors read from that set, and that set's **All** / **None** buttons switch it on and
 off within the custom set. The note under the swatches names what a set holds that the catalog has no color for
 (metallics, Xpress Color, Special FX, mediums, varnishes).
@@ -277,8 +299,9 @@ put on screen.
 
 ## Difference matrix
 
-`matrix.html` is a table of every pair of paints: each paint is a row and, in the same order, a column, sorted by
-code ascending, with the Kimera Kolors (which have no code) last by name. Each row header gives the paint's type
+`matrix.html` is a table of every pair of paints: each paint is a row and, in the same order, a column, in the
+order chosen under [**Sort by**](#sort-by) (by default by code ascending, with the Kimera Kolors, which have no
+code, last by name). Each row header gives the paint's type
 in gray brackets, such as "(wash)". The cell where two paints meet holds **J**, their distance in just-noticeable differences: the
 OKLab distance ΔE<sub>OK</sub> divided by 0.02 (`JND` in `src/color/oklab.ts`), to one decimal.
 
@@ -348,6 +371,8 @@ src/
   paints/customSets.test.ts  keys, saving, damaged storage, export round trip, the custom-sets/ files
   paints/summary.ts       a layout's paints once each, paints per type, coverage of Pointer's gamut
   paints/summary.test.ts
+  paints/sort.ts          the Sort by orders: code, hue, value and the two bucketed ones
+  paints/sort.test.ts
   selection.ts            ordered set of paint keys shared by the Set Builder's panes
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes),
                           and the starting state
@@ -358,6 +383,7 @@ src/
   views/hueSlice.ts       B.2
   views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
   views/swatchPane.ts     paint swatches, the layout select, and which paints are shown
+  views/sortSelect.ts     the Sort by select, shared by every page and remembered
   views/segmented.ts      radio-button controls bound to the state
   views/setComparator.ts  the set comparator: one column per set, renders with a shared camera
   views/tooltip.ts        the hover tooltip of the atlas, the comparator and the Set Builder
