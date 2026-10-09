@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Difference Matrix</title>
+    <meta name="description" content="How different every pair of Vallejo paints looks: a table with the paints as rows and as columns, and at each intersection their OKLab distance (ΔE OK) and the same distance in just-noticeable differences." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead">
+        <nav class="site-nav" aria-label="Pages">
+          <a href="./">OKLCh Atlas</a>
+          <a href="./matrix.html" aria-current="page">Difference matrix</a>
+          <a href="./set-builder.html">Set Builder</a>
+        </nav>
+        <h1>Difference matrix</h1>
+        <p class="lede">
+          How different every pair of paints looks. Each paint is a row and, in the same order, a column, sorted by
+          code. Where two paints meet, <b>J</b> is their distance in just-noticeable differences: their OKLab
+          distance ΔE<sub>OK</sub> divided by 0.02.
+        </p>
+      </header>
+
+      <section class="matrix-panel" aria-label="Difference matrix">
+        <div class="controls">
+          <label class="slider-label" for="layout-select">Paints</label>
+          <select class="select" id="layout-select"></select>
+          <output class="stat mono" id="matrix-count"></output>
+        </div>
+        <div class="matrix-scroll" id="matrix-scroll" tabindex="0" role="region" aria-label="Table of paint differences, scrollable">
+          <table class="matrix mono" id="matrix"></table>
+        </div>
+        <p class="stat">
+          Hover a cell to see both paints and their ΔE<sub>OK</sub>. The table is symmetric: the row and column of
+          a paint hold the same values. Paints without a code (Kimera Kolors) come last.
+        </p>
+      </section>
+
+      <footer class="notes">
+        <p>
+          J = 1 (ΔE<sub>OK</sub> 0.02) is about one just-noticeable difference, the threshold CSS Color 4 uses for
+          gamut mapping. Straight-line OKLab distance is a good model for small and medium differences and overstates
+          very large ones.
+        </p>
+        <p>
+          Each paint sits at its best-known color, as in the atlas: the chart's CIELAB for Game Color and Model
+          Color, the sampled hex for Squidmar Color. Ten chart colors lie outside sRGB. Their swatches show the
+          nearest screen color, but their distances use the real one.
+        </p>
+      </footer>
+    </div>
+
+    <div class="tooltip matrix-tip" id="tooltip" role="status" hidden>
+      <div class="matrix-tip-paint">
+        <span class="matrix-tip-swatch" id="tip-row-swatch"></span>
+        <span class="tooltip-name" id="tip-row"></span>
+      </div>
+      <div class="matrix-tip-paint">
+        <span class="matrix-tip-swatch" id="tip-column-swatch"></span>
+        <span class="tooltip-name" id="tip-column"></span>
+      </div>
+      <div class="mono tooltip-sub" id="tip-values"></div>
+    </div>
+
+    <script type="module" src="/src/matrix.ts"></script>
+  </body>
+</html>

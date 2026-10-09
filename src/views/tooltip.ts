@@ -1,4 +1,5 @@
 import {
+  JND,
   type Vec3,
   deltaEOK,
   formatOklch,
@@ -9,9 +10,6 @@ import {
 import { type Paint, paintLabel } from '../paints/vallejo';
 import type { Store } from '../state';
 import type { HoverHandler } from './slicePlot';
-
-/** ΔE_OK of roughly one just-noticeable difference (the value CSS Color 4 uses for gamut mapping). */
-const JND = 0.02;
 
 /**
  * The hover tooltip shared by the views and the paint swatches: the color's OKLCh, hex and ΔE_OK from the picked

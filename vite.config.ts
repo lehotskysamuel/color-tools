@@ -6,12 +6,9 @@ export default defineConfig({
   build: {
     // three.js alone is ~550 kB minified; one chunk is fine for this app.
     chunkSizeWarningLimit: 800,
-    // Two pages: the Atlas and the Set Builder.
     rolldownOptions: {
-      input: {
-        main: 'index.html',
-        setBuilder: 'set-builder.html',
-      },
+      // The pages, resolved against the project root: the atlas, the difference matrix and the set builder.
+      input: { main: 'index.html', matrix: 'matrix.html', setBuilder: 'set-builder.html' },
     },
   },
 });
