@@ -61,7 +61,7 @@ distance is the same perceptual difference everywhere, in both slices.
 
 | | View | Shows | Distances |
 |---|---|---|---|
-| **A** | Gamut solid (3D) | A color space's gamut at its OKLab position, L pointing up: Pointer's gamut (default) or every sRGB color. With it, the convex hull of the shown paints. Drag to orbit, scroll to zoom. The solids can be cut at the current L, at the current hue, or with a wedge that removes one quarter. Each shape is drawn as a see-through **wireframe** or an opaque **solid**; the cut still decides which slices show inside a wireframe. See [Pointer's gamut and the paint hull](#pointers-gamut-and-the-paint-hull). | Correct in 3D. The on-screen projection is only faithful for pairs parallel to the screen. The camera is orthographic, so there is no perspective distortion on top of that. |
+| **A** | Gamut solid (3D) | A color space's gamut at its OKLab position, L pointing up: Pointer's gamut (default) or every sRGB color. With it, the convex hull of the shown paints. Labeled axes: L from black (0) to white (1), and the opponent axes a (green → red) and b (blue → yellow), which cross the gray axis in a see-through plane at L 0.5. Drag to orbit, scroll to zoom. The solids can be cut at the current L, at the current hue, or with a wedge that removes one quarter. Each shape is drawn as a see-through **wireframe** or an opaque **solid**; the cut still decides which slices show inside a wireframe. See [Pointer's gamut and the paint hull](#pointers-gamut-and-the-paint-hull). | Correct in 3D. The on-screen projection is only faithful for pairs parallel to the screen. The camera is orthographic, so there is no perspective distortion on top of that. |
 | **B.1** | Lightness slice | A horizontal cut at one lightness. Hue is the angle, chroma the radius. | Exact within the slice. |
 | **B.2** | Hue slice | A vertical plane through the gray axis. Hue h on the right, its complement h + 180° on the left, L up. It is a true plane, so the complement half is not mirrored or stretched. Diamonds mark each half's cusp, its most chromatic point. | Exact within the slice, including across the gray axis. |
 
@@ -74,7 +74,9 @@ The views are linked:
 - Hovering shows the color's OKLCh, hex and ΔE<sub>OK</sub> from the picked color, in JND units.
 - Hatched areas are outside sRGB. No screen color exists there.
 
-The page chrome is deliberately achromatic. A tinted surround shifts how the plotted colors look.
+The page chrome is deliberately achromatic. A tinted surround shifts how the plotted colors look, and so does a bright
+or dark one. So every color (the slices, the solid, the paint swatches, the picked color) sits on the same middle
+gray, CIE L\* 50, in both themes; only the text is on white, or black in the dark theme.
 
 ### Vallejo paints
 
@@ -85,7 +87,9 @@ charts and the Mega Set one after the other, which holds every paint in the cata
 choice in `localStorage`.
 
 **Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
-its paints on, and **Select all** / **Select none** switch them all at once.
+its paints on, and **Select all** / **Select none** switch them all at once. In a chart printed in several sections
+(the Game Color chart's chart, wash, fluo and ink), **All** / **None** next to a section's heading switch only that
+section's paints. None of these buttons picks a paint.
 
 - Clicking a swatch switches its paint on or off. An off swatch shrinks to a small square with a dashed border,
   still in its own color.
@@ -209,7 +213,7 @@ Each set gets one card:
 
 | Part | Shows |
 |---|---|
-| **Render** | View A exactly as the deep-dive first draws it with that layout selected: Pointer's gamut as a wireframe, the hull of the set's paints as a solid, every paint as a dot, cut with a wedge at L 0.650 and hue 264°. There is no picked color, so no pick marker, and clicking picks nothing. |
+| **Render** | View A exactly as the deep-dive first draws it with that layout selected: Pointer's gamut as a wireframe, the hull of the set's paints as a solid, every paint as a dot, and the labeled axes, with the solid whole. There is no picked color, so no pick marker, and clicking picks nothing. |
 | **Pointer's gamut covered** | The share of Pointer's gamut's volume in OKLab inside the hull of the set's paints, as [measured for the deep-dive](#pointers-gamut-and-the-paint-hull), to one decimal. The bar is all of Pointer's gamut; its mark is sRGB's share (78 %) for scale. |
 | **Colors** | How many paints the set has, and how many of each type (acrylic, ink, fluorescent, wash, metallic), every type listed so the rows line up across cards. |
 
@@ -222,8 +226,8 @@ from marketing images and are not directly comparable with the printed charts'.
 
 Each render has its own WebGL context, created when its set is first selected and kept afterwards, so the page
 never holds more than eight (seven sets and the deep-dive's solid), half of the sixteen Chrome allows. The comparator
-itself is built the first time its tab is shown. The cut faces come from a lightness and a hue slice at the
-starting L and h that are never put on screen.
+itself is built the first time its tab is shown. If the starting state cuts the solid, the cut faces come from a
+lightness and a hue slice at the starting L and h that are never put on screen.
 
 | Width | Layout |
 |---|---|

@@ -51,7 +51,7 @@ export class SetComparator {
   private shown: Card[] = [];
   /** The view all renders show, or null while it is the default one every render starts with. */
   private view: SolidView | null = null;
-  /** Never on screen: their images at the starting L and h are the cut faces of every render. */
+  /** Never on screen: their images at the starting L and h are the cut faces, when the starting state cuts. */
   private readonly lightness: LightnessSlice;
   private readonly hue: HueSlice;
   private layoutFrame = 0;
