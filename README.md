@@ -517,6 +517,11 @@ the measured `cielab`; 0.02 is one just-noticeable difference):
 | The maker's chart: scans of hand-painted swatches, full-strength top | 0.041 | 0.070, Phthalo Green |
 | The shop's product photos: the paint through the bottle | 0.074 | 0.111, Magenta |
 
+![Each Kimera Kolors paint: its measured color next to the shop image's circle, the chart swatch and the bottle photo, with the OKLab distance of each from the measured color](docs/kimera-web-colors.png)
+
+The picture (`docs/kimera-web-colors.png`) is a one-off like the table; it is
+not part of the page.
+
 The circles differ from the chart swatches by 0.075 on average and from the
 photos by 0.101. Their Magenta, Phthalo Green and Violet are far more colorful
 than the paint, so they cover 38.0 % of Pointer's gamut, while the measured
