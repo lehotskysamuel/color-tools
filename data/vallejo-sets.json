@@ -1,0 +1,124 @@
+{
+  "squidmarEssential": {
+    "title": "Squidmar Essential",
+    "code": "72.201",
+    "colors": ["70.771", "70.814", "70.845", "70.923", "70.928", "70.950", "70.951", "70.986", "72.044", "72.083", "72.093", "72.099"],
+    "notInCatalog": []
+  },
+  "squidmarDarkFuture": {
+    "title": "Squidmar Dark Future",
+    "code": "72.202",
+    "colors": ["70.808", "70.812", "70.858", "70.898", "70.945", "72.006", "72.024", "72.042", "72.112"],
+    "notInCatalog": [
+      {"code": "72.052", "name": "Silver", "kind": "metallic"},
+      {"code": "72.054", "name": "Dark Gunmetal", "kind": "metallic"},
+      {"code": "72.417", "name": "Snake Green", "kind": "Xpress Color"}
+    ]
+  },
+  "squidmarFantasy": {
+    "title": "Squidmar Fantasy",
+    "code": "72.203",
+    "colors": ["70.827", "70.918", "70.954", "72.005", "72.009", "72.011", "72.028", "72.032", "72.067", "72.106"],
+    "notInCatalog": [
+      {"code": "72.056", "name": "Glorious Gold", "kind": "metallic"},
+      {"code": "72.060", "name": "Tinny Tin", "kind": "metallic"}
+    ]
+  },
+  "squidmarSpecialFx": {
+    "title": "Squidmar Special FX",
+    "code": "72.207",
+    "colors": ["72.084", "72.086", "72.087", "72.089", "72.091", "72.094", "72.104", "72.156", "72.158", "72.161"],
+    "notInCatalog": [
+      {"code": "72.455", "name": "Chameleon Orange", "kind": "Xpress Color"},
+      {"code": "72.479", "name": "Seraph Red", "kind": "Xpress Color"}
+    ]
+  },
+  "bsl": {
+    "title": "Vallejo BSL",
+    "code": "72.183",
+    "colors": ["72.001", "72.003", "72.004", "72.005", "72.006", "72.007", "72.009", "72.011", "72.013", "72.014", "72.015", "72.019", "72.020", "72.021", "72.024", "72.025", "72.026", "72.027", "72.028", "72.032", "72.042", "72.045", "72.049", "72.051", "72.071", "72.076", "72.096", "72.098", "72.099", "72.100", "72.106", "72.107", "72.108", "72.109", "72.110", "72.112", "72.113", "72.114", "72.116", "72.118", "72.119", "72.120", "72.121", "72.122", "72.123", "72.124", "72.155"],
+    "notInCatalog": []
+  },
+  "starterValue": {
+    "title": "Vallejo Starter Value",
+    "code": "72.215",
+    "colors": ["72.001", "72.005", "72.021", "72.032", "72.051", "72.062", "72.091", "72.100", "72.106"],
+    "notInCatalog": [
+      {"code": "72.052", "name": "Silver", "kind": "metallic"}
+    ]
+  },
+  "introduction": {
+    "title": "Vallejo Introduction",
+    "code": "72.299",
+    "colors": ["72.001", "72.006", "72.008", "72.010", "72.022", "72.028", "72.030", "72.034", "72.036", "72.040", "72.043", "72.049", "72.051"],
+    "notInCatalog": [
+      {"code": "72.052", "name": "Silver", "kind": "metallic"},
+      {"code": "72.054", "name": "Dark Gunmetal", "kind": "metallic"},
+      {"code": "72.055", "name": "Polished Gold", "kind": "metallic"}
+    ]
+  },
+  "advanced": {
+    "title": "Vallejo Advanced",
+    "code": "72.298",
+    "colors": ["72.004", "72.005", "72.011", "72.015", "72.016", "72.019", "72.021", "72.026", "72.035", "72.039", "72.044", "72.045", "72.050"],
+    "notInCatalog": [
+      {"code": "72.056", "name": "Glorious Gold", "kind": "metallic"},
+      {"code": "72.059", "name": "Hammered Copper", "kind": "metallic"},
+      {"code": "72.060", "name": "Tinny Tin", "kind": "metallic"}
+    ]
+  },
+  "specialist": {
+    "title": "Vallejo Specialist",
+    "code": "72.188",
+    "colors": ["72.003", "72.012", "72.023", "72.029", "72.047", "72.061", "72.062", "72.063", "72.066", "72.067", "72.115"],
+    "notInCatalog": [
+      {"code": "70.596", "name": "Glaze Medium", "kind": "medium"},
+      {"code": "72.057", "name": "Bright Bronze", "kind": "metallic"},
+      {"code": "72.058", "name": "Brassy Brass", "kind": "metallic"},
+      {"code": "72.609", "name": "Rust", "kind": "Special FX"},
+      {"code": "72.651", "name": "Matt Polyurethane Varnish", "kind": "varnish"}
+    ]
+  },
+  "wargamesBasics": {
+    "title": "Vallejo Wargames Basics",
+    "code": "70.260",
+    "colors": ["70.891", "70.927", "70.940", "70.950", "70.951", "70.957", "70.963"],
+    "notInCatalog": [
+      {"code": "70.997", "name": "Silver", "kind": "metallic"}
+    ]
+  },
+  "wargameSpecial": {
+    "title": "Vallejo Wargame Special",
+    "code": "70.257",
+    "colors": ["70.811", "70.827", "70.846", "70.905", "70.927", "70.928", "70.950", "70.951", "70.958", "72.103", "72.104", "72.156", "72.158", "72.160"],
+    "notInCatalog": [
+      {"code": "70.996", "name": "Gold", "kind": "metallic"},
+      {"code": "70.997", "name": "Silver", "kind": "metallic"}
+    ]
+  },
+  "inspiration": {
+    "title": "Vallejo Inspiration",
+    "code": "72.182",
+    "colors": ["72.001", "72.004", "72.006", "72.008", "72.014", "72.015", "72.019", "72.021", "72.022", "72.024", "72.027", "72.028", "72.029", "72.032", "72.034", "72.035", "72.040", "72.045", "72.047", "72.051", "72.071", "72.087", "72.091", "72.096", "72.099", "72.102", "72.104", "72.106", "72.107", "72.109", "72.111", "72.112", "72.115", "72.116", "72.117", "72.158", "73.201", "73.203"],
+    "notInCatalog": [
+      {"code": "71.261", "name": "Airbrush Thinner", "kind": "thinner"},
+      {"code": "72.053", "name": "Chainmail", "kind": "metallic"},
+      {"code": "72.056", "name": "Glorious Gold", "kind": "metallic"},
+      {"code": "72.404", "name": "Nuclear Yellow", "kind": "Xpress Color"},
+      {"code": "72.407", "name": "Velvet Red", "kind": "Xpress Color"},
+      {"code": "72.412", "name": "Storm Blue", "kind": "Xpress Color"},
+      {"code": "72.417", "name": "Snake Green", "kind": "Xpress Color"},
+      {"code": "72.601", "name": "Fresh Blood", "kind": "Special FX"},
+      {"code": "72.610", "name": "Galvanic Corrosion", "kind": "Special FX"},
+      {"code": "72.650", "name": "Gloss Polyurethane Varnish", "kind": "varnish"}
+    ]
+  },
+  "squidmarV1": {
+    "title": "Squidmar v1",
+    "sets": ["squidmarEssential", "squidmarDarkFuture", "squidmarFantasy"]
+  },
+  "squidmarV2": {
+    "title": "Squidmar v2",
+    "sets": ["squidmarEssential", "squidmarDarkFuture", "squidmarFantasy", "squidmarSpecialFx"]
+  }
+}

@@ -80,10 +80,15 @@ gray, CIE L\* 50, in both themes; only the text is on white, or black in the dar
 ### Paints
 
 The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
-**Layout** select switches between the seven layouts in `data/vallejo-layouts.json` (Game Color chart and
-combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials, Kimera Kolors base set)
-plus **All paints**, the charts, the Mega Set and the Kimera set one after the other, which holds every paint in the
-catalog once. The page remembers the choice in `localStorage`.
+**Layout** select switches between the five layouts in `data/vallejo-layouts.json`: the Game Color chart, the
+Model Color chart, the Squidmar Color Mega Set and Essentials, and the Kimera Kolors base set. Every paint in the
+catalog is in at least one of them. The page remembers the choice in `localStorage`.
+
+The same select also offers the boxed **paint sets** and the **custom sets** of `data/vallejo-sets.json`. A set has
+no printed order, so its paints are shown in code order, as many to a row as fit. A custom set shows each of its
+sets under its name, with the colors read from that set, and that set's **All** / **None** buttons switch it on and
+off within the custom set. The note under the swatches names what a set holds that the catalog has no color for
+(metallics, Xpress Color, Special FX, mediums, varnishes).
 
 **Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
 its paints on, and **Select all** / **Select none** switch them all at once. In a chart printed in several sections
@@ -96,8 +101,8 @@ section's paints. None of these buttons picks a paint.
   name (for Kimera Kolors, which have no codes, the name and pigment, such as "The Red · PR170"). Switching a paint off leaves the pick alone, so double-clicking a paint that is on (off, then on) picks it.
 - Clicking a paint's dot in any view picks that paint. Hovering a dot or a swatch shows the paint in the tooltip
   with its ΔE<sub>OK</sub> from the picked color.
-- The picked paint's swatch is outlined wherever it appears. The combination tables repeat paints, so a paint can
-  be outlined several times, which shows every triplet it belongs to.
+- The picked paint's swatch is outlined. A custom set whose sets share a paint shows it under each of them, and
+  outlines every one.
 - Picking a color of the space itself (not a dot) clears the picked paint.
 
 **Where the dots are drawn.**
@@ -170,7 +175,7 @@ colors except each group of a field with more than two values. Colors come from 
 `rgb`, as on the page. It also takes a JSON array of `"#rrggbb"` strings, so other paint ranges can be compared
 the same way. The table below comes from it.
 
-| Paints shown | Color from | Share of Pointer's gamut covered by their hull |
+| Paints | Color from | Share of Pointer's gamut covered by their hull |
 |---|---|---|
 | Game Color and Model Color charts (302) | `cielab` | 46 % |
 | Game Color chart (108) | `cielab` | 46 % |
@@ -248,8 +253,10 @@ src/
   color/coverage.ts       share of a gamut's OKLab volume inside a hull
   color/coverage.test.ts
   paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
-  paints/vallejo.ts       the paints and layouts from data/ (plus All paints), with OKLab from the best field
+  paints/vallejo.ts       the paints and layouts from data/, with OKLab from the best field
   paints/vallejo.test.ts  every layout entry resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
+  paints/sets.ts          paint sets and custom sets from data/, as layouts for the swatch pane
+  paints/sets.test.ts     every set is complete, its colors resolve, custom sets read their sets
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
@@ -371,29 +378,26 @@ Kolors). Every one is a key in `vallejo.json`.
 | ------------------------- | ----------------------------------------------------- |
 | `gameColor`               | Game Color chart: main chart, Wash, Fluo, Ink         |
 | `modelColor`              | Model Color chart (its two inks sit in the main grid) |
-| `gameColorCombinations`   | 32 Highlight / Base / Shadow triplets in 3 blocks     |
-| `modelColorCombinations`  | 68 Highlight / Base / Shadow triplets in 4 blocks     |
-| `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints                |
-| `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72               |
+| `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints, by type       |
+| `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72, by type      |
 | `kimeraKolorsBaseSet`     | Kimera Kolors base set: 13 paints in 2 rows           |
 
 Each layout has `sections`, and each section has `rows`, an array of arrays of
 keys. In the charts a row is one printed row of swatches, and sections carry
-the chart heading as `title`. The Squidmar images have no headings: each of
-their sections is one panel of the image, with no `title`. The Kimera set is one
+the chart heading as `title`. The Squidmar images have no headings, so their
+sections are the paint types, titled like the Game Color chart's: Squidmar
+Color (the 48 plain acrylics), Metallic (74.249–255), Fluo (74.256–260) and Ink
+(74.261–272); Squidmar Color has no washes. Each section keeps the image's rows
+in reading order, and the one row that holds two types (Ungodly Copper and the
+fluorescents) is split between them. The Kimera set is one
 section of two rows, as its circles are printed on the box, without the satin
-medium. In the combinations
-each row is one `[highlight, base, shadow]` triplet (named by the layout's
-`columns`), and each section is one printed block.
+medium.
 
 ```js
 import layouts from './data/vallejo-layouts.json' with { type: 'json' };
 
 layouts.gameColor.sections[0].rows[0];
 // ['72.001', '72.101', '72.098', '72.034', '72.003', '72.100', '72.107', '72.108', '72.099']
-
-layouts.gameColorCombinations.sections[0].rows[0].map((code) => vallejo[code].name);
-// ['Dead White', 'Off-White', 'Elfic Flesh']
 ```
 
 ### Source
@@ -404,9 +408,9 @@ Vallejo's official color charts:
 - [CC329 Model Color, Rev. 00 (March 2024)](https://acrylicosvallejo.com/wp-content/uploads/2024/03/CC329-R00-Model-Color-NewIC.pdf)
 
 The charts store each swatch as print CMYK (for Coated FOGRA39).
-`scripts/extract_vallejo.py` reads those values, the chart rows and the
-combination tables from the PDFs, and converts the CMYK through the charts'
-embedded Coated FOGRA39 ICC profile twice:
+`scripts/extract_vallejo.py` reads those values and the chart rows from the
+PDFs, and converts the CMYK through the charts' embedded Coated FOGRA39 ICC
+profile twice:
 
 - to `cielab` with relative colorimetric intent (paper white = L\* 100) and no
   black point compensation, so the darkest print keeps its own L\* 9.9. It runs
@@ -465,6 +469,66 @@ The chart values describe the printed chart, not a measurement of dried paint.
 Vallejo notes that printed chart colors are only approximate. The Squidmar
 values are one step further removed: they are the colors of a compressed
 marketing image.
+
+### `data/vallejo-sets.json`
+
+Boxed Vallejo paint sets, and custom sets made of them. Each key is a set.
+
+A **paint set** lists its paints by code:
+
+```js
+import sets from './data/vallejo-sets.json' with { type: 'json' };
+
+sets.squidmarFantasy;
+// {
+//   title: 'Squidmar Fantasy', code: '72.203',
+//   colors: ['70.827', '70.918', '70.954', '72.005', '72.009', '72.011', '72.028', '72.032', '72.067', '72.106'],
+//   notInCatalog: [
+//     { code: '72.056', name: 'Glorious Gold', kind: 'metallic' },
+//     { code: '72.060', name: 'Tinny Tin', kind: 'metallic' }
+//   ]
+// }
+```
+
+- `code`: Vallejo's product code for the set.
+- `colors`: the set's paints that `vallejo.json` has, in code order. Every code is a key there.
+- `notInCatalog`: the rest of the set, which `vallejo.json` has no color for, with its name and its `kind`:
+  `metallic` (left out of the charts' data), `Xpress Color` and `Special FX` (their swatches are gradients and
+  photo textures, not one flat color), or `medium`, `thinner` and `varnish`, which are not colors. None of these
+  codes is in `vallejo.json`; one that gets a color there moves to `colors`.
+
+A **custom set** lists sets, not colors, and its colors are always read from those sets:
+
+```js
+sets.squidmarV1;
+// { title: 'Squidmar v1', sets: ['squidmarEssential', 'squidmarDarkFuture', 'squidmarFantasy'] }
+
+sets.squidmarV1.sets.flatMap((id) => sets[id].colors);
+```
+
+Its `sets` are paint sets, never other custom sets. In the table, *items* counts everything in the set and *drawn*
+the paints with a color in `vallejo.json`, which are the ones the page shows.
+
+| key                  | set                                                         | items | drawn |
+| -------------------- | ----------------------------------------------------------- | ----: | ----: |
+| `squidmarEssential`  | 72.201 Squidmar Essential                                   |    12 |    12 |
+| `squidmarDarkFuture` | 72.202 Squidmar Dark Future                                 |    12 |     9 |
+| `squidmarFantasy`    | 72.203 Squidmar Fantasy                                     |    12 |    10 |
+| `squidmarSpecialFx`  | 72.207 Squidmar Special FX                                  |    12 |    10 |
+| `bsl`                | 72.183 Vallejo BSL                                          |    47 |    47 |
+| `starterValue`       | 72.215 Vallejo Starter Value                                |    10 |     9 |
+| `introduction`       | 72.299 Vallejo Introduction                                 |    16 |    13 |
+| `advanced`           | 72.298 Vallejo Advanced                                     |    16 |    13 |
+| `specialist`         | 72.188 Vallejo Specialist                                   |    16 |    11 |
+| `wargamesBasics`     | 70.260 Vallejo Wargames Basics                              |     8 |     7 |
+| `wargameSpecial`     | 70.257 Vallejo Wargame Special                              |    16 |    14 |
+| `inspiration`        | 72.182 Vallejo Inspiration                                  |    48 |    38 |
+| `squidmarV1`         | Squidmar v1: Essential + Dark Future + Fantasy              |    36 |    31 |
+| `squidmarV2`         | Squidmar v2: Essential + Dark Future + Fantasy + Special FX |    48 |    41 |
+
+The contents come from a comparison table of these twelve sets, compiled from Vallejo's set pages (September
+2026). Names are taken from `vallejo.json`, so where the set pages differ (72.044 "Dark Fleshtone", 72.091 "Sepia
+Ink") the chart's name is used.
 
 ### Kimera Kolors
 

@@ -27,8 +27,8 @@ profile (Coated FOGRA39):
 `webhex`, the color Vallejo's website shows, comes from
 scripts/extract_vallejo_webhex.py and is kept when this script re-runs.
 
-The color combination tables are small squares with a centered code label
-below each, laid out as blocks of Highlight / Base / Shadow columns.
+The charts also print Highlight / Base / Shadow combination tables; they are
+not extracted.
 """
 import io
 import re
@@ -67,7 +67,6 @@ EXPECTED_COUNTS = {
     "Game Color": {"acrylic": 80, "wash": 8, "fluorescent": 8, "ink": 12},
     "Model Color": {"acrylic": 192, "ink": 2},
 }
-EXPECTED_COMBINATIONS = {"Game Color": [11, 11, 10], "Model Color": [17, 17, 17, 17]}
 
 SOURCES = {
     "Game Color": "CC266 Game Color & Xpress Color, Rev. 03 (September 2025)",
@@ -157,19 +156,6 @@ def section(index, sections):
     raise ValueError(f"index {index} outside known chart sections")
 
 
-def cluster(values, tolerance):
-    """Sorted cluster representatives: values closer than tolerance merge."""
-    reps = []
-    for v in sorted(values):
-        if not reps or v - reps[-1] > tolerance:
-            reps.append(v)
-    return reps
-
-
-def nearest(reps, v):
-    return min(range(len(reps)), key=lambda i: abs(reps[i] - v))
-
-
 def chart_swatches(page, words, seps, product_range, sections):
     swatches = [
         r for r in page.rects
@@ -227,43 +213,6 @@ def chart_layout(colors):
         sections[-1]["rows"][-1].append(c["code"])
         prev = c["order"]
     return sections
-
-
-def combinations(page, words, seps):
-    """Highlight / Base / Shadow triplets, one list of rows per printed block."""
-    squares = [
-        r for r in page.rects
-        if r["fill"] and 15 <= r["width"] <= 30 and abs(r["width"] - r["height"]) < 0.5
-    ]
-    cells = []
-    for r in squares:
-        center = (r["x0"] + r["x1"]) / 2
-        label = [
-            w for w in words
-            if CODE_RE.match(w["text"]) and 0 <= w["top"] - r["bottom"] < 8
-            and abs((w["x0"] + w["x1"]) / 2 - center) < r["width"] / 2
-        ]
-        if len(label) == 1:
-            cells.append((r, label[0]["text"]))
-    columns = cluster([r["x0"] for r, _ in cells], 2)
-    rows = cluster([r["top"] for r, _ in cells], 3)
-    if len(columns) % 3:
-        raise ValueError(f"combination columns not in H/B/S groups: {len(columns)}")
-    grid = {}
-    for r, code in cells:
-        grid[(nearest(rows, r["top"]), nearest(columns, r["x0"]))] = (code, r)
-    blocks = []
-    for first in range(0, len(columns), 3):
-        block = []
-        for row in range(len(rows)):
-            triplet = [grid.get((row, first + i)) for i in range(3)]
-            if not any(triplet):
-                continue
-            if not all(triplet):
-                raise ValueError(f"incomplete combination in row {row}, column {first}")
-            block.append(triplet)
-        blocks.append(block)
-    return blocks
 
 
 def cmyk_percent(cmyk):
@@ -325,19 +274,7 @@ def process(path, product_range, sections):
             "cielab": cmyk_to_cielab(cmyk, to_lab),
         }
 
-    blocks = combinations(page, words, seps)
-    if [len(b) for b in blocks] != EXPECTED_COMBINATIONS[product_range]:
-        raise ValueError(f"{product_range}: unexpected combination blocks")
-    for block in blocks:
-        for triplet in block:
-            for code, square in triplet:
-                if code not in by_code:
-                    raise ValueError(f"combination uses unknown color {code}")
-                # The combination swatch must be the same ink as the chart swatch.
-                if cmyk_percent(fill_to_cmyk(square["non_stroking_color"], seps)) != by_code[code]["cmyk"]:
-                    raise ValueError(f"combination swatch for {code} differs from chart")
-    combo_rows = [[[code for code, _ in t] for t in block] for block in blocks]
-    return by_code, layout, combo_rows
+    return by_code, layout
 
 
 def main(game_pdf, model_pdf, out_dir):
@@ -347,7 +284,7 @@ def main(game_pdf, model_pdf, out_dir):
         (game_pdf, "Game Color", GAME_SECTIONS, "gameColor"),
         (model_pdf, "Model Color", MODEL_SECTIONS, "modelColor"),
     ):
-        by_code, layout, combo_rows = process(path, product_range, sections)
+        by_code, layout = process(path, product_range, sections)
         if colors.keys() & by_code.keys():
             raise ValueError("duplicate codes across ranges")
         colors.update(by_code)
@@ -355,12 +292,6 @@ def main(game_pdf, model_pdf, out_dir):
             "title": f"{product_range} chart",
             "source": SOURCES[product_range],
             "sections": layout,
-        }
-        layouts[f"{key}Combinations"] = {
-            "title": f"{product_range} combinations",
-            "source": SOURCES[product_range],
-            "columns": ["highlight", "base", "shadow"],
-            "sections": [{"rows": rows} for rows in combo_rows],
         }
 
     vallejo_data.update(out_dir, set(SOURCES), colors, layouts)

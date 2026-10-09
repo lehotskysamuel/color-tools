@@ -1,8 +1,17 @@
+import { CUSTOM_SET_LAYOUTS, SET_LAYOUTS } from '../paints/sets';
 import { LAYOUTS, type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
 import { type Store, pickPaint } from '../state';
 import type { HoverHandler } from './slicePlot';
 
 const STORAGE_KEY = 'color-tools.vallejo-layout';
+
+/** The select's option groups. */
+const GROUPS: [label: string, layouts: readonly PaintLayout[]][] = [
+  ['Charts and images', LAYOUTS],
+  ['Paint sets', SET_LAYOUTS],
+  ['Custom sets', CUSTOM_SET_LAYOUTS],
+];
+const ALL_LAYOUTS = GROUPS.flatMap(([, layouts]) => layouts);
 
 export interface SwatchPaneElements {
   grid: HTMLElement;
@@ -16,9 +25,9 @@ export interface SwatchPaneElements {
 }
 
 /**
- * Paints laid out the way their makers print them. The shown paints are drawn as dots in
- * the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which moves both
- * slices through it. A new layout starts with all of its paints shown.
+ * Paints laid out the way their makers print them, or the paints of a set. The shown paints are drawn as dots in
+ * the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which moves both slices
+ * through it. A new layout starts with all of its paints shown.
  */
 export class SwatchPane {
   onHover: HoverHandler | null = null;
@@ -41,11 +50,16 @@ export class SwatchPane {
     this.grid = grid;
     this.note = note;
     this.count = count;
-    for (const layout of LAYOUTS) select.add(new Option(layout.title, layout.id));
-    this.layout = LAYOUTS.find((l) => l.id === readStoredLayout()) ?? LAYOUTS[0];
+    for (const [label, layouts] of GROUPS) {
+      const group = document.createElement('optgroup');
+      group.label = label;
+      for (const layout of layouts) group.append(new Option(layout.title, layout.id));
+      select.append(group);
+    }
+    this.layout = ALL_LAYOUTS.find((l) => l.id === readStoredLayout()) ?? ALL_LAYOUTS[0];
     select.value = this.layout.id;
     select.addEventListener('change', () => {
-      this.layout = LAYOUTS.find((l) => l.id === select.value) ?? LAYOUTS[0];
+      this.layout = ALL_LAYOUTS.find((l) => l.id === select.value) ?? ALL_LAYOUTS[0];
       storeLayout(this.layout.id);
       this.render();
     });
@@ -112,7 +126,7 @@ export class SwatchPane {
   }
 
   private render(): void {
-    const { sections, columns } = this.layout;
+    const { sections, notInCatalog } = this.layout;
     const grid = this.grid;
     grid.replaceChildren();
     this.sectionIds = sections.map((s) => s.rows.flat());
@@ -122,35 +136,32 @@ export class SwatchPane {
       this.onHover?.(null, 0, 0);
     }
 
-    if (columns) {
-      // Combination tables: each printed block is a column of [highlight, base, shadow] rows. The blocks sit
-      // side by side as on the chart when the pane is wide enough, and wrap when it is not (style.css).
-      const blocks = document.createElement('div');
-      blocks.className = 'swatch-blocks';
-      blocks.style.setProperty('--triplet', String(columns.length));
-      for (const section of sections) {
-        const block = document.createElement('div');
-        block.className = 'swatch-block';
-        for (const id of section.rows.flat()) block.append(this.swatch(id));
-        blocks.append(block);
-      }
-      grid.append(blocks);
-      const triplet = columns.join(', ').replace(/, (?=[^,]*$)/, ' and ');
-      this.note.textContent = `Each row is a ${triplet} triplet. Order as printed in ${this.layout.source}.`;
+    if (notInCatalog) {
+      // Sets have no printed order: the paints flow in code order, as many to a row as fit (style.css). A custom
+      // set shows each of its sets under its own heading.
+      sections.forEach((section, i) => {
+        if (section.title && sections.length > 1) grid.append(heading(i, section.title));
+        const chart = document.createElement('div');
+        chart.className = 'swatch-chart swatch-flow';
+        for (const id of section.rows.flat()) chart.append(this.swatch(id));
+        grid.append(chart);
+      });
+      const set = sections.length > 1 ? 'sets' : 'set';
+      // "72.052 Silver (metallic)", but not "72.650 Gloss Polyurethane Varnish (varnish)".
+      const missing = notInCatalog.map(({ code, name, kind }) =>
+        name.toLowerCase().includes(kind.toLowerCase()) ? `${code} ${name}` : `${code} ${name} (${kind})`,
+      );
+      this.note.textContent =
+        `The paints of ${this.layout.source}, by code.` +
+        (missing.length
+          ? ` Also in the ${set}, but not in the data: ${missing.join(', ').replace(/, (?=[^,]*$)/, ' and ')}.`
+          : '');
     } else {
       // Charts: sections stacked, every printed row starting in the first column. The heading goes above its
       // section's chart, so the swatches alone sit on the stage gray.
       const width = Math.max(...sections.flatMap((s) => s.rows.map((row) => row.length)));
       sections.forEach((section, i) => {
-        if (section.title && sections.length > 1) {
-          const heading = document.createElement('div');
-          heading.className = 'swatch-heading';
-          const title = document.createElement('h3');
-          title.className = 'eyebrow';
-          title.textContent = section.title;
-          heading.append(title, sectionSelect(i, 'all', section.title), sectionSelect(i, 'none', section.title));
-          grid.append(heading);
-        }
+        if (section.title && sections.length > 1) grid.append(heading(i, section.title));
         const chart = document.createElement('div');
         chart.className = 'swatch-chart';
         chart.style.gridTemplateColumns = `repeat(${width}, minmax(0, var(--swatch-max)))`;
@@ -181,13 +192,24 @@ export class SwatchPane {
     return button;
   }
 
-  /** Outlines every swatch of the picked paint; combination tables list some paints several times. */
+  /** Outlines every swatch of the picked paint; a custom set can hold a paint in more than one of its sets. */
   private markPicked(): void {
     const id = this.store.get().pickPaint?.id;
     for (const button of this.grid.querySelectorAll<HTMLButtonElement>('.swatch')) {
       button.classList.toggle('is-picked', button.dataset.id === id);
     }
   }
+}
+
+/** A section's title with its select-all and select-none buttons. */
+function heading(section: number, title: string): HTMLDivElement {
+  const heading = document.createElement('div');
+  heading.className = 'swatch-heading';
+  const h3 = document.createElement('h3');
+  h3.className = 'eyebrow';
+  h3.textContent = title;
+  heading.append(h3, sectionSelect(section, 'all', title), sectionSelect(section, 'none', title));
+  return heading;
 }
 
 function sectionSelect(section: number, select: 'all' | 'none', title: string): HTMLButtonElement {
