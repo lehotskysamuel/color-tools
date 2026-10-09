@@ -1,67 +1,83 @@
-import {
-  JND,
-  type Vec3,
-  deltaEOK,
-  formatOklch,
-  isOklabInGamut,
-  oklabToHex,
-  oklabToOklch,
-} from '../color/oklab';
+import { JND, type Vec3, deltaEOK, formatOklch, isOklabInGamut, oklabToHex, oklabToOklch } from '../color/oklab';
 import { type Paint, paintLabel } from '../paints/vallejo';
 import type { Store } from '../state';
 import type { HoverHandler } from './slicePlot';
 
-/**
- * The hover tooltip shared by the views and the paint swatches: the color's OKLCh, hex and ΔE_OK from the picked
- * color. Builds its element and returns the handler the views call; it also writes the hovered color to the store.
- */
-export function hoverTooltip(store: Store): HoverHandler {
-  const tooltip = document.createElement('div');
-  tooltip.className = 'tooltip';
-  tooltip.setAttribute('role', 'status');
-  tooltip.hidden = true;
-  const tipSwatch = div('tooltip-swatch');
-  const tipName = div('tooltip-name');
-  const tipMain = div('mono');
-  const tipSub = div('mono tooltip-sub');
-  const text = div('tooltip-text');
-  text.append(tipName, tipMain, tipSub);
-  tooltip.append(tipSwatch, text);
-  document.body.append(tooltip);
+export interface TooltipElements {
+  root: HTMLElement;
+  name: HTMLElement;
+  swatch: HTMLElement;
+  main: HTMLElement;
+  sub: HTMLElement;
+}
 
-  return (lab: Vec3 | null, clientX: number, clientY: number, paint?: Paint) => {
-    store.set({ hover: lab });
-    if (!lab) {
-      tooltip.hidden = true;
-      return;
-    }
-    tipName.textContent = paint ? paintLabel(paint) : '';
-    tipName.hidden = !paint;
+/** The hover tooltip: a color's OKLCh and hex, and the paint's name when the color is a paint. */
+export class Tooltip {
+  constructor(private readonly els: TooltipElements) {}
+
+  /** `note` is appended to the hex line; colors outside sRGB that are not paints show no hex and no note. */
+  show(lab: Vec3, clientX: number, clientY: number, paint?: Paint, note?: string): void {
+    const { root, name, swatch, main, sub } = this.els;
+    name.textContent = paint ? paintLabel(paint) : '';
+    name.hidden = !paint;
     const inGamut = isOklabInGamut(lab);
-    tipMain.textContent = formatOklch(oklabToOklch(lab));
-    const dE = deltaEOK(lab, store.get().pick);
-    const fromPick = `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`;
+    main.textContent = formatOklch(oklabToOklch(lab));
     if (inGamut || paint) {
       // A paint outside sRGB still exists; show it as its nearest screen color.
       const hex = paint ? paint.display : oklabToHex(lab);
-      tipSwatch.style.background = hex;
-      tipSwatch.style.visibility = 'visible';
-      tipSub.textContent = `${inGamut ? hex : `outside sRGB, shown as ${hex}`} · ${fromPick}`;
+      swatch.style.background = hex;
+      swatch.style.visibility = 'visible';
+      sub.textContent = `${inGamut ? hex : `outside sRGB, shown as ${hex}`}${note ? ` · ${note}` : ''}`;
     } else {
-      tipSwatch.style.visibility = 'hidden';
-      tipSub.textContent = 'Outside sRGB. No screen color here.';
+      swatch.style.visibility = 'hidden';
+      sub.textContent = 'Outside sRGB. No screen color here.';
     }
-    tooltip.hidden = false;
+    root.hidden = false;
     const pad = 14;
-    const { width, height } = tooltip.getBoundingClientRect();
+    const { width, height } = root.getBoundingClientRect();
     const x = clientX + pad + width > window.innerWidth ? clientX - pad - width : clientX + pad;
     const y = clientY + pad + height > window.innerHeight ? clientY - pad - height : clientY + pad;
-    tooltip.style.transform = `translate(${Math.max(4, x)}px, ${Math.max(4, y)}px)`;
-  };
+    root.style.transform = `translate(${Math.max(4, x)}px, ${Math.max(4, y)}px)`;
+  }
+
+  hide(): void {
+    this.els.root.hidden = true;
+  }
 }
 
-function div(className: string): HTMLDivElement {
-  const el = document.createElement('div');
-  el.className = className;
-  return el;
+/** Builds the tooltip's elements at the end of the page. */
+export function createTooltip(): Tooltip {
+  const div = (className: string) => {
+    const el = document.createElement('div');
+    el.className = className;
+    return el;
+  };
+  const root = div('tooltip');
+  root.setAttribute('role', 'status');
+  root.hidden = true;
+  const swatch = div('tooltip-swatch');
+  const name = div('tooltip-name');
+  const main = div('mono');
+  const sub = div('mono tooltip-sub');
+  const text = div('tooltip-text');
+  text.append(name, main, sub);
+  root.append(swatch, text);
+  document.body.append(root);
+  return new Tooltip({ root, name, swatch, main, sub });
+}
+
+/**
+ * The hover handler of the views and the paint swatches: writes the hovered color to the store and shows it in the
+ * tooltip with its ΔE_OK from the picked color.
+ */
+export function pickHoverHandler(store: Store, tooltip: Tooltip): HoverHandler {
+  return (lab, clientX, clientY, paint) => {
+    store.set({ hover: lab });
+    if (!lab) {
+      tooltip.hide();
+      return;
+    }
+    const dE = deltaEOK(lab, store.get().pick);
+    tooltip.show(lab, clientX, clientY, paint, `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`);
+  };
 }

@@ -9,35 +9,20 @@ import {
 } from './color/oklab';
 import { onSavedSetsChange } from './paints/customSets';
 import { paintLabel } from './paints/vallejo';
-import { type CutMode, createStore } from './state';
+import { type CutMode, createStore, initialState } from './state';
+import { initTabs } from './tabs';
 import { onThemeChange } from './theme';
 import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
 import { LightnessSlice } from './views/lightnessSlice';
 import { SHAPE_CONTROLS, bindSegmented } from './views/segmented';
+import { SetComparator } from './views/setComparator';
 import { SwatchPane } from './views/swatchPane';
-import { hoverTooltip } from './views/tooltip';
+import { createTooltip, pickHoverHandler } from './views/tooltip';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
-// Start on the blue / amber hue plane: its two halves peak at very different lightness,
-// which is the clearest picture of why HSL's "same lightness" is misleading.
-const START_H = 264;
-// The first pick is the neutral gray at mid lightness. It lies on the gray axis, so it is in every hue slice.
-const START_L = 0.5;
-const store = createStore({
-  L: START_L,
-  h: START_H,
-  pick: [START_L, 0, 0],
-  pickPaint: null,
-  paints: [],
-  hover: null,
-  cut: 'whole',
-  gamut: 'pointer',
-  gamutStyle: 'wireframe',
-  hull: true,
-  hullStyle: 'solid',
-});
+const store = createStore(initialState());
 
 const lightness = new LightnessSlice(store, $('b1-stat'));
 const hue = new HueSlice(store, $('b2-stat'));
@@ -45,7 +30,7 @@ $('b1-host').appendChild(lightness.canvas);
 $('b2-host').appendChild(hue.canvas);
 
 const solidHost = $('solid-host');
-const solid = new GamutSolid(solidHost, store, lightness.image, hue.image, $('a-stat'));
+const solid = new GamutSolid(solidHost, store, lightness.image, hue.image, { stat: $('a-stat') });
 lightness.onImageChange = () => solid.lightnessImageChanged();
 hue.onImageChange = () => solid.hueImageChanged();
 
@@ -112,8 +97,10 @@ store.subscribe((_s, changed) => {
 });
 renderControls();
 
-// Hover tooltip, shared by the three views and the paint swatches
-const showHover = hoverTooltip(store);
+// Hover tooltip, shared by the three views, the paint swatches and the set comparator
+const tooltip = createTooltip();
+const showHover = pickHoverHandler(store, tooltip);
+
 lightness.onHover = showHover;
 hue.onHover = showHover;
 solid.onHover = showHover;
@@ -124,6 +111,7 @@ const views = document.querySelector<HTMLElement>('.views')!;
 
 function layout(): void {
   const width = $('b2-host').clientWidth;
+  if (width === 0) return; // the deep-dive tab is hidden
   // One column when the views area is narrow, two or three otherwise (container queries in style.css).
   const stacked = getComputedStyle(views).gridTemplateColumns.split(' ').length < 2;
   const b1Margins = lightness.sizeAt(0);
@@ -162,4 +150,20 @@ onThemeChange(() => {
 document.fonts?.ready.then(() => {
   lightness.refreshTheme();
   hue.refreshTheme();
+});
+
+// Tabs. The comparator is built the first time it is shown: it computes every selected set's coverage and
+// creates a WebGL context per set.
+let comparator: SetComparator | null = null;
+initTabs((tab) => {
+  tooltip.hide();
+  if (tab !== 'compare') return;
+  comparator ??= new SetComparator(
+    {
+      grid: $('compare-grid'),
+      add: $<HTMLButtonElement>('compare-add'),
+      reset: $<HTMLButtonElement>('compare-reset'),
+    },
+    tooltip,
+  );
 });

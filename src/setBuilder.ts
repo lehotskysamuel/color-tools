@@ -12,11 +12,11 @@ import {
 import { BUILT_SETS, CUSTOM_SETS, SET_KEYS, dataSetColors } from './paints/sets';
 import { type Paint, PAINTS, paintLabel } from './paints/vallejo';
 import { Selection } from './selection';
-import { createStore } from './state';
+import { createStore, initialState } from './state';
 import { GamutSolid } from './views/gamutSolid';
 import { SHAPE_CONTROLS, bindSegmented } from './views/segmented';
 import { SwatchPane, type SwatchPaneElements } from './views/swatchPane';
-import { hoverTooltip } from './views/tooltip';
+import { createTooltip, pickHoverHandler } from './views/tooltip';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -24,21 +24,9 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const DRAFT_KEY = 'color-tools.set-builder.draft';
 const UNTITLED = 'Untitled set';
 
-const store = createStore({
-  L: 0.5,
-  h: 264,
-  pick: [0.5, 0, 0],
-  pickPaint: null,
-  paints: [],
-  hover: null,
-  cut: 'whole',
-  gamut: 'pointer',
-  gamutStyle: 'wireframe',
-  hull: true,
-  hullStyle: 'solid',
-});
+const store = createStore(initialState());
 const selection = new Selection();
-const showHover = hoverTooltip(store);
+const showHover = pickHoverHandler(store, createTooltip());
 
 // Three paint columns that share the selection, each with its own layout, starting on the first three charts.
 const panes = [...document.querySelectorAll<HTMLElement>('[data-pane]')].map((host, i) => {
@@ -80,7 +68,7 @@ function paneElements(host: HTMLElement, i: number): SwatchPaneElements {
 // The solid. It has no cut here, so its slice caps stay hidden and need no images.
 const solidHost = $('solid-host');
 const blank = () => document.createElement('canvas');
-const solid = new GamutSolid(solidHost, store, blank(), blank(), $('solid-stat'));
+const solid = new GamutSolid(solidHost, store, blank(), blank(), { stat: $('solid-stat') });
 solid.onHover = showHover;
 $('reset-view').addEventListener('click', () => solid.resetView());
 

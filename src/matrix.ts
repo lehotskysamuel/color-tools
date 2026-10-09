@@ -1,8 +1,7 @@
 import './style.css';
 import { deltaEOK } from './color/oklab';
-import { customSetLayouts } from './paints/customSets';
-import { SET_LAYOUTS } from './paints/sets';
-import { LAYOUTS, type Paint, type PaintLayout, PAINTS, paintLabel } from './paints/vallejo';
+import { appendLayoutGroups } from './paints/customSets';
+import { type Paint, PAINTS, paintLabel } from './paints/vallejo';
 import { DifferenceMatrix, formatD, formatJ } from './views/diffMatrix';
 
 const STORAGE_KEY = 'color-tools.matrix-layout';
@@ -16,19 +15,8 @@ const select = $<HTMLSelectElement>('layout-select');
 const count = $('matrix-count');
 
 // All paints, then the same groups of layouts as the atlas's paint pane.
-const GROUPS: [string, readonly PaintLayout[]][] = [
-  ['Charts and images', LAYOUTS],
-  ['Paint sets', SET_LAYOUTS],
-  ['Custom sets', customSetLayouts()],
-];
 select.add(new Option('All paints', ALL_PAINTS));
-for (const [label, layouts] of GROUPS) {
-  const group = document.createElement('optgroup');
-  group.label = label;
-  for (const layout of layouts) group.append(new Option(layout.title, layout.id));
-  select.append(group);
-}
-const ALL_LAYOUTS = GROUPS.flatMap(([, layouts]) => layouts);
+const ALL_LAYOUTS = appendLayoutGroups(select);
 
 /**
  * By code ascending. Every code is "NN.NNN", so comparing them as strings orders them by number. Paints

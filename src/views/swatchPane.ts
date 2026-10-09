@@ -1,18 +1,8 @@
-import { customSetLayouts } from '../paints/customSets';
-import { SET_LAYOUTS } from '../paints/sets';
-import { LAYOUTS, type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
+import { layoutGroups } from '../paints/customSets';
+import { type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
 import { Selection } from '../selection';
 import { type Store, pickPaint } from '../state';
 import type { HoverHandler } from './slicePlot';
-
-/** The select's option groups. Custom sets include those saved in this browser, so they are read each time. */
-function layoutGroups(): [label: string, layouts: readonly PaintLayout[]][] {
-  return [
-    ['Charts and images', LAYOUTS],
-    ['Paint sets', SET_LAYOUTS],
-    ['Custom sets', customSetLayouts()],
-  ];
-}
 
 export interface SwatchPaneElements {
   grid: HTMLElement;

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>OKLCh Atlas</title>
-    <meta name="description" content="The sRGB gamut and Pointer's gamut of real surface colors in OKLCh: a 3D solid plus lightness and hue slices where distance on screen matches perceived color difference, with Vallejo and Kimera paint swatches and how much of each gamut they cover." />
+    <meta name="description" content="The sRGB gamut and Pointer's gamut of real surface colors in OKLCh: a 3D solid plus lightness and hue slices where distance on screen matches perceived color difference, with Vallejo and Kimera paint swatches and how much of each gamut they cover, and a side-by-side comparison of paint sets." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,167 +20,215 @@
           <a href="./matrix.html">Difference matrix</a>
           <a href="./set-builder.html">Set Builder</a>
         </nav>
-        <h1>OKLCh Atlas</h1>
+        <div class="title-bar">
+          <h1>OKLCh Atlas</h1>
+          <div class="tabs" role="tablist" aria-label="Views">
+            <button type="button" class="tab" role="tab" id="tab-deepdive" data-tab="deepdive" aria-controls="page-deepdive">
+              Set deep-dive
+            </button>
+            <button type="button" class="tab" role="tab" id="tab-compare" data-tab="compare" aria-controls="page-compare">
+              Set comparator
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="tab-page" id="page-deepdive" role="tabpanel" aria-labelledby="tab-deepdive">
         <p class="lede">
           Every color an sRGB screen can show, placed in OKLab so that distance on the page matches how different two
           colors look. One unit is the same perceptual step on every axis of every view. Pick a paint to see where it
           sits, and compare the paints' hull with Pointer's gamut of real surface colors.
         </p>
-      </header>
 
-      <div class="workspace">
-        <section class="readout" aria-label="Picked color">
-          <div class="readout-swatch" id="pick-swatch"></div>
-          <div class="readout-values">
-            <span class="readout-top">
-              <span class="eyebrow">Picked<span class="narrow-only" id="pick-tap-hint"> · tap any view to change</span></span>
-              <output class="readout-paint" id="pick-paint"></output>
-            </span>
-            <output class="mono readout-main" id="pick-oklch"></output>
-            <span class="mono readout-sub"><output id="pick-hex"></output> · <output id="pick-oklab"></output></span>
-          </div>
-          <p class="readout-hint">Click a color or a paint dot in any view to pick it. Both slices move through it.</p>
-        </section>
+        <div class="workspace">
+          <section class="readout" aria-label="Picked color">
+            <div class="readout-swatch" id="pick-swatch"></div>
+            <div class="readout-values">
+              <span class="readout-top">
+                <span class="eyebrow">Picked<span class="narrow-only" id="pick-tap-hint"> · tap any view to change</span></span>
+                <output class="readout-paint" id="pick-paint"></output>
+              </span>
+              <output class="mono readout-main" id="pick-oklch"></output>
+              <span class="mono readout-sub"><output id="pick-hex"></output> · <output id="pick-oklab"></output></span>
+            </div>
+            <p class="readout-hint">Click a color or a paint dot in any view to pick it. Both slices move through it.</p>
+          </section>
 
-        <aside class="swatch-pane" aria-labelledby="paints-title">
-          <header class="panel-head">
-            <h2 id="paints-title">Paints</h2>
-          </header>
-          <div class="controls">
-            <label class="slider-label" for="layout-select">Layout</label>
-            <select class="select" id="layout-select"></select>
-          </div>
-          <div class="controls">
-            <button type="button" class="button" id="show-all">Select all</button>
-            <button type="button" class="button" id="show-none">Select none</button>
-            <output class="stat mono" id="swatch-count"></output>
-          </div>
-          <div class="swatch-grid" id="swatch-grid"></div>
-          <p class="stat">
-            Click a paint to show or hide it as a dot in the views. Showing a paint also picks it, so double-click a
-            shown paint to pick it. The slices show paints within ΔE<sub>OK</sub> 0.04 of their plane, fainter the
-            farther away. The solid draws every dot on top; orbit it to judge depth.
-          </p>
-          <p class="stat" id="swatch-note"></p>
-          <p class="stat">
-            Game Color and Model Color are Vallejo's printed charts: the print CMYK converted to CIELAB, which can
-            lie outside sRGB (those paints show as the nearest screen color). Squidmar Color is sampled from
-            marketing images. Kimera Kolors are measured dried paint, from artistpigments.org (CC BY-NC 4.0).
-          </p>
-        </aside>
+          <aside class="swatch-pane" aria-labelledby="paints-title">
+            <header class="panel-head">
+              <h2 id="paints-title">Paints</h2>
+            </header>
+            <div class="controls">
+              <label class="slider-label" for="layout-select">Layout</label>
+              <select class="select" id="layout-select"></select>
+            </div>
+            <div class="controls">
+              <button type="button" class="button" id="show-all">Select all</button>
+              <button type="button" class="button" id="show-none">Select none</button>
+              <output class="stat mono" id="swatch-count"></output>
+            </div>
+            <div class="swatch-grid" id="swatch-grid"></div>
+            <p class="stat">
+              Click a paint to show or hide it as a dot in the views. Showing a paint also picks it, so double-click a
+              shown paint to pick it. The slices show paints within ΔE<sub>OK</sub> 0.04 of their plane, fainter the
+              farther away. The solid draws every dot on top; orbit it to judge depth.
+            </p>
+            <p class="stat" id="swatch-note"></p>
+            <p class="stat">
+              Game Color and Model Color are Vallejo's printed charts: the print CMYK converted to CIELAB, which can
+              lie outside sRGB (those paints show as the nearest screen color). Squidmar Color is sampled from
+              marketing images. Kimera Kolors are measured dried paint, from artistpigments.org (CC BY-NC 4.0).
+            </p>
+          </aside>
 
-        <main class="views-host">
-          <div class="views">
-            <section class="panel" aria-labelledby="a-title">
-              <header class="panel-head">
-                <span class="tag">A</span>
-                <h2 id="a-title">Gamut solid</h2>
-                <button type="button" class="button panel-head-action" id="reset-view">Reset view</button>
-              </header>
-              <p class="panel-note">
-                A gamut as a solid in OKLab, lightness pointing up: Pointer's gamut of real surface colors, or every
-                sRGB color. Drag to orbit, scroll to zoom.
-              </p>
-              <div class="controls">
-                <fieldset class="segmented" id="cut-mode">
-                  <legend class="sr-only">Cut the solid</legend>
-                  <input type="radio" name="cut" id="cut-whole" value="whole" />
-                  <label for="cut-whole">Whole</label>
-                  <input type="radio" name="cut" id="cut-lightness" value="lightness" />
-                  <label for="cut-lightness">Cut at L</label>
-                  <input type="radio" name="cut" id="cut-hue" value="hue" />
-                  <label for="cut-hue">Cut at hue</label>
-                  <input type="radio" name="cut" id="cut-wedge" value="wedge" />
-                  <label for="cut-wedge">Wedge</label>
-                </fieldset>
-              </div>
-              <div class="plot plot-solid" id="solid-host"></div>
-              <div class="panel-foot">
-                <div class="shape-controls">
-                  <div class="shape-group">
-                    <span class="eyebrow" aria-hidden="true">Color space</span>
-                    <fieldset class="segmented" id="gamut">
-                      <legend class="sr-only">Color space</legend>
-                      <input type="radio" name="gamut" id="gamut-srgb" value="srgb" />
-                      <label for="gamut-srgb">sRGB</label>
-                      <input type="radio" name="gamut" id="gamut-pointer" value="pointer" />
-                      <label for="gamut-pointer">Pointer's</label>
-                    </fieldset>
-                    <fieldset class="segmented" id="gamut-style">
-                      <legend class="sr-only">Draw the color space as</legend>
-                      <input type="radio" name="gamut-style" id="gamut-wireframe" value="wireframe" />
-                      <label for="gamut-wireframe">Wireframe</label>
-                      <input type="radio" name="gamut-style" id="gamut-solid" value="solid" />
-                      <label for="gamut-solid">Solid</label>
-                    </fieldset>
-                  </div>
-                  <div class="shape-group">
-                    <span class="eyebrow" aria-hidden="true">Paint hull</span>
-                    <fieldset class="segmented" id="hull">
-                      <legend class="sr-only">Hull of the shown paints</legend>
-                      <input type="radio" name="hull" id="hull-on" value="on" />
-                      <label for="hull-on">On</label>
-                      <input type="radio" name="hull" id="hull-off" value="off" />
-                      <label for="hull-off">Off</label>
-                    </fieldset>
-                    <fieldset class="segmented" id="hull-style">
-                      <legend class="sr-only">Draw the paint hull as</legend>
-                      <input type="radio" name="hull-style" id="hull-wireframe" value="wireframe" />
-                      <label for="hull-wireframe">Wireframe</label>
-                      <input type="radio" name="hull-style" id="hull-solid" value="solid" />
-                      <label for="hull-solid">Solid</label>
-                    </fieldset>
-                  </div>
-                </div>
-                <p class="stat" id="a-stat"></p>
-                <p class="stat">
-                  The paint hull is the smallest convex solid around the shown paints. The cut faces are slices B.1
-                  and B.2; dashed lines show where the cut goes through the hull. The dark line is the neutral axis.
+          <main class="views-host">
+            <div class="views">
+              <section class="panel" aria-labelledby="a-title">
+                <header class="panel-head">
+                  <span class="tag">A</span>
+                  <h2 id="a-title">Gamut solid</h2>
+                  <button type="button" class="button panel-head-action" id="reset-view">Reset view</button>
+                </header>
+                <p class="panel-note">
+                  A gamut as a solid in OKLab, lightness pointing up: Pointer's gamut of real surface colors, or every
+                  sRGB color. Drag to orbit, scroll to zoom.
                 </p>
-              </div>
-            </section>
+                <div class="controls">
+                  <fieldset class="segmented" id="cut-mode">
+                    <legend class="sr-only">Cut the solid</legend>
+                    <input type="radio" name="cut" id="cut-whole" value="whole" />
+                    <label for="cut-whole">Whole</label>
+                    <input type="radio" name="cut" id="cut-lightness" value="lightness" />
+                    <label for="cut-lightness">Cut at L</label>
+                    <input type="radio" name="cut" id="cut-hue" value="hue" />
+                    <label for="cut-hue">Cut at hue</label>
+                    <input type="radio" name="cut" id="cut-wedge" value="wedge" />
+                    <label for="cut-wedge">Wedge</label>
+                  </fieldset>
+                </div>
+                <div class="plot plot-solid" id="solid-host"></div>
+                <div class="panel-foot">
+                  <div class="shape-controls">
+                    <div class="shape-group">
+                      <span class="eyebrow" aria-hidden="true">Color space</span>
+                      <fieldset class="segmented" id="gamut">
+                        <legend class="sr-only">Color space</legend>
+                        <input type="radio" name="gamut" id="gamut-srgb" value="srgb" />
+                        <label for="gamut-srgb">sRGB</label>
+                        <input type="radio" name="gamut" id="gamut-pointer" value="pointer" />
+                        <label for="gamut-pointer">Pointer's</label>
+                      </fieldset>
+                      <fieldset class="segmented" id="gamut-style">
+                        <legend class="sr-only">Draw the color space as</legend>
+                        <input type="radio" name="gamut-style" id="gamut-wireframe" value="wireframe" />
+                        <label for="gamut-wireframe">Wireframe</label>
+                        <input type="radio" name="gamut-style" id="gamut-solid" value="solid" />
+                        <label for="gamut-solid">Solid</label>
+                      </fieldset>
+                    </div>
+                    <div class="shape-group">
+                      <span class="eyebrow" aria-hidden="true">Paint hull</span>
+                      <fieldset class="segmented" id="hull">
+                        <legend class="sr-only">Hull of the shown paints</legend>
+                        <input type="radio" name="hull" id="hull-on" value="on" />
+                        <label for="hull-on">On</label>
+                        <input type="radio" name="hull" id="hull-off" value="off" />
+                        <label for="hull-off">Off</label>
+                      </fieldset>
+                      <fieldset class="segmented" id="hull-style">
+                        <legend class="sr-only">Draw the paint hull as</legend>
+                        <input type="radio" name="hull-style" id="hull-wireframe" value="wireframe" />
+                        <label for="hull-wireframe">Wireframe</label>
+                        <input type="radio" name="hull-style" id="hull-solid" value="solid" />
+                        <label for="hull-solid">Solid</label>
+                      </fieldset>
+                    </div>
+                  </div>
+                  <p class="stat" id="a-stat"></p>
+                  <p class="stat">
+                    The paint hull is the smallest convex solid around the shown paints. The cut faces are slices B.1
+                    and B.2; dashed lines show where the cut goes through the hull. The dark line is the neutral axis.
+                  </p>
+                </div>
+              </section>
 
-            <section class="panel" aria-labelledby="b1-title">
-              <header class="panel-head">
-                <span class="tag">B.1</span>
-                <h2 id="b1-title">Lightness slice</h2>
-              </header>
-              <p class="panel-note">A horizontal cut at one lightness. Hue is the angle, chroma the distance from the gray center.</p>
-              <div class="controls">
-                <label class="slider-label" for="l-slider">Lightness</label>
-                <input type="range" id="l-slider" min="0" max="1" step="0.005" />
-                <output class="mono slider-value" id="l-value" for="l-slider"></output>
-              </div>
-              <div class="plot" id="b1-host"></div>
-              <p class="stat" id="b1-stat"></p>
-            </section>
+              <section class="panel" aria-labelledby="b1-title">
+                <header class="panel-head">
+                  <span class="tag">B.1</span>
+                  <h2 id="b1-title">Lightness slice</h2>
+                </header>
+                <p class="panel-note">A horizontal cut at one lightness. Hue is the angle, chroma the distance from the gray center.</p>
+                <div class="controls">
+                  <label class="slider-label" for="l-slider">Lightness</label>
+                  <input type="range" id="l-slider" min="0" max="1" step="0.005" />
+                  <output class="mono slider-value" id="l-value" for="l-slider"></output>
+                </div>
+                <div class="plot" id="b1-host"></div>
+                <p class="stat" id="b1-stat"></p>
+              </section>
 
-            <section class="panel" aria-labelledby="b2-title">
-              <header class="panel-head">
-                <span class="tag">B.2</span>
-                <h2 id="b2-title">Hue slice</h2>
-              </header>
-              <p class="panel-note">A vertical cut through the gray axis. Hue h on the right, its complement h + 180° on the left.</p>
-              <div class="controls">
-                <label class="slider-label" for="h-slider">Hue</label>
-                <input type="range" id="h-slider" min="0" max="359" step="1" />
-                <output class="mono slider-value" id="h-value" for="h-slider"></output>
-              </div>
-              <div class="plot" id="b2-host"></div>
-              <p class="stat" id="b2-stat"></p>
-            </section>
-          </div>
-        </main>
+              <section class="panel" aria-labelledby="b2-title">
+                <header class="panel-head">
+                  <span class="tag">B.2</span>
+                  <h2 id="b2-title">Hue slice</h2>
+                </header>
+                <p class="panel-note">A vertical cut through the gray axis. Hue h on the right, its complement h + 180° on the left.</p>
+                <div class="controls">
+                  <label class="slider-label" for="h-slider">Hue</label>
+                  <input type="range" id="h-slider" min="0" max="359" step="1" />
+                  <output class="mono slider-value" id="h-value" for="h-slider"></output>
+                </div>
+                <div class="plot" id="b2-host"></div>
+                <p class="stat" id="b2-stat"></p>
+              </section>
+            </div>
+          </main>
+
+          <footer class="notes">
+            <p>
+              ΔE<sub>OK</sub> of about 0.02 is one just-noticeable difference. Hatched areas are outside sRGB: no screen
+              color exists there. Every color sits on the same middle gray on purpose, in both themes, because a tinted,
+              bright or dark surround changes how the colors look.
+            </p>
+            <p>
+              Color math: OKLab by Björn Ottosson (2020). Straight-line OKLab distance is a good model for small and
+              medium differences and overstates very large ones.
+            </p>
+          </footer>
+        </div>
+      </div>
+
+      <div class="tab-page" id="page-compare" role="tabpanel" aria-labelledby="tab-compare" hidden>
+        <p class="lede">
+          Paint sets side by side. Each shows its paints and their hull inside Pointer's gamut of real surface colors,
+          the way the deep-dive first draws them, with the share of Pointer's gamut the hull covers and how many paints
+          of each type the set has. Pick each column's set from the same layouts as the deep-dive. Orbit or zoom any
+          render and the others follow.
+        </p>
+
+        <div class="compare-bar">
+          <button type="button" class="button add-set" id="compare-add">
+            <span class="add-set-icon" aria-hidden="true">+</span> Add set
+          </button>
+          <button type="button" class="button compare-reset" id="compare-reset">Reset view</button>
+        </div>
+
+        <div class="compare-grid" id="compare-grid"></div>
 
         <footer class="notes">
           <p>
-            ΔE<sub>OK</sub> of about 0.02 is one just-noticeable difference. Hatched areas are outside sRGB: no screen
-            color exists there. Every color sits on the same middle gray on purpose, in both themes, because a tinted,
-            bright or dark surround changes how the colors look.
+            Every render is the deep-dive's gamut solid as it starts: Pointer's gamut as a wireframe, the hull of the
+            set's paints as a solid, every paint as a dot, with the labeled axes. Drag to orbit and scroll to zoom any
+            of them. Hovering a color marks it in all of them, so you can see where a paint of
+            one set lies against the hull of another.
           </p>
           <p>
-            Color math: OKLab by Björn Ottosson (2020). Straight-line OKLab distance is a good model for small and
-            medium differences and overstates very large ones.
+            The coverage is the share of Pointer's gamut's volume in OKLab that lies inside the hull of the set's
+            paints; the mark on each bar is sRGB's own share. A hull measures spread, not which colors the paints can
+            mix. The Game Color and Model Color sets come from Vallejo's printed charts and Kimera Kolors from
+            measurements of dried paint. Squidmar Color is sampled from marketing images made for screens, so its
+            figures are not directly comparable with the others'. A paint set counts only the paints the catalog has
+            a color for; the rest, such as varnishes, are listed as having no color data.
           </p>
         </footer>
       </div>

@@ -4,8 +4,8 @@
  * Saved sets live in localStorage as one JSON object of `{ title, colors }`, keyed like the files of
  * `data/custom-sets/`, so an exported set can be saved there as it is.
  */
-import { type BuiltSet, CUSTOM_SET_LAYOUTS, SET_KEYS, builtSetLayout } from './sets';
-import type { PaintLayout } from './vallejo';
+import { type BuiltSet, CUSTOM_SET_LAYOUTS, SET_KEYS, SET_LAYOUTS, builtSetLayout } from './sets';
+import { LAYOUTS, type PaintLayout } from './vallejo';
 
 const STORAGE_KEY = 'color-tools.custom-sets';
 /** Fired on window when this page changes the saved sets; other tabs get a `storage` event. */
@@ -116,4 +116,33 @@ export function customSetLayouts(storage = defaultStorage()): PaintLayout[] {
     title: `${set.title} (saved here)`,
   }));
   return [...CUSTOM_SET_LAYOUTS, ...saved];
+}
+
+/**
+ * The groups of every layout select (the atlas's paint pane, the set comparator, the difference matrix and the
+ * Set Builder). Custom sets include those saved in this browser, so the groups are read each time.
+ */
+export function layoutGroups(storage = defaultStorage()): [label: string, layouts: readonly PaintLayout[]][] {
+  return [
+    ['Ranges', LAYOUTS],
+    ['Paint sets', SET_LAYOUTS],
+    ['Custom sets', customSetLayouts(storage)],
+  ];
+}
+
+/** Every layout of the selects, in their order. */
+export function allLayouts(): PaintLayout[] {
+  return layoutGroups().flatMap(([, layouts]) => layouts);
+}
+
+/** Adds one option group per layout group to a select; returns the layouts it added, in order. */
+export function appendLayoutGroups(select: HTMLSelectElement): PaintLayout[] {
+  const groups = layoutGroups();
+  for (const [label, layouts] of groups) {
+    const group = document.createElement('optgroup');
+    group.label = label;
+    for (const layout of layouts) group.append(new Option(layout.title, layout.id));
+    select.append(group);
+  }
+  return groups.flatMap(([, layouts]) => layouts);
 }
