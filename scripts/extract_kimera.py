@@ -1,15 +1,16 @@
-"""Build data/kimera.json: the Kimera Kolors Pure Pigments Base Set.
+"""Add the Kimera Kolors Pure Pigments Base Set to data/vallejo.json and
+data/vallejo-layouts.json. Other ranges already in those files are kept.
 
 Usage:
     pip install -r scripts/requirements.txt
     python scripts/extract_kimera.py data/sources/kimera-base-set.jpg data
-    node scripts/add-oklch.js data/kimera.json
+    node scripts/add-oklch.js data/vallejo.json
 
 Kimera Kolors (Kimera Models, sold through Pegaso World, made by Camerini &
 Co) are acrylics with one pigment each and no white. The base set has 13
 colors and a satin medium, which has no color and is left out. They have no
-product codes, so the file is keyed by name. Names and pigments are the list
-on the base set's page in the maker's shop
+product codes, so their `code` is null and they are keyed by name. Names and
+pigments are the list on the base set's page in the maker's shop
 (https://www.pegasoworld.com/product/kimera-kolors-acrylic-set/).
 
 `webhex` (and `rgb`, the same value) comes from the base set's image on that
@@ -17,7 +18,9 @@ page (https://www.pegasoworld.com/wp-content/uploads/2022/10/Base-set.jpg,
 kept in data/sources/). It shows a flat circle in each paint's color, labeled
 with its pigment, in two columns (CIRCLES). The script finds the 14 circles,
 the satin medium's among them, and takes the median of a disc inside each
-outline. The image has no color profile, so browsers show it as sRGB.
+outline. The image has no color profile, so browsers show it as sRGB. The
+layout is the order the circles are printed in, as on the box: the image's
+left column is the top row.
 
 `cielab` is measured: artistpigments.org painted each paint at full strength
 on Hahnemühle Echt Bütten paper and measured it with an X-Rite i1Pro 3 (45/0,
@@ -28,7 +31,6 @@ round from the maker; its measurements fit the paints' names (the green
 shade is the greener), so they are matched by name.
 """
 import sys
-from pathlib import Path
 
 import numpy as np
 from PIL import Image
@@ -37,7 +39,7 @@ from scipy import ndimage as ndi
 import vallejo_data
 
 RANGE = "Kimera Kolors"
-OUT_FILE = "kimera.json"
+LAYOUT = "kimeraKolorsBaseSet"
 
 # From the shop's list: name, pigment, and the paint's page on
 # artistpigments.org (https://artistpigments.org/brands/kimera-kimera-kolors/...)
@@ -124,6 +126,7 @@ def main(image_path, out_dir):
     colors = {}
     for name, pigment, _, (L, a, b) in MEASURED:
         colors[name] = {
+            "code": None,
             "name": name,
             "range": RANGE,
             "type": "acrylic",
@@ -134,9 +137,14 @@ def main(image_path, out_dir):
             "cielab": {"l": L, "a": a, "b": b},
         }
 
-    path = Path(out_dir) / OUT_FILE
-    path.write_text(vallejo_data.format_colors(colors), encoding="utf-8")
-    print(f"wrote {len(colors)} colors to {path}")
+    rows = [[name for _, name in column if name] for column in CIRCLES]
+    layout = {
+        "title": "Kimera Kolors base set",
+        "source": "the Kimera Kolors base set image, without the satin medium",
+        "sections": [{"rows": rows}],
+    }
+    vallejo_data.update(out_dir, {RANGE}, dict(sorted(colors.items())), {LAYOUT: layout})
+    print(f"wrote {len(colors)} colors and 1 layout to {out_dir}")
 
 
 if __name__ == "__main__":

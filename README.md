@@ -69,7 +69,7 @@ The views are linked:
 - The cut faces of the solid (A) are the slice images of B.1 and B.2, uploaded as textures.
 - B.1 shows where B.2 cuts it (dashed line through the center), and B.2 shows where B.1 cuts it (dashed horizontal line).
 - Clicking a color or a paint dot in any view picks it and moves both slices to pass through it. So does switching
-  a Vallejo paint on.
+  a paint on.
 - Hovering shows the color's OKLCh, hex and ΔE<sub>OK</sub> from the picked color, in JND units.
 - Hatched areas are outside sRGB. No screen color exists there.
 
@@ -77,13 +77,13 @@ The page chrome is deliberately achromatic. A tinted surround shifts how the plo
 or dark one. So every color (the slices, the solid, the paint swatches, the picked color) sits on the same middle
 gray, CIE L\* 50, in both themes; only the text is on white, or black in the dark theme.
 
-### Vallejo paints
+### Paints
 
 The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
-**Layout** select switches between the six layouts in `data/vallejo-layouts.json` (Game Color chart and
-combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials) plus **All paints**, the
-charts and the Mega Set one after the other, which holds every paint in the catalog once. The page remembers the
-choice in `localStorage`.
+**Layout** select switches between the seven layouts in `data/vallejo-layouts.json` (Game Color chart and
+combinations, Model Color chart and combinations, Squidmar Color Mega Set and Essentials, Kimera Kolors base set)
+plus **All paints**, the charts, the Mega Set and the Kimera set one after the other, which holds every paint in the
+catalog once. The page remembers the choice in `localStorage`.
 
 **Showing paints.** The paints that are switched on are drawn as dots in the views. A new layout starts with all of
 its paints on, and **Select all** / **Select none** switch them all at once. In a chart printed in several sections
@@ -93,7 +93,7 @@ section's paints. None of these buttons picks a paint.
 - Clicking a swatch switches its paint on or off. An off swatch shrinks to a small square with a dashed border,
   still in its own color.
 - Switching a paint on also *picks* it: both slices move to pass through it, and the readout shows its code and
-  name. Switching a paint off leaves the pick alone, so double-clicking a paint that is on (off, then on) picks it.
+  name (for Kimera Kolors, which have no codes, the name and pigment, such as "The Red · PR170"). Switching a paint off leaves the pick alone, so double-clicking a paint that is on (off, then on) picks it.
 - Clicking a paint's dot in any view picks that paint. Hovering a dot or a swatch shows the paint in the tooltip
   with its ΔE<sub>OK</sub> from the picked color.
 - The picked paint's swatch is outlined wherever it appears. The combination tables repeat paints, so a paint can
@@ -112,9 +112,10 @@ section's paints. None of these buttons picks a paint.
   to 0.04.
 
 Every paint sits at its best-known color: `cielab` when the data has one, else `rgb` (see
-[`data/vallejo.json`](#datavallejojson)). Ten chart colors, mostly teals and turquoises, lie outside sRGB. They sit
-at their true position and are drawn in the nearest screen color of the same lightness and hue, and the tooltip
-and the readout say that they are outside sRGB.
+[`data/vallejo.json`](#datavallejojson)). Ten chart colors, mostly teals and turquoises, and three measured Kimera
+Kolors (Warm Yellow, Cold Yellow, Phthalo Green) lie outside sRGB. They sit at their true position and are drawn in
+the nearest screen color of the same lightness and hue, and the tooltip and the readout say that they are outside
+sRGB.
 
 ### Pointer's gamut and the paint hull
 
@@ -175,7 +176,8 @@ the same way. The table below comes from it.
 | Game Color chart (108) | `cielab` | 46 % |
 | Model Color chart (194) | `cielab` | 30 % |
 | Squidmar Color (72) | `rgb` | 50 % |
-| All paints (374) | both | 57 % |
+| Kimera Kolors base set (13) | `cielab`, measured | 24 % |
+| All paints (387) | both | 59 % |
 | *sRGB itself, for comparison* | | *78 %* |
 
 The chart figures describe the printed charts. They are lower than the 52 % the sRGB hex values give, because the
@@ -185,8 +187,9 @@ down to pure black and every dark color with it, which inflated the hull more. W
 dark colors: CMYK cannot print dark saturated colors, so the charts say little about how far dark paints reach.
 
 The Squidmar figure is not comparable. Its colors are sampled from marketing images, which are made for screens,
-with pure black and possibly boosted saturation, so its 50 % and the 57 % for all paints overstate what the data
-supports. [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut) has the details and
+with pure black and possibly boosted saturation, so its 50 % and the 59 % for all paints overstate what the data
+supports. The Kimera figure is the only one from measured paint, but it is of 13 pots at full strength, and a set
+of single pigments is meant for mixing (see [Kimera Kolors](#kimera-kolors)). [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut) has the details and
 the sources.
 
 Page layout, by width:
@@ -245,16 +248,15 @@ src/
   color/coverage.ts       share of a gamut's OKLab volume inside a hull
   color/coverage.test.ts
   paints/record.ts        which field gives a paint's color: cielab, else rgb (shared with the scripts)
-  paints/vallejo.ts       Vallejo paints and layouts from data/ (plus All paints), with OKLab from the best field
-  paints/vallejo.test.ts  every layout code resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
-  paints/kimera.test.ts   data/kimera.json: 13 colors, each with a pigment, webhex and cielab; OKLCh agrees
+  paints/vallejo.ts       the paints and layouts from data/ (plus All paints), with OKLab from the best field
+  paints/vallejo.test.ts  every layout entry resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
   views/lightnessSlice.ts B.1
   views/hueSlice.ts       B.2
   views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
-  views/swatchPane.ts     Vallejo swatches, the layout select, and which paints are shown
+  views/swatchPane.ts     paint swatches, the layout select, and which paints are shown
   main.ts                 wiring, layout, tooltip, readout
 ```
 
@@ -267,11 +269,12 @@ src/
   two colors look.
 - **No viewing conditions.** Surround, adaptation and display luminance are not modeled. CAM16-UCS would add them
   at the cost of more parameters.
-- **Paint colors are not measurements.** Game Color and Model Color come from Vallejo's printed charts, so their
-  hull says how the charts spread, not how far real paint reaches. The charts are limited to what CMYK inks can
-  print, which is weakest for dark saturated colors, and Vallejo notes that printed colors are only approximate.
-  Squidmar Color comes from marketing images. No published measurements of dried paint were found for the current
-  ranges. Measured CIELAB or spectral data would go into `cielab` and be used as it is. See
+- **Most paint colors are not measurements.** Game Color and Model Color come from Vallejo's printed charts, so
+  their hull says how the charts spread, not how far real paint reaches. The charts are limited to what CMYK inks
+  can print, which is weakest for dark saturated colors, and Vallejo notes that printed colors are only
+  approximate. Squidmar Color comes from marketing images. No published measurements of dried paint were found for
+  the current Vallejo ranges. Kimera Kolors are the exception: their `cielab` is measured dried paint. Measured
+  CIELAB or spectral data would go into `cielab` and be used as it is. See
   [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut).
 
 ## Data
@@ -279,8 +282,9 @@ src/
 ### `data/vallejo.json`
 
 Vallejo **Game Color** and **Model Color** paints from the current ranges (new
-Game Color 2023, new Model Color 2024), excluding metallics, and the whole
-**Squidmar Color** range (made by Vallejo), including its metallics.
+Game Color 2023, new Model Color 2024), excluding metallics, the whole
+**Squidmar Color** range (made by Vallejo), including its metallics, and the
+**Kimera Kolors** base set (single-pigment acrylics by Kimera Models).
 
 | range          | type          | count |
 | -------------- | ------------- | ----- |
@@ -294,12 +298,15 @@ Game Color 2023, new Model Color 2024), excluding metallics, and the whole
 | Squidmar Color | `metallic`    | 7     |
 | Squidmar Color | `fluorescent` | 5     |
 | Squidmar Color | `ink`         | 12    |
+| Kimera Kolors  | `acrylic`     | 13    |
 
 Not included: Game Color and Model Color metallics, Game Color Special FX
 (textured effects without a single flat color), Model Color Liquid Metal,
-Xpress Color, and mediums/varnishes.
+Xpress Color, mediums/varnishes, and the Kimera Kolors expansion sets and satin
+medium.
 
-Colors are keyed by code, one color per line:
+Colors are keyed by code, one color per line. Kimera Kolors have no codes, so
+they are keyed by name, with `code` `null`:
 
 ```js
 import vallejo from './data/vallejo.json' with { type: 'json' };
@@ -311,22 +318,35 @@ vallejo['70.995'];
 //   cielab: { l: 23.21, a: -0.47, b: 1.05 },
 //   oklch: { l: 0.3377, c: 0.0031, h: 116.42 }
 // }
+
+vallejo['The Red'];
+// {
+//   code: null, name: 'The Red', range: 'Kimera Kolors', type: 'acrylic', pigment: 'PR170',
+//   rgb: '#CE1719', webhex: '#CE1719', cmyk: null,
+//   cielab: { l: 45.04, a: 66.53, b: 41.25 },
+//   oklch: { l: 0.5448, c: 0.2091, h: 24.15 }
+// }
 ```
+
+- `pigment`: Kimera Kolors only. The Colour Index name of the paint's one
+  pigment, from the maker's list.
 
 - `rgb`: `#RRGGBB`. For the charts, the print color as a screen shows it: clipped
   to sRGB, with the darkest print stretched to black. For Squidmar Color, sampled
-  from its images.
+  from its images. For Kimera Kolors, the same as `webhex`.
 - `webhex`: `#RRGGBB`, the color the manufacturer shows for the paint on its
   website, for comparing with other brands, most of which only publish that.
   For Game Color and Model Color, the flat color band in each product image on
   Vallejo's website. For Squidmar Color, the same value as `rgb`: its images are
-  what the manufacturer shows on the web.
+  what the manufacturer shows on the web. For Kimera Kolors, the flat circles in
+  the base set's image in the maker's shop (see [Kimera Kolors](#kimera-kolors)).
 - `cmyk`: Vallejo's own print values from the chart, in percent; `null` for
-  Squidmar Color, which has no published chart
+  Squidmar Color and Kimera Kolors, which have no published chart values
 - `cielab`: CIELAB relative to D50 (2° observer), `l`, `a`, `b`. For the charts,
   the print CMYK converted through the chart's own ICC profile: the printed
   color, not limited to sRGB. `null` for Squidmar Color, which has no such data.
-  Measured values of dried paint would go here too.
+  For Kimera Kolors, measured dried paint (artistpigments.org); measured values
+  of other paints would go here too.
 - `oklch`: computed by `scripts/add-oklch.js` from `cielab` when present, else
   from `rgb`; `l` (0–1), `c`, `h` (degrees, `null` for achromatic colors)
 
@@ -344,8 +364,8 @@ node scripts/add-oklch.js data/vallejo.json
 
 ### `data/vallejo-layouts.json`
 
-The order the colors are printed in, as rows of codes. Every code is a key in
-`vallejo.json`.
+The order the colors are printed in, as rows of keys (codes, or names for Kimera
+Kolors). Every one is a key in `vallejo.json`.
 
 | key                       | contents                                              |
 | ------------------------- | ----------------------------------------------------- |
@@ -355,11 +375,14 @@ The order the colors are printed in, as rows of codes. Every code is a key in
 | `modelColorCombinations`  | 68 Highlight / Base / Shadow triplets in 4 blocks     |
 | `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints                |
 | `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72               |
+| `kimeraKolorsBaseSet`     | Kimera Kolors base set: 13 paints in 2 rows           |
 
 Each layout has `sections`, and each section has `rows`, an array of arrays of
-codes. In the charts a row is one printed row of swatches, and sections carry
+keys. In the charts a row is one printed row of swatches, and sections carry
 the chart heading as `title`. The Squidmar images have no headings: each of
-their sections is one panel of the image, with no `title`. In the combinations
+their sections is one panel of the image, with no `title`. The Kimera set is one
+section of two rows, as its circles are printed on the box, without the satin
+medium. In the combinations
 each row is one `[highlight, base, shadow]` triplet (named by the layout's
 `columns`), and each section is one printed block.
 
@@ -433,6 +456,7 @@ pip install -r scripts/requirements.txt
 python scripts/extract_vallejo.py game.pdf model.pdf data   # PDFs: see the script
 python scripts/extract_squidmar.py data/sources/squidmar-mega-set.webp \
   data/sources/squidmar-essentials.webp data
+python scripts/extract_kimera.py data/sources/kimera-base-set.jpg data
 python scripts/extract_vallejo_webhex.py data
 node scripts/add-oklch.js data/vallejo.json
 ```
@@ -442,13 +466,14 @@ Vallejo notes that printed chart colors are only approximate. The Squidmar
 values are one step further removed: they are the colors of a compressed
 marketing image.
 
-### `data/kimera.json`
+### Kimera Kolors
 
 The **Kimera Kolors** Pure Pigments Base Set (Kimera Models, sold through
 Pegaso World, made by Camerini & Co): 13 acrylics with one pigment each and no
 white. The set's satin medium has no color and is left out. They have no
-product codes, so the file is keyed by name. The page does not show them yet;
-`scripts/coverage.js` reads the file.
+product codes, so in `data/vallejo.json` they are keyed by name, with `code`
+`null`. Their layout is `kimeraKolorsBaseSet`. `scripts/extract_kimera.py`
+writes both.
 
 | name | pigment | `webhex` | `cielab` (D50) |
 | --- | --- | --- | --- |
@@ -466,7 +491,7 @@ product codes, so the file is keyed by name. The page does not show them yet;
 | Red Oxide | PR101 | `#AC3D05` | 38.90 / 30.95 / 20.24 |
 | Yellow Oxide | PY42 | `#CE9A08` | 69.30 / 20.62 / 61.42 |
 
-The fields are those of `data/vallejo.json`, without `code`, plus `pigment`:
+Where their fields come from:
 
 - `pigment`: the Colour Index name, from the list on the base set's page in
   the [maker's shop](https://www.pegasoworld.com/product/kimera-kolors-acrylic-set/).
@@ -500,12 +525,11 @@ PY85 (the shop names it Diarylide Yellow HR, which is PY83), and Red Oxide as
 PR130, as the base set's image does too (the shop: "PR101 (130)", probably the
 Bayferrox 130 grade of PR101).
 
-To rebuild (Node 22.18 or later for the last step):
+To rebuild only the Kimera entries (Node 22.18 or later for the last step):
 
 ```sh
-pip install -r scripts/requirements.txt
 python scripts/extract_kimera.py data/sources/kimera-base-set.jpg data
-node scripts/add-oklch.js data/kimera.json
+node scripts/add-oklch.js data/vallejo.json
 ```
 
 **How far the web colors are from the paint** (*one-off*, ΔE<sub>OK</sub> from
@@ -603,7 +627,7 @@ compensation it misses by up to 29 (*one-off*). So:
   | Game Color and Model Color charts (302) | 45.7 % | 52.2 % | 52.6 % |
   | Game Color (108) | 45.5 % | 51.9 % | 52.2 % |
   | Model Color (194) | 30.2 % | 34.0 % | 34.1 % |
-  | All paints (374) | 56.9 % | 58.6 % | 59.0 % |
+  | Vallejo and Squidmar paints (374) | 56.9 % | 58.6 % | 59.0 % |
 
   The `rgb` and `webhex` columns are *one-off*: `scripts/coverage.js` on a copy of the data without `cielab`, and
   for `webhex` with it in place of `rgb`. Squidmar Color is 49.7 % in every column.

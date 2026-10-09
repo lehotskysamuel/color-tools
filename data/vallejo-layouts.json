@@ -256,5 +256,17 @@
         ]
       }
     ]
+  },
+  "kimeraKolorsBaseSet": {
+    "title": "Kimera Kolors base set",
+    "source": "the Kimera Kolors base set image, without the satin medium",
+    "sections": [
+      {
+        "rows": [
+          ["The White", "Cold Yellow", "Warm Yellow", "Yellow Oxide", "Orange", "The Red"],
+          ["Red Oxide", "Magenta", "Violet", "Carbon Black", "Phthalo Blue (red shade)", "Phthalo Blue (green shade)", "Phthalo Green"]
+        ]
+      }
+    ]
   }
 }
