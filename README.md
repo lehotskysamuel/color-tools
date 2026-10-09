@@ -204,20 +204,15 @@ takes a share of it.
 
 ## Difference matrix
 
-`matrix.html` is a table of every pair of paints: each paint is a row and, in the same order, a column. The cell
-where two paints meet holds two values:
-
-- **D**, their distance in OKLab (ΔE<sub>OK</sub>), to three decimals.
-- **J**, the same distance in just-noticeable differences, D / 0.02 (`JND` in `src/color/oklab.ts`), to one
-  decimal.
-
-J is D × 50, so both rank the pairs the same way. J is the easier one to read against what the eye can tell apart.
+`matrix.html` is a table of every pair of paints: each paint is a row and, in the same order, a column, sorted by
+code ascending. The cell where two paints meet holds **J**, their distance in just-noticeable differences: the
+OKLab distance ΔE<sub>OK</sub> divided by 0.02 (`JND` in `src/color/oklab.ts`), to one decimal.
 
 - **Paints** picks the paints: any layout from the atlas's paint pane, with All paints (374) as the default.
-  Layouts that repeat paints (the combination tables) list each paint once, in printed order. The page remembers
+  Layouts that repeat paints (the combination tables) list each paint once. The page remembers
   the choice in `localStorage`, separately from the atlas.
 - The table is symmetric, with zeros on the shaded diagonal. The header row and column stick while it scrolls.
-  Hovering a cell highlights its row and column and shows both paints with their D and J.
+  Hovering a cell highlights its row and column and shows both paints with their ΔE<sub>OK</sub> (D) and J.
 - Each paint has the same color as in the atlas: `cielab` when present, else `rgb`. For the ten chart colors
   outside sRGB, the swatch shows the nearest screen color, but the distance uses the real color.
 

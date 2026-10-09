@@ -632,13 +632,6 @@ input[type='range']:focus-visible {
   min-width: 0;
 }
 
-.matrix-key {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-}
-
 .matrix-scroll {
   max-height: calc(100vh - 32px);
   max-height: calc(100dvh - 32px);
@@ -656,9 +649,9 @@ input[type='range']:focus-visible {
 
 .matrix {
   --head: 216px;
-  --cell: 50px;
-  /* Two 14px lines, 3px padding above and below, a 1px border. */
-  --row: 35px;
+  --cell: 46px;
+  /* One 14px line, 5px padding above and below, a 1px border. */
+  --row: 25px;
   table-layout: fixed;
   /* --n, the number of paints, is set by diffMatrix.ts. */
   width: calc(var(--head) + var(--n, 0) * var(--cell));
@@ -686,9 +679,8 @@ input[type='range']:focus-visible {
   background: var(--bg);
 }
 
-.matrix td,
-.matrix-key-cell {
-  padding: 3px 5px;
+.matrix td {
+  padding: 5px;
   text-align: right;
   white-space: nowrap;
 }
@@ -697,13 +689,6 @@ input[type='range']:focus-visible {
 .matrix th {
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-}
-
-/* J, under D */
-.matrix td span,
-.matrix-key-cell span {
-  display: block;
-  color: var(--ink-3);
 }
 
 .matrix tr:not(.matrix-gap) > td:not(.matrix-gap):hover {
@@ -721,14 +706,6 @@ input[type='range']:focus-visible {
 .matrix .matrix-gap td {
   padding: 0;
   border: 0;
-}
-
-.matrix-key-cell {
-  display: inline-block;
-  font-size: 11px;
-  line-height: 14px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
 }
 
 .matrix th,

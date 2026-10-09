@@ -19,8 +19,9 @@ for (const layout of LAYOUTS) select.add(new Option(layout.title, layout.id));
 function show(id: string): void {
   const layout = LAYOUTS.find((l) => l.id === id) ?? LAYOUTS.find((l) => l.id === DEFAULT_LAYOUT)!;
   select.value = layout.id;
-  // Combination tables repeat paints; each paint gets one row and one column, in printed order.
-  const codes = [...new Set(layout.sections.flatMap((s) => s.rows.flat()))];
+  // Combination tables repeat paints; each paint gets one row and one column, by code ascending. Every code
+  // is "NN.NNN", so comparing them as strings orders them by number.
+  const codes = [...new Set(layout.sections.flatMap((s) => s.rows.flat()))].sort();
   const n = codes.length;
   count.textContent = `${n} paints · ${((n * (n - 1)) / 2).toLocaleString('en')} pairs`;
   matrix.setPaints(codes.map((code) => PAINTS.get(code)!));

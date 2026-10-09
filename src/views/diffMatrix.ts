@@ -4,7 +4,7 @@ import { type Paint, paintLabel } from '../paints/vallejo';
 /** Called with the two paints of the cell under the pointer, or null when there is none. */
 export type PairHoverHandler = (pair: { row: Paint; column: Paint } | null, clientX: number, clientY: number) => void;
 
-/** D: the OKLab distance between two paints, as the cells print it. */
+/** D: the OKLab distance between two paints, as the tooltip prints it. */
 export const formatD = (dE: number) => dE.toFixed(3);
 
 /** J: the same distance in just-noticeable differences. */
@@ -21,8 +21,7 @@ const escapeHtml = (text: string) =>
 
 /**
  * Every pair of paints as a table: the paints as rows and, in the same order, as columns. The cell where two
- * paints meet holds D (ΔE_OK) above and J (D in JNDs) below, so the table is symmetric with zeros on the
- * diagonal. The header row and column stick while the table scrolls. Hovering a cell highlights its row and
+ * paints meet holds J, their ΔE_OK in JNDs, so the table is symmetric with zeros on the diagonal. The header row and column stick while the table scrolls. Hovering a cell highlights its row and
  * column.
  *
  * All paints make 374 × 374 cells, which take seconds to lay out, so only the rows and columns in view (plus
@@ -127,7 +126,7 @@ export class DifferenceMatrix {
       for (let j = c0; j < c1; j++) {
         const dE = deltaEOK(paint.lab, paints[j].lab);
         const self = i === j ? ' class="is-self"' : '';
-        html.push(`<td aria-colindex="${j + 2}"${self}>${formatD(dE)}<span>${formatJ(dE)}</span></td>`);
+        html.push(`<td aria-colindex="${j + 2}"${self}>${formatJ(dE)}</td>`);
       }
       html.push(gapCell, '</tr>');
     }

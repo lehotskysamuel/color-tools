@@ -21,9 +21,9 @@
         </nav>
         <h1>Difference matrix</h1>
         <p class="lede">
-          How different every pair of paints looks. Each paint is a row and, in the same order, a column. Where two
-          paints meet, <b>D</b> is their distance in OKLab (ΔE<sub>OK</sub>) and <b>J</b> is that distance in
-          just-noticeable differences, D / 0.02.
+          How different every pair of paints looks. Each paint is a row and, in the same order, a column, sorted by
+          code. Where two paints meet, <b>J</b> is their distance in just-noticeable differences: their OKLab
+          distance ΔE<sub>OK</sub> divided by 0.02.
         </p>
       </header>
 
@@ -32,17 +32,13 @@
           <label class="slider-label" for="layout-select">Paints</label>
           <select class="select" id="layout-select"></select>
           <output class="stat mono" id="matrix-count"></output>
-          <span class="matrix-key">
-            <span class="matrix-key-cell mono" aria-hidden="true">0.100<span>5.0</span></span>
-            <span class="stat">D (ΔE<sub>OK</sub>) above, J (JNDs) below</span>
-          </span>
         </div>
         <div class="matrix-scroll" id="matrix-scroll" tabindex="0" role="region" aria-label="Table of paint differences, scrollable">
           <table class="matrix mono" id="matrix"></table>
         </div>
         <p class="stat">
-          Hover a cell to see both paints. The table is symmetric: the row and column of a paint hold the same
-          values. Layouts that repeat paints (the combination tables) list each paint once, in printed order.
+          Hover a cell to see both paints and their ΔE<sub>OK</sub>. The table is symmetric: the row and column of
+          a paint hold the same values. Layouts that repeat paints (the combination tables) list each paint once.
         </p>
       </section>
 
