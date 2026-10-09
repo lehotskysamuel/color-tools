@@ -65,6 +65,24 @@ const DOT_RIM = 9;
 const DOT_FILL = 6;
 const DOT_HIT = 6;
 
+/** Where the a and b axes end, just past the widest gamut, and where their labels sit. */
+const AXIS_END = AB_RANGE;
+const LABEL_AT = AB_RANGE + 0.04;
+
+/**
+ * Axis labels, as OKLab points and the label's anchor. a and b are the opponent axes: +a points to red, -a to
+ * green, +b to yellow, -b to blue. They are not exactly the unique hues; +a is a pinkish red, -a a teal green.
+ */
+const AXIS_LABELS: { lab: Vec3; text: string; anchor: 'center' | 'above' | 'below' }[] = [
+  { lab: [1.06, 0, 0], text: 'L 1 · white', anchor: 'above' },
+  { lab: [-0.06, 0, 0], text: 'L 0 · black', anchor: 'below' },
+  { lab: [0.5, LABEL_AT, 0], text: '+a red', anchor: 'center' },
+  { lab: [0.5, -LABEL_AT, 0], text: '−a green', anchor: 'center' },
+  { lab: [0.5, 0, LABEL_AT], text: '+b yellow', anchor: 'center' },
+  { lab: [0.5, 0, -LABEL_AT], text: '−b blue', anchor: 'center' },
+  { lab: [0.5, -AXIS_END, -AXIS_END], text: 'L 0.5', anchor: 'below' },
+];
+
 /** Surface of the sRGB cube mapped into OKLab, colored with its own colors. */
 function buildGamutGeometry(steps: number): BufferGeometry {
   const perFace = (steps + 1) * (steps + 1);
@@ -404,6 +422,7 @@ export class GamutSolid {
   private readonly dotRims = makeDots(DOT_RIM, 1, this.dotTexture);
   private readonly dotFills = makeDots(DOT_FILL, 2, this.dotTexture);
   private paints: readonly Paint[] = [];
+  private readonly labels: { el: HTMLElement; at: Vector3; anchor: 'center' | 'above' | 'below' }[];
   private readonly raycaster = new Raycaster();
 
   // Clipping planes. three.js discards fragments on the negative side of a plane.
@@ -473,12 +492,56 @@ export class GamutSolid {
     this.scene.add(this.lightnessCap, this.hueCap, this.lightnessOutline, this.hueOutline);
     this.scene.add(this.hullLightnessOutline, this.hullHueOutline);
 
-    // Neutral axis from black to white.
+    // Neutral axis from black to white. Dark, because a middle gray would vanish into the stage.
     const axis = new Line(
       new BufferGeometry().setFromPoints([new Vector3(0, -0.04, 0), new Vector3(0, 1.04, 0)]),
-      new LineBasicMaterial({ color: 0x808080 }),
+      new LineBasicMaterial({ color: 0x262626 }),
     );
-    this.scene.add(axis);
+    // The a and b axes cross the gray axis at L 0.5, in the plane that marks that lightness.
+    const abAxes = new LineSegments(
+      new BufferGeometry().setFromPoints(
+        [
+          [0.5, -AXIS_END, 0],
+          [0.5, AXIS_END, 0],
+          [0.5, 0, -AXIS_END],
+          [0.5, 0, AXIS_END],
+        ].map((lab) => labToScene(lab as Vec3)),
+      ),
+      new LineBasicMaterial({ color: 0x262626 }),
+    );
+    this.scene.add(axis, abAxes);
+
+    // See-through plane at L 0.5, drawn after the opaque solid without writing depth, so it never hides anything.
+    const midPlane = new Mesh(
+      new PlaneGeometry(2 * AXIS_END, 2 * AXIS_END),
+      new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.18, side: DoubleSide, depthWrite: false }),
+    );
+    midPlane.rotation.x = -Math.PI / 2;
+    midPlane.position.y = 0.5;
+    const r = AXIS_END;
+    const midEdge = new Line(
+      new BufferGeometry().setFromPoints(
+        [
+          [r, r],
+          [-r, r],
+          [-r, -r],
+          [r, -r],
+          [r, r],
+        ].map(([x, z]) => new Vector3(x, 0.5, z)),
+      ),
+      new LineBasicMaterial({ color: 0x262626, transparent: true, opacity: 0.5 }),
+    );
+    this.scene.add(midPlane, midEdge);
+
+    // HTML labels stay sharp at any zoom; they follow their points on every render.
+    this.labels = AXIS_LABELS.map(({ lab, text, anchor }) => {
+      const el = document.createElement('span');
+      el.className = 'solid-label';
+      el.textContent = text;
+      el.setAttribute('aria-hidden', 'true');
+      host.appendChild(el);
+      return { el, at: labToScene(lab), anchor };
+    });
 
     this.overlay.add(this.dotRims, this.dotFills, this.pickMarker.group, this.hoverMarker.group);
 
@@ -849,6 +912,18 @@ export class GamutSolid {
       this.renderer.render(this.scene, this.camera);
       this.renderer.clearDepth();
       this.renderer.render(this.overlay, this.camera);
+      this.placeLabels();
     });
+  }
+
+  private placeLabels(): void {
+    const p = new Vector3();
+    for (const { el, at, anchor } of this.labels) {
+      p.copy(at).project(this.camera);
+      const x = ((p.x + 1) / 2) * this.width;
+      const y = ((1 - p.y) / 2) * this.height;
+      const dy = anchor === 'above' ? '-100%' : anchor === 'below' ? '0%' : '-50%';
+      el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, ${dy})`;
+    }
   }
 }

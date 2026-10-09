@@ -7,11 +7,9 @@ import {
   formatOklab,
   formatOklch,
   isOklabInGamut,
-  maxChroma,
   oklabToDisplayHex,
   oklabToHex,
   oklabToOklch,
-  oklchToOklab,
 } from './color/oklab';
 import { type Paint, paintLabel } from './paints/vallejo';
 import { type AppState, type CutMode, type Gamut, type ShapeStyle, createStore } from './state';
@@ -25,16 +23,17 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 
 // Start on the blue / amber hue plane: its two halves peak at very different lightness,
 // which is the clearest picture of why HSL's "same lightness" is misleading.
-const START_L = 0.65;
 const START_H = 264;
+// The first pick is the neutral gray at mid lightness. It lies on the gray axis, so it is in every hue slice.
+const START_L = 0.5;
 const store = createStore({
   L: START_L,
   h: START_H,
-  pick: oklchToOklab([START_L, Math.min(0.14, maxChroma(START_L, START_H) * 0.75), START_H]),
+  pick: [START_L, 0, 0],
   pickPaint: null,
   paints: [],
   hover: null,
-  cut: 'wedge',
+  cut: 'whole',
   gamut: 'pointer',
   gamutStyle: 'wireframe',
   hull: true,
