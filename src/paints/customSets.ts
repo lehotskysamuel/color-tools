@@ -1,0 +1,114 @@
+/**
+ * Custom sets saved in this browser by the Set Builder, and every custom set as layouts for the swatch pane.
+ *
+ * Saved sets live in localStorage as one JSON object, keyed the way `data/vallejo-sets.json` is and with the same
+ * entry shape, so an exported set can be pasted into the data as it is.
+ */
+import { type BuiltSet, CUSTOM_SET_LAYOUTS, SET_KEYS, builtSetLayout } from './sets';
+import type { PaintLayout } from './vallejo';
+
+const STORAGE_KEY = 'color-tools.custom-sets';
+/** Fired on window when this page changes the saved sets; other tabs get a `storage` event. */
+const CHANGE_EVENT = 'color-tools:custom-sets';
+/** Layout ids of saved sets, so they never clash with a data set of the same key. */
+const LOCAL_PREFIX = 'local:';
+
+export type SavedSet = Omit<BuiltSet, 'id'>;
+
+/** The parts of `Storage` used here, so tests can pass a stand-in. */
+export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem'>;
+
+function defaultStorage(): KeyValueStorage | null {
+  try {
+    return localStorage;
+  } catch {
+    return null;
+  }
+}
+
+/** The saved sets in the order they were first saved. Malformed entries are skipped. */
+export function readSavedSets(storage = defaultStorage()): Map<string, SavedSet> {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(storage?.getItem(STORAGE_KEY) ?? '{}');
+  } catch {
+    return new Map();
+  }
+  if (typeof raw !== 'object' || raw === null) return new Map();
+  return new Map(
+    Object.entries(raw).flatMap(([key, value]) => {
+      const { title, colors } = (value ?? {}) as Partial<SavedSet>;
+      const valid = typeof title === 'string' && Array.isArray(colors) && colors.every((c) => typeof c === 'string');
+      return valid ? [[key, { title, colors: [...colors] }] as const] : [];
+    }),
+  );
+}
+
+function writeSavedSets(sets: Map<string, SavedSet>, storage: KeyValueStorage | null): boolean {
+  try {
+    storage!.setItem(STORAGE_KEY, JSON.stringify(Object.fromEntries(sets)));
+  } catch {
+    // No storage (private mode, blocked site data) or it is full.
+    return false;
+  }
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(CHANGE_EVENT));
+  return true;
+}
+
+/**
+ * Saves a set under `key`, or under a new key made from its title when `key` is null. Returns the key, or null
+ * when the browser would not store it.
+ */
+export function saveSet(key: string | null, set: SavedSet, storage = defaultStorage()): string | null {
+  const sets = readSavedSets(storage);
+  const id = key ?? setKey(set.title, new Set([...SET_KEYS, ...sets.keys()]));
+  sets.set(id, { title: set.title, colors: [...set.colors] });
+  return writeSavedSets(sets, storage) ? id : null;
+}
+
+export function deleteSet(key: string, storage = defaultStorage()): boolean {
+  const sets = readSavedSets(storage);
+  return sets.delete(key) && writeSavedSets(sets, storage);
+}
+
+/** Calls `fn` when the saved sets change, in this tab or another. */
+export function onSavedSetsChange(fn: () => void): void {
+  window.addEventListener(CHANGE_EVENT, fn);
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY || e.key === null) fn();
+  });
+}
+
+/** A camelCase key from the title, like the data's keys ("Squidmar v1" → "squidmarV1"), not one of `taken`. */
+export function setKey(title: string, taken: ReadonlySet<string>): string {
+  const words = title
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean);
+  let base = words.map((w, i) => (i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1))).join('');
+  if (!/^[a-z]/.test(base)) base = `set${base[0]?.toUpperCase() ?? ''}${base.slice(1)}`;
+  if (base === 'set') base = 'customSet';
+  let key = base;
+  for (let n = 2; taken.has(key); n++) key = `${base}${n}`;
+  return key;
+}
+
+/** The set as an entry of `data/vallejo-sets.json`, indented and formatted like the entries there. */
+export function exportSet(key: string, set: SavedSet): string {
+  const colors = set.colors.map((c) => JSON.stringify(c)).join(', ');
+  return `  "${key}": {\n    "title": ${JSON.stringify(set.title)},\n    "colors": [${colors}]\n  }`;
+}
+
+export function savedSetLayoutId(key: string): string {
+  return LOCAL_PREFIX + key;
+}
+
+/** The custom sets of the data, then those saved in this browser. */
+export function customSetLayouts(storage = defaultStorage()): PaintLayout[] {
+  const saved = [...readSavedSets(storage)].map(([key, set]) => ({
+    ...builtSetLayout(savedSetLayoutId(key), set, 'Your custom set, saved in this browser'),
+    title: `${set.title} (saved here)`,
+  }));
+  return [...CUSTOM_SET_LAYOUTS, ...saved];
+}

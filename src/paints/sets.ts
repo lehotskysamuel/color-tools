@@ -1,5 +1,5 @@
 import setData from '../../data/vallejo-sets.json';
-import type { OffCatalogItem, PaintLayout } from './vallejo';
+import { type OffCatalogItem, type PaintLayout, PAINTS } from './vallejo';
 
 /** A boxed set of paints as Vallejo sells it. See the `data/vallejo-sets.json` section of the README. */
 export interface PaintSet {
@@ -21,17 +21,33 @@ export interface CustomSet {
   sets: string[];
 }
 
-type RawSet = Omit<PaintSet, 'id'> | Omit<CustomSet, 'id'>;
+/** Paints picked one by one in the Set Builder. Unlike a paint set it has no code. */
+export interface BuiltSet {
+  id: string;
+  title: string;
+  /** Keys of paints in the catalog, in the order they were picked. */
+  colors: string[];
+}
+
+type RawSet = Omit<PaintSet, 'id'> | Omit<CustomSet, 'id'> | Omit<BuiltSet, 'id'>;
 
 const entries = Object.entries(setData as Record<string, RawSet>);
 
 export const SETS: ReadonlyMap<string, PaintSet> = new Map(
-  entries.flatMap(([id, set]) => ('colors' in set ? [[id, { id, ...set }] as const] : [])),
+  entries.flatMap(([id, set]) => ('code' in set ? [[id, { id, ...set }] as const] : [])),
 );
 
 export const CUSTOM_SETS: ReadonlyMap<string, CustomSet> = new Map(
   entries.flatMap(([id, set]) => ('sets' in set ? [[id, { id, ...set }] as const] : [])),
 );
+
+/** Built sets that are part of the data, read only. Those saved in the browser are in ./customSets.ts. */
+export const BUILT_SETS: ReadonlyMap<string, BuiltSet> = new Map(
+  entries.flatMap(([id, set]) => (!('code' in set) && 'colors' in set ? [[id, { id, ...set }] as const] : [])),
+);
+
+/** Every key of the file, which a new set's key must not repeat. */
+export const SET_KEYS: ReadonlySet<string> = new Set(entries.map(([id]) => id));
 
 /** The sets a custom set is made of, with their colors. */
 export function customSetParts(custom: CustomSet): PaintSet[] {
@@ -53,10 +69,30 @@ function setLayout(id: string, title: string, parts: PaintSet[]): PaintLayout {
   };
 }
 
+/**
+ * A built set as one section, in the order its paints were picked. Paints that are no longer in the catalog (a set
+ * saved in the browser before the data changed) are left out and counted in the note.
+ */
+export function builtSetLayout(id: string, set: Omit<BuiltSet, 'id'>, where: string): PaintLayout {
+  const colors = set.colors.filter((key) => PAINTS.has(key));
+  const gone = set.colors.length - colors.length;
+  return {
+    id,
+    title: set.title,
+    source: set.title,
+    notInCatalog: [],
+    note:
+      `${where}, in the order the paints were picked.` +
+      (gone > 0 ? ` ${gone} of its paints ${gone > 1 ? 'are' : 'is'} no longer in the data.` : ''),
+    sections: [{ rows: [colors] }],
+  };
+}
+
 export const SET_LAYOUTS: readonly PaintLayout[] = [...SETS.values()].map((set) =>
   setLayout(set.id, setTitle(set), [set]),
 );
 
-export const CUSTOM_SET_LAYOUTS: readonly PaintLayout[] = [...CUSTOM_SETS.values()].map((custom) =>
-  setLayout(custom.id, custom.title, customSetParts(custom)),
-);
+export const CUSTOM_SET_LAYOUTS: readonly PaintLayout[] = [
+  ...[...CUSTOM_SETS.values()].map((custom) => setLayout(custom.id, custom.title, customSetParts(custom))),
+  ...[...BUILT_SETS.values()].map((set) => builtSetLayout(set.id, set, 'A custom set from the data')),
+];

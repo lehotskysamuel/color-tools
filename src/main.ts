@@ -1,25 +1,22 @@
 import './style.css';
 import {
   AB_RANGE,
-  type Vec3,
-  deltaEOK,
   formatOklab,
   formatOklch,
   isOklabInGamut,
   oklabToDisplayHex,
-  oklabToHex,
   oklabToOklch,
 } from './color/oklab';
-import { type Paint, paintLabel } from './paints/vallejo';
-import { type AppState, type CutMode, type Gamut, type ShapeStyle, createStore } from './state';
+import { onSavedSetsChange } from './paints/customSets';
+import { paintLabel } from './paints/vallejo';
+import { type CutMode, createStore } from './state';
 import { onThemeChange } from './theme';
 import { GamutSolid } from './views/gamutSolid';
 import { HueSlice } from './views/hueSlice';
 import { LightnessSlice } from './views/lightnessSlice';
+import { SHAPE_CONTROLS, bindSegmented } from './views/segmented';
 import { SwatchPane } from './views/swatchPane';
-
-/** ΔE_OK of roughly one just-noticeable difference (the value CSS Color 4 uses for gamut mapping). */
-const JND = 0.02;
+import { hoverTooltip } from './views/tooltip';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -62,7 +59,10 @@ const swatches = new SwatchPane(
     showNone: $<HTMLButtonElement>('show-none'),
   },
   store,
+  { storageKey: 'color-tools.vallejo-layout' },
 );
+// Sets saved in the Set Builder, in another tab, show up in the layout select.
+onSavedSetsChange(() => swatches.refreshLayouts());
 
 // Controls
 const lSlider = $<HTMLInputElement>('l-slider');
@@ -73,19 +73,10 @@ lSlider.addEventListener('input', () => store.set({ L: Number(lSlider.value) }))
 hSlider.addEventListener('input', () => store.set({ h: Number(hSlider.value) }));
 $('reset-view').addEventListener('click', () => solid.resetView());
 
-/** Segmented controls: each is a fieldset of radios whose value is written to the state. */
-const segmented: { id: string; value: (s: AppState) => string; patch: (value: string) => Partial<AppState> }[] = [
+const checkSegmented = bindSegmented(store, [
   { id: 'cut-mode', value: (s) => s.cut, patch: (v) => ({ cut: v as CutMode }) },
-  { id: 'gamut', value: (s) => s.gamut, patch: (v) => ({ gamut: v as Gamut }) },
-  { id: 'gamut-style', value: (s) => s.gamutStyle, patch: (v) => ({ gamutStyle: v as ShapeStyle }) },
-  { id: 'hull', value: (s) => (s.hull ? 'on' : 'off'), patch: (v) => ({ hull: v === 'on' }) },
-  { id: 'hull-style', value: (s) => s.hullStyle, patch: (v) => ({ hullStyle: v as ShapeStyle }) },
-];
-for (const { id, patch } of segmented) {
-  for (const input of document.querySelectorAll<HTMLInputElement>(`#${id} input`)) {
-    input.addEventListener('change', () => input.checked && store.set(patch(input.value)));
-  }
-}
+  ...SHAPE_CONTROLS,
+]);
 const hullStyle = $<HTMLFieldSetElement>('hull-style');
 
 // Picked-color readout
@@ -111,10 +102,7 @@ function renderControls(): void {
   pickOklab.value = formatOklab(pick);
   pickPaintOut.value = pickPaint ? paintLabel(pickPaint) : '';
   readout.classList.toggle('has-paint', pickPaint !== null);
-  for (const { id, value } of segmented) {
-    const radio = document.querySelector<HTMLInputElement>(`#${id} input[value="${value(state)}"]`);
-    if (radio) radio.checked = true;
-  }
+  checkSegmented();
   hullStyle.disabled = !state.hull;
 }
 
@@ -125,42 +113,7 @@ store.subscribe((_s, changed) => {
 renderControls();
 
 // Hover tooltip, shared by the three views and the paint swatches
-const tooltip = $('tooltip');
-const tipName = $('tip-name');
-const tipSwatch = $('tip-swatch');
-const tipMain = $('tip-main');
-const tipSub = $('tip-sub');
-
-function showHover(lab: Vec3 | null, clientX: number, clientY: number, paint?: Paint): void {
-  store.set({ hover: lab });
-  if (!lab) {
-    tooltip.hidden = true;
-    return;
-  }
-  tipName.textContent = paint ? paintLabel(paint) : '';
-  tipName.hidden = !paint;
-  const inGamut = isOklabInGamut(lab);
-  tipMain.textContent = formatOklch(oklabToOklch(lab));
-  const dE = deltaEOK(lab, store.get().pick);
-  const fromPick = `ΔE ${dE.toFixed(3)} from picked (≈ ${(dE / JND).toFixed(1)} JND)`;
-  if (inGamut || paint) {
-    // A paint outside sRGB still exists; show it as its nearest screen color.
-    const hex = paint ? paint.display : oklabToHex(lab);
-    tipSwatch.style.background = hex;
-    tipSwatch.style.visibility = 'visible';
-    tipSub.textContent = `${inGamut ? hex : `outside sRGB, shown as ${hex}`} · ${fromPick}`;
-  } else {
-    tipSwatch.style.visibility = 'hidden';
-    tipSub.textContent = 'Outside sRGB. No screen color here.';
-  }
-  tooltip.hidden = false;
-  const pad = 14;
-  const { width, height } = tooltip.getBoundingClientRect();
-  const x = clientX + pad + width > window.innerWidth ? clientX - pad - width : clientX + pad;
-  const y = clientY + pad + height > window.innerHeight ? clientY - pad - height : clientY + pad;
-  tooltip.style.transform = `translate(${Math.max(4, x)}px, ${Math.max(4, y)}px)`;
-}
-
+const showHover = hoverTooltip(store);
 lightness.onHover = showHover;
 hue.onHover = showHover;
 solid.onHover = showHover;

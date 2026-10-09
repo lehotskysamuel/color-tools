@@ -197,6 +197,27 @@ supports. The Kimera figure is the only one from measured paint, but it is of 13
 of single pigments is meant for mixing (see [Kimera Kolors](#kimera-kolors)). [Findings: paint data and Pointer's gamut](#findings-paint-data-and-pointers-gamut) has the details and
 the sources.
 
+### Set Builder
+
+`set-builder.html` (linked from the top of the Atlas) builds your own set of paints. It has four columns: three
+paint panes, each with its own **Layout** select, **Select all** / **Select none** and section **All** / **None**
+buttons as in the Atlas, and the gamut solid (view A, without cuts).
+
+- The three panes share one selection. Clicking a swatch adds the paint to the set or takes it out, and the
+  buttons add or remove all of the pane's (or the section's) paints. A paint in the set is on in every pane that
+  shows it. Changing a pane's layout leaves the set alone.
+- The solid draws the set's paints as dots, with their hull and its coverage.
+- Under the columns, **Your set** lists the paints in the order they were added, each swatch with its code and
+  name, and the total. Clicking a paint there takes it out.
+- **Save** stores the set in `localStorage` (key `color-tools.custom-sets`), **Save As** stores it as a new set,
+  **Delete** removes the saved set, **Clear** empties the selection. **Editing** opens a saved set or starts a
+  new one. The set on screen, saved or not, is kept as a draft between visits.
+- Saved sets appear under **Custom sets** in every layout select, on both pages, marked "(saved here)". They are
+  editable here. Custom sets from the data are read-only: to start from one, show it in a pane and **Select all**,
+  then **Save As**.
+- **Export** shows the set as an entry of `data/vallejo-sets.json` to copy. Pasted into that file, it becomes a
+  read-only custom set for everyone (see [`data/vallejo-sets.json`](#datavallejo-setsjson)).
+
 Page layout, by width:
 
 | Width | Layout |
@@ -257,6 +278,9 @@ src/
   paints/vallejo.test.ts  every layout entry resolves, every paint has a webhex, OKLab agrees with the stored OKLCh
   paints/sets.ts          paint sets and custom sets from data/, as layouts for the swatch pane
   paints/sets.test.ts     every set is complete, its colors resolve, custom sets read their sets
+  paints/customSets.ts    custom sets saved in the browser by the Set Builder, export as JSON, all custom layouts
+  paints/customSets.test.ts  keys, saving, damaged storage, export round trip, built sets in the data
+  selection.ts            ordered set of paint keys shared by the Set Builder's panes
   state.ts                tiny observable store (L, h, picked color and paint, shown paints, hover, cut, shapes)
   theme.ts                reads CSS tokens so canvas drawing follows light/dark
   views/slicePlot.ts      shared 2D slice renderer, markers, pointer handling
@@ -264,7 +288,10 @@ src/
   views/hueSlice.ts       B.2
   views/gamutSolid.ts     A (three.js): the color space, the paint hull, coverage
   views/swatchPane.ts     paint swatches, the layout select, and which paints are shown
-  main.ts                 wiring, layout, tooltip, readout
+  views/segmented.ts      radio-button controls bound to the state
+  views/tooltip.ts        the hover tooltip
+  main.ts                 the Atlas: wiring, layout, readout
+  setBuilder.ts           the Set Builder: three panes, the solid, saving and exporting the set
 ```
 
 ## Known limits
@@ -497,7 +524,7 @@ sets.squidmarFantasy;
   photo textures, not one flat color), or `medium`, `thinner` and `varnish`, which are not colors. None of these
   codes is in `vallejo.json`; one that gets a color there moves to `colors`.
 
-A **custom set** lists sets, not colors, and its colors are always read from those sets:
+A **custom set** lists either sets or colors. One that lists sets reads its colors from those sets:
 
 ```js
 sets.squidmarV1;
@@ -506,7 +533,16 @@ sets.squidmarV1;
 sets.squidmarV1.sets.flatMap((id) => sets[id].colors);
 ```
 
-Its `sets` are paint sets, never other custom sets. In the table, *items* counts everything in the set and *drawn*
+Its `sets` are paint sets, never other custom sets. One that lists colors is made in the Set Builder, whose
+**Export** button writes the entry. It has no `code`, and its `colors` are keys of `vallejo.json` in the order they
+were picked, which is also the order the page shows them in:
+
+```js
+sets.myGreens;
+// { title: 'My greens', colors: ['72.029', '72.030', '70.850'] }
+```
+
+The data has none yet. In the table, *items* counts everything in the set and *drawn*
 the paints with a color in `vallejo.json`, which are the ones the page shows.
 
 | key                  | set                                                         | items | drawn |

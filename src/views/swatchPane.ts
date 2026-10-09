@@ -1,17 +1,18 @@
-import { CUSTOM_SET_LAYOUTS, SET_LAYOUTS } from '../paints/sets';
+import { customSetLayouts } from '../paints/customSets';
+import { SET_LAYOUTS } from '../paints/sets';
 import { LAYOUTS, type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
+import { Selection } from '../selection';
 import { type Store, pickPaint } from '../state';
 import type { HoverHandler } from './slicePlot';
 
-const STORAGE_KEY = 'color-tools.vallejo-layout';
-
-/** The select's option groups. */
-const GROUPS: [label: string, layouts: readonly PaintLayout[]][] = [
-  ['Charts and images', LAYOUTS],
-  ['Paint sets', SET_LAYOUTS],
-  ['Custom sets', CUSTOM_SET_LAYOUTS],
-];
-const ALL_LAYOUTS = GROUPS.flatMap(([, layouts]) => layouts);
+/** The select's option groups. Custom sets include those saved in this browser, so they are read each time. */
+function layoutGroups(): [label: string, layouts: readonly PaintLayout[]][] {
+  return [
+    ['Charts and images', LAYOUTS],
+    ['Paint sets', SET_LAYOUTS],
+    ['Custom sets', customSetLayouts()],
+  ];
+}
 
 export interface SwatchPaneElements {
   grid: HTMLElement;
@@ -24,58 +25,70 @@ export interface SwatchPaneElements {
   showNone: HTMLButtonElement;
 }
 
+export interface SwatchPaneOptions {
+  /** localStorage key that remembers the chosen layout. */
+  storageKey: string;
+  /** Index of the layout shown when none is remembered. */
+  defaultLayout?: number;
+  /**
+   * A selection shared with other panes. A pane without one owns its selection: a new layout starts with all of
+   * its paints shown, and the pane writes the shown paints to the store. A shared selection is left alone when the
+   * layout changes, and its owner writes the store.
+   */
+  selection?: Selection;
+}
+
 /**
  * Paints laid out the way their makers print them, or the paints of a set. The shown paints are drawn as dots in
  * the views. Clicking a swatch shows or hides its paint; showing a paint also picks it, which moves both slices
- * through it. A new layout starts with all of its paints shown.
+ * through it. A new layout starts with all of its paints shown, unless the pane shares its selection (the Set
+ * Builder), where showing means adding the paint to the set being built.
  */
 export class SwatchPane {
   onHover: HoverHandler | null = null;
 
   private readonly grid: HTMLElement;
+  private readonly select: HTMLSelectElement;
   private readonly note: HTMLElement;
   private readonly count: HTMLElement;
-  private layout: PaintLayout;
+  private readonly defaultLayout: number;
+  private readonly selection: Selection;
+  private readonly owned: boolean;
+  private layouts: PaintLayout[] = [];
+  private layout!: PaintLayout;
   /** Ids of the paints in this layout, once each, in printed order. */
   private ids: string[] = [];
   /** Ids of each section's paints, indexed by the section's select-all and select-none buttons. */
   private sectionIds: string[][] = [];
-  private shown = new Set<string>();
   private hovering = false;
 
   constructor(
     { grid, select, note, count, showAll, showNone }: SwatchPaneElements,
     private readonly store: Store,
+    { storageKey, defaultLayout = 0, selection }: SwatchPaneOptions,
   ) {
     this.grid = grid;
+    this.select = select;
     this.note = note;
     this.count = count;
-    for (const [label, layouts] of GROUPS) {
-      const group = document.createElement('optgroup');
-      group.label = label;
-      for (const layout of layouts) group.append(new Option(layout.title, layout.id));
-      select.append(group);
-    }
-    this.layout = ALL_LAYOUTS.find((l) => l.id === readStoredLayout()) ?? ALL_LAYOUTS[0];
-    select.value = this.layout.id;
+    this.defaultLayout = defaultLayout;
+    this.owned = !selection;
+    this.selection = selection ?? new Selection();
+    this.fillSelect(readStoredLayout(storageKey));
     select.addEventListener('change', () => {
-      this.layout = ALL_LAYOUTS.find((l) => l.id === select.value) ?? ALL_LAYOUTS[0];
-      storeLayout(this.layout.id);
+      this.layout = this.layoutById(select.value);
+      storeLayout(storageKey, this.layout.id);
       this.render();
     });
-    showAll.addEventListener('click', () => this.show(this.ids));
-    showNone.addEventListener('click', () => this.show([]));
+    showAll.addEventListener('click', () => this.selection.add(this.ids));
+    showNone.addEventListener('click', () => this.selection.remove(this.ids));
 
     grid.addEventListener('click', (e) => {
       const select = (e.target as Element | null)?.closest<HTMLButtonElement>('.section-select');
       if (select) {
         const ids = this.sectionIds[Number(select.dataset.section)];
-        const shown = new Set(this.shown);
-        for (const id of ids) {
-          if (select.dataset.select === 'all') shown.add(id);
-          else shown.delete(id);
-        }
-        this.show(shown);
+        if (select.dataset.select === 'all') this.selection.add(ids);
+        else this.selection.remove(ids);
         return;
       }
       const paint = this.paintAt(e.target);
@@ -95,28 +108,55 @@ export class SwatchPane {
     store.subscribe((_state, changed) => {
       if (changed.has('pickPaint')) this.markPicked();
     });
+    this.selection.subscribe(() => this.showSelection());
     this.render();
+  }
+
+  /**
+   * Re-reads the layouts, for when custom sets were saved or deleted. Keeps the current layout when it still
+   * exists, and redraws it, since a saved set may have changed.
+   */
+  refreshLayouts(): void {
+    this.fillSelect(this.layout.id);
+    this.render();
+  }
+
+  private fillSelect(want: string | null): void {
+    const select = this.select;
+    select.replaceChildren();
+    const groups = layoutGroups();
+    for (const [label, layouts] of groups) {
+      const group = document.createElement('optgroup');
+      group.label = label;
+      for (const layout of layouts) group.append(new Option(layout.title, layout.id));
+      select.append(group);
+    }
+    this.layouts = groups.flatMap(([, layouts]) => layouts);
+    this.layout = this.layoutById(want);
+    select.value = this.layout.id;
+  }
+
+  private layoutById(id: string | null): PaintLayout {
+    return this.layouts.find((l) => l.id === id) ?? this.layouts[this.defaultLayout] ?? this.layouts[0];
   }
 
   /** Hiding a paint leaves the pick alone, so double-clicking a shown paint (hide, show) picks it. */
   private toggle(paint: Paint): void {
-    const shown = new Set(this.shown);
-    if (shown.delete(paint.id)) {
-      this.show(shown);
+    if (this.selection.has(paint.id)) {
+      this.selection.remove([paint.id]);
     } else {
-      shown.add(paint.id);
-      this.show(shown);
+      this.selection.add([paint.id]);
       pickPaint(this.store, paint);
     }
   }
 
-  private show(ids: Iterable<string>): void {
-    this.shown = new Set(ids);
-    const paints = this.ids.filter((id) => this.shown.has(id)).map((id) => PAINTS.get(id)!);
-    this.store.set({ paints });
-    this.count.textContent = `${paints.length} of ${this.ids.length} shown`;
+  private showSelection(): void {
+    const shown = new Set(this.selection.get());
+    const ids = this.ids.filter((id) => shown.has(id));
+    if (this.owned) this.store.set({ paints: ids.map((id) => PAINTS.get(id)!) });
+    this.count.textContent = `${ids.length} of ${this.ids.length} ${this.owned ? 'shown' : 'selected'}`;
     for (const button of this.grid.querySelectorAll<HTMLButtonElement>('.swatch')) {
-      button.setAttribute('aria-pressed', String(this.shown.has(button.dataset.id!)));
+      button.setAttribute('aria-pressed', String(shown.has(button.dataset.id!)));
     }
   }
 
@@ -152,7 +192,7 @@ export class SwatchPane {
         name.toLowerCase().includes(kind.toLowerCase()) ? `${code} ${name}` : `${code} ${name} (${kind})`,
       );
       this.note.textContent =
-        `The paints of ${this.layout.source}, by code.` +
+        (this.layout.note ?? `The paints of ${this.layout.source}, by code.`) +
         (missing.length
           ? ` Also in the ${set}, but not in the data: ${missing.join(', ').replace(/, (?=[^,]*$)/, ' and ')}.`
           : '');
@@ -171,7 +211,8 @@ export class SwatchPane {
       this.note.textContent = `Order as printed in ${this.layout.source}.`;
     }
     this.ids = [...new Set(sections.flatMap((s) => s.rows.flat()))];
-    this.show(this.ids);
+    if (this.owned) this.selection.set(this.ids);
+    this.showSelection();
     this.markPicked();
   }
 
@@ -223,17 +264,17 @@ function sectionSelect(section: number, select: 'all' | 'none', title: string): 
   return button;
 }
 
-function readStoredLayout(): string | null {
+function readStoredLayout(key: string): string | null {
   try {
-    return localStorage.getItem(STORAGE_KEY);
+    return localStorage.getItem(key);
   } catch {
     return null;
   }
 }
 
-function storeLayout(id: string): void {
+function storeLayout(key: string, id: string): void {
   try {
-    localStorage.setItem(STORAGE_KEY, id);
+    localStorage.setItem(key, id);
   } catch {
     // Storage can be unavailable (private mode, blocked site data); the choice just isn't remembered.
   }

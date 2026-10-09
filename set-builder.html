@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Set Builder · OKLCh Atlas</title>
+    <meta name="description" content="Build your own set of Vallejo and Kimera paints from their charts and sets, see its hull against Pointer's gamut in OKLab, save it in the browser or export it as JSON." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead">
+        <nav class="site-nav" aria-label="Pages">
+          <a href="./">OKLCh Atlas</a>
+          <a href="./set-builder.html" aria-current="page">Set Builder</a>
+        </nav>
+        <h1>Set Builder</h1>
+        <p class="lede">
+          Put together your own set of paints. Choose a chart or a set in each of the three columns and click paints
+          to add them to your set or take them out. The solid shows how far the set reaches. Save the set in this
+          browser, where it appears under Custom sets in every layout select, or export it for the data.
+        </p>
+      </header>
+
+      <div class="builder">
+        <div class="builder-columns">
+          <aside class="swatch-pane builder-pane" aria-label="Paints, column 1" data-pane></aside>
+          <aside class="swatch-pane builder-pane" aria-label="Paints, column 2" data-pane></aside>
+          <aside class="swatch-pane builder-pane" aria-label="Paints, column 3" data-pane></aside>
+
+          <section class="panel builder-solid" aria-labelledby="solid-title">
+            <header class="panel-head">
+              <h2 id="solid-title">Gamut solid</h2>
+              <button type="button" class="button panel-head-action" id="reset-view">Reset view</button>
+            </header>
+            <div class="plot plot-solid" id="solid-host"></div>
+            <div class="panel-foot">
+              <div class="shape-controls">
+                <div class="shape-group">
+                  <span class="eyebrow" aria-hidden="true">Color space</span>
+                  <fieldset class="segmented" id="gamut">
+                    <legend class="sr-only">Color space</legend>
+                    <input type="radio" name="gamut" id="gamut-srgb" value="srgb" />
+                    <label for="gamut-srgb">sRGB</label>
+                    <input type="radio" name="gamut" id="gamut-pointer" value="pointer" />
+                    <label for="gamut-pointer">Pointer's</label>
+                  </fieldset>
+                  <fieldset class="segmented" id="gamut-style">
+                    <legend class="sr-only">Draw the color space as</legend>
+                    <input type="radio" name="gamut-style" id="gamut-wireframe" value="wireframe" />
+                    <label for="gamut-wireframe">Wireframe</label>
+                    <input type="radio" name="gamut-style" id="gamut-solid" value="solid" />
+                    <label for="gamut-solid">Solid</label>
+                  </fieldset>
+                </div>
+                <div class="shape-group">
+                  <span class="eyebrow" aria-hidden="true">Paint hull</span>
+                  <fieldset class="segmented" id="hull">
+                    <legend class="sr-only">Hull of the selected paints</legend>
+                    <input type="radio" name="hull" id="hull-on" value="on" />
+                    <label for="hull-on">On</label>
+                    <input type="radio" name="hull" id="hull-off" value="off" />
+                    <label for="hull-off">Off</label>
+                  </fieldset>
+                  <fieldset class="segmented" id="hull-style">
+                    <legend class="sr-only">Draw the paint hull as</legend>
+                    <input type="radio" name="hull-style" id="hull-wireframe" value="wireframe" />
+                    <label for="hull-wireframe">Wireframe</label>
+                    <input type="radio" name="hull-style" id="hull-solid" value="solid" />
+                    <label for="hull-solid">Solid</label>
+                  </fieldset>
+                </div>
+              </div>
+              <p class="stat" id="solid-stat"></p>
+              <p class="stat">
+                The dots are the paints of your set, and the hull is the smallest convex solid around them. Drag to
+                orbit, scroll to zoom.
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <section class="builder-set" aria-labelledby="set-title">
+          <header class="panel-head">
+            <h2 id="set-title">Your set</h2>
+            <output class="stat mono" id="set-count"></output>
+          </header>
+          <div class="set-fields">
+            <label class="set-field">
+              <span class="slider-label">Editing</span>
+              <select class="select" id="set-open"></select>
+            </label>
+            <label class="set-field">
+              <span class="slider-label">Name</span>
+              <input type="text" class="text-input" id="set-name" placeholder="Untitled set" maxlength="80" autocomplete="off" />
+            </label>
+          </div>
+          <div class="controls">
+            <button type="button" class="button" id="set-save">Save</button>
+            <button type="button" class="button" id="set-save-as">Save As</button>
+            <button type="button" class="button" id="set-export" aria-expanded="false" aria-controls="export">Export</button>
+            <button type="button" class="button" id="set-clear">Clear</button>
+            <button type="button" class="button" id="set-delete">Delete</button>
+            <output class="stat" id="set-status" aria-live="polite"></output>
+          </div>
+
+          <div class="export" id="export" hidden>
+            <p class="stat">
+              The set as an entry of <code>data/vallejo-sets.json</code>. Paste it into that file after the last
+              custom set, with a comma after the entry before it, and it shows up under Custom sets for everyone.
+            </p>
+            <textarea class="export-text mono" id="export-text" rows="5" readonly spellcheck="false" aria-label="Set as JSON"></textarea>
+            <div class="controls">
+              <button type="button" class="button" id="export-copy">Copy</button>
+              <button type="button" class="button" id="export-close">Close</button>
+            </div>
+          </div>
+
+          <p class="stat" id="set-empty">No paints yet. Click paints in the columns above to add them.</p>
+          <ol class="picked-grid" id="set-grid"></ol>
+          <p class="stat" id="set-hint">In the order you added them. Click a paint here to take it out of the set.</p>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="/src/setBuilder.ts"></script>
+  </body>
+</html>
