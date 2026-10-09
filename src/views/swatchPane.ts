@@ -1,17 +1,9 @@
-import { CUSTOM_SET_LAYOUTS, SET_LAYOUTS } from '../paints/sets';
-import { LAYOUTS, type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
+import { ALL_LAYOUTS, appendLayoutGroups } from '../paints/sets';
+import { type Paint, type PaintLayout, PAINTS, paintLabel } from '../paints/vallejo';
 import { type Store, pickPaint } from '../state';
 import type { HoverHandler } from './slicePlot';
 
 const STORAGE_KEY = 'color-tools.vallejo-layout';
-
-/** The select's option groups. */
-const GROUPS: [label: string, layouts: readonly PaintLayout[]][] = [
-  ['Charts and images', LAYOUTS],
-  ['Paint sets', SET_LAYOUTS],
-  ['Custom sets', CUSTOM_SET_LAYOUTS],
-];
-const ALL_LAYOUTS = GROUPS.flatMap(([, layouts]) => layouts);
 
 export interface SwatchPaneElements {
   grid: HTMLElement;
@@ -50,12 +42,7 @@ export class SwatchPane {
     this.grid = grid;
     this.note = note;
     this.count = count;
-    for (const [label, layouts] of GROUPS) {
-      const group = document.createElement('optgroup');
-      group.label = label;
-      for (const layout of layouts) group.append(new Option(layout.title, layout.id));
-      select.append(group);
-    }
+    appendLayoutGroups(select);
     this.layout = ALL_LAYOUTS.find((l) => l.id === readStoredLayout()) ?? ALL_LAYOUTS[0];
     select.value = this.layout.id;
     select.addEventListener('change', () => {

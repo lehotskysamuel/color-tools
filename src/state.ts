@@ -35,6 +35,29 @@ export interface AppState {
   hullStyle: ShapeStyle;
 }
 
+// Start on the blue / amber hue plane: its two halves peak at very different lightness,
+// which is the clearest picture of why HSL's "same lightness" is misleading.
+const START_H = 264;
+// The first pick is the neutral gray at mid lightness. It lies on the gray axis, so it is in every hue slice.
+const START_L = 0.5;
+
+/** The deep-dive's starting state. The set comparator draws every set in it. */
+export function initialState(paints: readonly Paint[] = []): AppState {
+  return {
+    L: START_L,
+    h: START_H,
+    pick: [START_L, 0, 0],
+    pickPaint: null,
+    paints,
+    hover: null,
+    cut: 'whole',
+    gamut: 'pointer',
+    gamutStyle: 'wireframe',
+    hull: true,
+    hullStyle: 'solid',
+  };
+}
+
 export type Listener = (state: AppState, changed: Set<keyof AppState>) => void;
 
 export interface Store {

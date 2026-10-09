@@ -1,5 +1,5 @@
 import setData from '../../data/vallejo-sets.json';
-import type { OffCatalogItem, PaintLayout } from './vallejo';
+import { LAYOUTS, type OffCatalogItem, type PaintLayout } from './vallejo';
 
 /** A boxed set of paints as Vallejo sells it. See the `data/vallejo-sets.json` section of the README. */
 export interface PaintSet {
@@ -60,3 +60,22 @@ export const SET_LAYOUTS: readonly PaintLayout[] = [...SETS.values()].map((set) 
 export const CUSTOM_SET_LAYOUTS: readonly PaintLayout[] = [...CUSTOM_SETS.values()].map((custom) =>
   setLayout(custom.id, custom.title, customSetParts(custom)),
 );
+
+/** The groups of the layout selects: the atlas's paint pane, the set comparator and the difference matrix. */
+export const LAYOUT_GROUPS: readonly (readonly [label: string, layouts: readonly PaintLayout[]])[] = [
+  ['Charts and images', LAYOUTS],
+  ['Paint sets', SET_LAYOUTS],
+  ['Custom sets', CUSTOM_SET_LAYOUTS],
+];
+
+export const ALL_LAYOUTS: readonly PaintLayout[] = LAYOUT_GROUPS.flatMap(([, layouts]) => layouts);
+
+/** Adds one option group per entry of LAYOUT_GROUPS to a select. */
+export function appendLayoutGroups(select: HTMLSelectElement): void {
+  for (const [label, layouts] of LAYOUT_GROUPS) {
+    const group = document.createElement('optgroup');
+    group.label = label;
+    for (const layout of layouts) group.append(new Option(layout.title, layout.id));
+    select.append(group);
+  }
+}
