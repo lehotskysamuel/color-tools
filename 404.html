@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OKLCh Atlas</title>
+    <script>
+      // Anything missing outside main/ (for example a preview removed after its PR closed)
+      // goes to the main version. A missing page inside main/ stays here, so this can't loop.
+      var main = '/color-tools/main/';
+      if (location.pathname.indexOf(main) !== 0) location.replace(main);
+    </script>
+    <style>
+      body { font: 15px/1.5 system-ui, sans-serif; margin: 40px 16px; background: #ececec; color: #141414; }
+      @media (prefers-color-scheme: dark) { body { background: #111; color: #ededed; } a { color: inherit; } }
+    </style>
+  </head>
+  <body>
+    <h1>Page not found</h1>
+    <p>Try <a href="/color-tools/main/">the main version</a>.</p>
+  </body>
+</html>
