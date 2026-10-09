@@ -112,13 +112,5 @@
       {"code": "72.610", "name": "Galvanic Corrosion", "kind": "Special FX"},
       {"code": "72.650", "name": "Gloss Polyurethane Varnish", "kind": "varnish"}
     ]
-  },
-  "squidmarV1": {
-    "title": "Squidmar v1",
-    "sets": ["squidmarEssential", "squidmarDarkFuture", "squidmarFantasy"]
-  },
-  "squidmarV2": {
-    "title": "Squidmar v2",
-    "sets": ["squidmarEssential", "squidmarDarkFuture", "squidmarFantasy", "squidmarSpecialFx"]
   }
 }

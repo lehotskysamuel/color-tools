@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { type KeyValueStorage, customSetLayouts, deleteSet, exportSet, readSavedSets, saveSet, setKey } from './customSets';
-import { BUILT_SETS, CUSTOM_SETS, SETS, SET_KEYS } from './sets';
+import {
+  type KeyValueStorage,
+  customSetLayouts,
+  deleteSet,
+  exportPath,
+  exportSet,
+  readSavedSets,
+  saveSet,
+  setKey,
+} from './customSets';
+import { BUILT_SETS, CUSTOM_SETS, SETS, SET_KEYS, dataSetColors } from './sets';
 import { PAINTS } from './vallejo';
 
 function memoryStorage(): KeyValueStorage {
@@ -50,15 +59,36 @@ describe('custom sets saved in the browser', () => {
     expect(mine.note).toContain('1 of its paints is no longer in the data');
   });
 
-  it('exports an entry that reads back as the set', () => {
+  it('exports a file that reads back as the set', () => {
     const set = { title: 'My "set"', colors: ['72.001', 'The Red'] };
-    const text = exportSet('mySet', set);
-    expect(text.startsWith('  "mySet": {\n    "title"')).toBe(true);
-    expect(JSON.parse(`{${text}}`)).toEqual({ mySet: set });
+    expect(exportPath('mySet')).toBe('data/custom-sets/mySet.json');
+    const text = exportSet(set);
+    expect(text.startsWith('{\n  "title"')).toBe(true);
+    expect(JSON.parse(text)).toEqual(set);
   });
 });
 
-describe('custom sets built from colors in the data', () => {
+describe('custom sets in data/custom-sets', () => {
+  it('reads every file, keyed by its name, as one kind of custom set', () => {
+    const files = import.meta.glob<object>('../../data/custom-sets/*', { eager: true, import: 'default' });
+    const names = Object.keys(files).map((path) => path.replace(/^.*\//, ''));
+    expect(names.filter((name) => !/^[a-z][A-Za-z0-9]*\.json$/.test(name))).toEqual([]);
+    for (const set of Object.values(files)) {
+      expect(Object.keys(set).sort()).toSatisfy((keys: string[]) => keys.join() === 'colors,title' || keys.join() === 'sets,title');
+    }
+    expect([...CUSTOM_SETS.keys(), ...BUILT_SETS.keys()].length).toBe(names.length);
+    expect(CUSTOM_SETS.has('squidmarV1') && CUSTOM_SETS.has('squidmarV2')).toBe(true);
+    expect(SET_KEYS.has('squidmarV1') && SET_KEYS.has('bsl')).toBe(true);
+  });
+
+  it("opens a custom set of sets as its sets' colors, once each", () => {
+    const colors = dataSetColors('squidmarV1')!;
+    expect(colors.length).toBe(31);
+    expect(new Set(colors).size).toBe(colors.length);
+    expect(dataSetColors('bsl')).toBeUndefined();
+  });
+
+
   it('lists catalog paints, once each, and is no paint set or custom set of sets', () => {
     for (const set of BUILT_SETS.values()) {
       expect(set.colors.filter((id) => !PAINTS.has(id))).toEqual([]);

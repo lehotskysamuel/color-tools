@@ -13,7 +13,10 @@ export interface PaintSet {
   notInCatalog: OffCatalogItem[];
 }
 
-/** Several sets as one. It lists sets, not colors: its colors are always read from those sets. */
+/**
+ * Several sets as one, from a file in `data/custom-sets/`. It lists sets, not colors: its colors are always read
+ * from those sets.
+ */
 export interface CustomSet {
   id: string;
   title: string;
@@ -21,7 +24,7 @@ export interface CustomSet {
   sets: string[];
 }
 
-/** Paints picked one by one in the Set Builder. Unlike a paint set it has no code. */
+/** Paints picked one by one in the Set Builder, saved in the browser or as a file in `data/custom-sets/`. */
 export interface BuiltSet {
   id: string;
   title: string;
@@ -29,25 +32,38 @@ export interface BuiltSet {
   colors: string[];
 }
 
-type RawSet = Omit<PaintSet, 'id'> | Omit<CustomSet, 'id'> | Omit<BuiltSet, 'id'>;
-
-const entries = Object.entries(setData as Record<string, RawSet>);
+type RawCustomSet = Omit<CustomSet, 'id'> | Omit<BuiltSet, 'id'>;
 
 export const SETS: ReadonlyMap<string, PaintSet> = new Map(
-  entries.flatMap(([id, set]) => ('code' in set ? [[id, { id, ...set }] as const] : [])),
+  Object.entries(setData as Record<string, Omit<PaintSet, 'id'>>).map(([id, set]) => [id, { id, ...set }]),
 );
 
+/** Every file of `data/custom-sets/`, keyed by its name without `.json`, in name order. */
+const customFiles: [string, RawCustomSet][] = Object.entries(
+  import.meta.glob<RawCustomSet>('../../data/custom-sets/*.json', { eager: true, import: 'default' }),
+)
+  .map(([path, set]): [string, RawCustomSet] => [path.replace(/^.*\/|\.json$/g, ''), set])
+  .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+
 export const CUSTOM_SETS: ReadonlyMap<string, CustomSet> = new Map(
-  entries.flatMap(([id, set]) => ('sets' in set ? [[id, { id, ...set }] as const] : [])),
+  customFiles.flatMap(([id, set]) => ('sets' in set ? [[id, { id, ...set }] as const] : [])),
 );
 
 /** Built sets that are part of the data, read only. Those saved in the browser are in ./customSets.ts. */
 export const BUILT_SETS: ReadonlyMap<string, BuiltSet> = new Map(
-  entries.flatMap(([id, set]) => (!('code' in set) && 'colors' in set ? [[id, { id, ...set }] as const] : [])),
+  customFiles.flatMap(([id, set]) => ('colors' in set ? [[id, { id, ...set }] as const] : [])),
 );
 
-/** Every key of the file, which a new set's key must not repeat. */
-export const SET_KEYS: ReadonlySet<string> = new Set(entries.map(([id]) => id));
+/** Every key of a set or a custom set in the data, which a new set's key must not repeat. */
+export const SET_KEYS: ReadonlySet<string> = new Set([...SETS.keys(), ...customFiles.map(([id]) => id)]);
+
+/** The colors of any custom set from the data, once each: a built set's own, or those of a custom set's sets. */
+export function dataSetColors(id: string): string[] | undefined {
+  const built = BUILT_SETS.get(id);
+  if (built) return built.colors.filter((key) => PAINTS.has(key));
+  const custom = CUSTOM_SETS.get(id);
+  return custom && [...new Set(customSetParts(custom).flatMap((set) => set.colors))];
+}
 
 /** The sets a custom set is made of, with their colors. */
 export function customSetParts(custom: CustomSet): PaintSet[] {

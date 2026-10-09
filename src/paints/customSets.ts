@@ -1,8 +1,8 @@
 /**
  * Custom sets saved in this browser by the Set Builder, and every custom set as layouts for the swatch pane.
  *
- * Saved sets live in localStorage as one JSON object, keyed the way `data/vallejo-sets.json` is and with the same
- * entry shape, so an exported set can be pasted into the data as it is.
+ * Saved sets live in localStorage as one JSON object of `{ title, colors }`, keyed like the files of
+ * `data/custom-sets/`, so an exported set can be saved there as it is.
  */
 import { type BuiltSet, CUSTOM_SET_LAYOUTS, SET_KEYS, builtSetLayout } from './sets';
 import type { PaintLayout } from './vallejo';
@@ -94,10 +94,15 @@ export function setKey(title: string, taken: ReadonlySet<string>): string {
   return key;
 }
 
-/** The set as an entry of `data/vallejo-sets.json`, indented and formatted like the entries there. */
-export function exportSet(key: string, set: SavedSet): string {
+/** Where an exported set goes in the repository. */
+export function exportPath(key: string): string {
+  return `data/custom-sets/${key}.json`;
+}
+
+/** The set as the contents of its file in `data/custom-sets/`, formatted like the files there. */
+export function exportSet(set: SavedSet): string {
   const colors = set.colors.map((c) => JSON.stringify(c)).join(', ');
-  return `  "${key}": {\n    "title": ${JSON.stringify(set.title)},\n    "colors": [${colors}]\n  }`;
+  return `{\n  "title": ${JSON.stringify(set.title)},\n  "colors": [${colors}]\n}\n`;
 }
 
 export function savedSetLayoutId(key: string): string {

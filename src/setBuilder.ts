@@ -2,13 +2,14 @@ import './style.css';
 import {
   type SavedSet,
   deleteSet,
+  exportPath,
   exportSet,
   onSavedSetsChange,
   readSavedSets,
   saveSet,
   setKey,
 } from './paints/customSets';
-import { SET_KEYS } from './paints/sets';
+import { BUILT_SETS, CUSTOM_SETS, SET_KEYS, dataSetColors } from './paints/sets';
 import { type Paint, PAINTS, paintLabel } from './paints/vallejo';
 import { Selection } from './selection';
 import { createStore } from './state';
@@ -101,7 +102,7 @@ function sizeSolid(): void {
 }
 new ResizeObserver(sizeSolid).observe(solidHost);
 
-// The set: which saved set it is, if any, and what it held when it was last opened or saved.
+// The set: where it was opened from, if anywhere, and what it held when it was last opened or saved.
 const openSelect = $<HTMLSelectElement>('set-open');
 const nameInput = $<HTMLInputElement>('set-name');
 const saveButton = $<HTMLButtonElement>('set-save');
@@ -114,11 +115,38 @@ const count = $<HTMLOutputElement>('set-count');
 const grid = $<HTMLOListElement>('set-grid');
 const exportBox = $('export');
 const exportText = $<HTMLTextAreaElement>('export-text');
+const exportPathOut = $('export-path');
 
-/** Key of the saved set being edited, or null for a new set. */
-let editing: string | null = null;
+/**
+ * What the set on screen was opened from: a set saved in this browser, which Save overwrites, a custom set of the
+ * data, which is read-only so only Save As keeps it, or nothing for a new set.
+ */
+type Source = { kind: 'saved' | 'data'; key: string } | null;
+
+let source: Source = null;
 let baseline: SavedSet = { title: '', colors: [] };
 let message = '';
+
+/** The option value of a source in the Editing select: "saved:key", "data:key" or "" for a new set. */
+const sourceValue = (s: Source) => (s ? `${s.kind}:${s.key}` : '');
+
+/** The set a source holds, or undefined when it no longer exists. */
+function sourceSet(s: Source): SavedSet | undefined {
+  if (!s) return undefined;
+  if (s.kind === 'saved') {
+    const set = readSavedSets().get(s.key);
+    return set && { title: set.title, colors: set.colors.filter((id) => PAINTS.has(id)) };
+  }
+  const title = (CUSTOM_SETS.get(s.key) ?? BUILT_SETS.get(s.key))?.title;
+  const colors = dataSetColors(s.key);
+  return title !== undefined && colors ? { title, colors } : undefined;
+}
+
+function parseSource(value: unknown): Source {
+  const match = typeof value === 'string' ? /^(saved|data):(.+)$/.exec(value) : null;
+  const s: Source = match ? { kind: match[1] as 'saved' | 'data', key: match[2] } : null;
+  return sourceSet(s) ? s : null;
+}
 
 const title = () => nameInput.value.trim();
 const current = (): SavedSet => ({ title: title() || UNTITLED, colors: [...selection.get()] });
@@ -127,38 +155,53 @@ const sameColors = (a: readonly string[], b: readonly string[]) =>
 const isDirty = () => title() !== baseline.title || !sameColors(selection.get(), baseline.colors);
 
 function fillOpenSelect(): void {
+  const group = (label: string, options: [value: string, title: string][]) => {
+    const el = document.createElement('optgroup');
+    el.label = label;
+    for (const [value, title] of options) el.append(new Option(title, value));
+    if (options.length > 0) openSelect.append(el);
+  };
   openSelect.replaceChildren(new Option('New set', ''));
-  for (const [key, set] of readSavedSets()) openSelect.append(new Option(set.title, key));
-  // A set deleted in another tab is no longer saved; what is on screen stays, as a new set.
-  if (editing && !readSavedSets().has(editing)) {
-    editing = null;
+  group(
+    'Saved in this browser',
+    [...readSavedSets()].map(([key, set]) => [sourceValue({ kind: 'saved', key }), set.title]),
+  );
+  group(
+    'From the data, read-only',
+    [...CUSTOM_SETS.values(), ...BUILT_SETS.values()].map((set) => [sourceValue({ kind: 'data', key: set.id }), set.title]),
+  );
+  // A set deleted in another tab no longer exists; what is on screen stays, as a new set.
+  if (!sourceSet(source)) {
+    source = null;
     baseline = { title: '', colors: [] };
   }
-  openSelect.value = editing ?? '';
+  openSelect.value = sourceValue(source);
 }
 
-function open(key: string | null): void {
-  const set = key ? readSavedSets().get(key) : undefined;
-  editing = set ? key : null;
-  baseline = set ? { title: set.title, colors: set.colors.filter((id) => PAINTS.has(id)) } : { title: '', colors: [] };
+function open(next: Source): void {
+  const set = sourceSet(next);
+  source = set ? next : null;
+  baseline = set ?? { title: '', colors: [] };
   nameInput.value = baseline.title;
   message = '';
   selection.set(baseline.colors);
-  openSelect.value = editing ?? '';
+  openSelect.value = sourceValue(source);
   render();
 }
 
 function save(asNew: boolean): void {
+  // A set of the data is read-only: it can only be saved as a new set in this browser.
+  if (source?.kind === 'data') asNew = true;
   const set = current();
-  // Save As from a saved set under its own name would list two sets of that name.
-  if (asNew && editing && set.title === baseline.title) set.title = `${set.title} (copy)`;
-  const key = saveSet(asNew ? null : editing, set);
+  // Save As under the name of the set it was opened from would list two sets of that name.
+  if (asNew && source && set.title === baseline.title) set.title = `${set.title} (copy)`;
+  const key = saveSet(asNew ? null : (source?.key ?? null), set);
   if (!key) {
     message = 'Not saved: this browser does not allow the page to store data.';
     render();
     return;
   }
-  editing = key;
+  source = { kind: 'saved', key };
   baseline = set;
   nameInput.value = set.title;
   message = asNew ? `Saved as “${set.title}”.` : 'Saved.';
@@ -168,31 +211,33 @@ function save(asNew: boolean): void {
 }
 
 openSelect.addEventListener('change', () => {
-  const key = openSelect.value || null;
   if (isDirty() && selection.get().length > 0 && !confirm('Discard the changes to this set?')) {
-    openSelect.value = editing ?? '';
+    openSelect.value = sourceValue(source);
     return;
   }
-  open(key);
+  open(parseSource(openSelect.value));
 });
 nameInput.addEventListener('input', () => {
   message = '';
   render();
 });
 nameInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !saveButton.disabled) save(editing === null);
+  if (e.key !== 'Enter') return;
+  if (!saveButton.disabled) save(source === null);
+  else if (source?.kind === 'data' && !saveAsButton.disabled) save(true);
 });
-saveButton.addEventListener('click', () => save(editing === null));
+saveButton.addEventListener('click', () => save(source === null));
 saveAsButton.addEventListener('click', () => save(true));
 clearButton.addEventListener('click', () => {
   const n = selection.get().length;
   if (n > 0 && confirm(`Take all ${n} paints out of the set?`)) selection.set([]);
 });
 deleteButton.addEventListener('click', () => {
-  if (!editing || !confirm(`Delete “${baseline.title}” from this browser? The paints stay selected.`)) return;
+  if (source?.kind !== 'saved') return;
+  if (!confirm(`Delete “${baseline.title}” from this browser? The paints stay selected.`)) return;
   const was = baseline.title;
-  deleteSet(editing);
-  editing = null;
+  deleteSet(source.key);
+  source = null;
   baseline = { title: '', colors: [] };
   message = `Deleted “${was}”. Save As keeps these paints as a new set.`;
   fillOpenSelect();
@@ -280,18 +325,32 @@ function render(): void {
   count.value = `${n} paint${n === 1 ? '' : 's'}`;
   $('set-empty').hidden = n > 0;
   $('set-hint').hidden = n === 0;
-  saveButton.disabled = n === 0 || (editing !== null && !dirty);
+  const readOnly = source?.kind === 'data';
+  saveButton.disabled = n === 0 || readOnly || (source !== null && !dirty);
   saveAsButton.disabled = n === 0;
-  deleteButton.disabled = editing === null;
+  deleteButton.disabled = source?.kind !== 'saved';
   clearButton.disabled = n === 0;
   exportButton.setAttribute('aria-expanded', String(!exportBox.hidden));
   if (!exportBox.hidden) {
     const set = current();
-    exportText.value = exportSet(editing ?? setKey(set.title, new Set([...SET_KEYS, ...readSavedSets().keys()])), set);
+    // A saved set or a built set of the data keeps its key, so exporting it again replaces its file. A custom set of
+    // sets gets a new one: its file stays as it is, reading its colors from its sets.
+    const keep = source && !(source.kind === 'data' && CUSTOM_SETS.has(source.key));
+    const key = keep ? source!.key : setKey(set.title, new Set([...SET_KEYS, ...readSavedSets().keys()]));
+    exportPathOut.textContent = exportPath(key);
+    exportText.value = exportSet(set);
   }
   status.value =
     message ||
-    (editing === null ? (n > 0 ? 'Not saved yet.' : '') : dirty ? 'Unsaved changes.' : 'Saved in this browser.');
+    (readOnly
+      ? `Read-only set from the data. Save As keeps ${dirty ? 'your changes' : 'a copy'} in this browser.`
+      : source === null
+        ? n > 0
+          ? 'Not saved yet.'
+          : ''
+        : dirty
+          ? 'Unsaved changes.'
+          : 'Saved in this browser.');
   storeDraft();
 }
 
@@ -310,7 +369,8 @@ onSavedSetsChange(() => {
 
 function storeDraft(): void {
   try {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify({ editing, title: nameInput.value, colors: selection.get() }));
+    const draft = { source: sourceValue(source), title: nameInput.value, colors: selection.get() };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
   } catch {
     // Without storage the draft is simply not kept.
   }
@@ -318,14 +378,13 @@ function storeDraft(): void {
 
 /** Restores the set that was on screen at the last visit. */
 function restoreDraft(): void {
-  let draft: { editing?: unknown; title?: unknown; colors?: unknown } = {};
+  let draft: { source?: unknown; title?: unknown; colors?: unknown } = {};
   try {
     draft = JSON.parse(localStorage.getItem(DRAFT_KEY) ?? '{}') ?? {};
   } catch {
     // No storage or a damaged draft: start empty.
   }
-  const saved = readSavedSets();
-  open(typeof draft.editing === 'string' && saved.has(draft.editing) ? draft.editing : null);
+  open(parseSource(draft.source));
   if (typeof draft.title === 'string') nameInput.value = draft.title;
   if (Array.isArray(draft.colors)) selection.set(draft.colors.filter((id) => typeof id === 'string' && PAINTS.has(id)));
   render();
