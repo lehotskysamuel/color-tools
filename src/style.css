@@ -127,12 +127,20 @@ body {
   color: var(--ink-2);
 }
 
-/* Links between the pages */
+/* Links between the pages, and the page's Sort by select in the top right corner */
+.masthead-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 4px;
+}
+
 .site-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 16px;
-  margin-bottom: 4px;
   font-size: 13px;
 }
 
@@ -156,6 +164,13 @@ body {
 .site-nav a:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
+}
+
+.sort-by {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
 }
 
 /*
@@ -257,6 +272,11 @@ body {
   max-height: calc(100dvh - 24px);
   overflow-y: auto;
   display: grid;
+  /*
+   * A definite column: sized from its content, the flowing square swatches (.swatch-flow) made it measure the
+   * controls too wide, so their rows came out too short once the pane scrolled and the controls overlapped.
+   */
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   padding: 16px;
   background: var(--surface);
@@ -303,10 +323,20 @@ body {
   border-radius: 4px;
 }
 
-/* Sets: no printed rows, so the swatches flow across the pane, about as large as a chart's. */
+/* Sets and sorted paints: no printed rows, so the swatches flow across the pane, about as large as a chart's. */
 .swatch-flow {
   grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
   justify-self: stretch;
+}
+
+/*
+ * Between the buckets of a two-level sort: a line across the chart, like <hr>, so each bucket starts a row of its
+ * own. The stage is the same gray in both themes, so the line's color is fixed.
+ */
+.swatch-break {
+  grid-column: 1 / -1;
+  margin-block: 2px;
+  border-top: 1px solid rgb(0 0 0 / 0.3);
 }
 
 /* A section's heading on the surface, above its chart. */

@@ -17,6 +17,7 @@ import { HueSlice } from './views/hueSlice';
 import { LightnessSlice } from './views/lightnessSlice';
 import { SHAPE_CONTROLS, bindSegmented } from './views/segmented';
 import { SetComparator } from './views/setComparator';
+import { bindSortSelect } from './views/sortSelect';
 import { SwatchPane } from './views/swatchPane';
 import { createTooltip, pickHoverHandler } from './views/tooltip';
 
@@ -34,6 +35,10 @@ const solid = new GamutSolid(solidHost, store, lightness.image, hue.image, { sta
 lightness.onImageChange = () => solid.lightnessImageChanged();
 hue.onImageChange = () => solid.hueImageChanged();
 
+// Only the deep-dive has a paint grid; the comparator hides the select.
+const sortBy = $('sort-by');
+const sort = bindSortSelect($<HTMLSelectElement>('sort-select'));
+
 const swatches = new SwatchPane(
   {
     grid: $('swatch-grid'),
@@ -44,7 +49,7 @@ const swatches = new SwatchPane(
     showNone: $<HTMLButtonElement>('show-none'),
   },
   store,
-  { storageKey: 'color-tools.vallejo-layout' },
+  { storageKey: 'color-tools.vallejo-layout', sort },
 );
 // Sets saved in the Set Builder, in another tab, show up in the layout select.
 onSavedSetsChange(() => swatches.refreshLayouts());
@@ -157,6 +162,7 @@ document.fonts?.ready.then(() => {
 let comparator: SetComparator | null = null;
 initViews((view) => {
   tooltip.hide();
+  sortBy.hidden = view === 'compare';
   if (view !== 'compare') return;
   comparator ??= new SetComparator(
     {

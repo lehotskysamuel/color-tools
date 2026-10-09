@@ -15,6 +15,7 @@ import { Selection } from './selection';
 import { createStore, initialState } from './state';
 import { GamutSolid } from './views/gamutSolid';
 import { SHAPE_CONTROLS, bindSegmented } from './views/segmented';
+import { bindSortSelect } from './views/sortSelect';
 import { SwatchPane, type SwatchPaneElements } from './views/swatchPane';
 import { createTooltip, pickHoverHandler } from './views/tooltip';
 
@@ -28,12 +29,15 @@ const store = createStore(initialState());
 const selection = new Selection();
 const showHover = pickHoverHandler(store, createTooltip());
 
-// Three paint columns that share the selection, each with its own layout, starting on the first three charts.
+// Three paint columns that share the selection and the order, each with its own layout, starting on the first
+// three charts. The set itself stays in the order the paints were added.
+const sort = bindSortSelect($<HTMLSelectElement>('sort-select'));
 const panes = [...document.querySelectorAll<HTMLElement>('[data-pane]')].map((host, i) => {
   const pane = new SwatchPane(paneElements(host, i), store, {
     storageKey: `color-tools.set-builder.layout-${i + 1}`,
     defaultLayout: i,
     selection,
+    sort,
   });
   pane.onHover = showHover;
   return pane;
@@ -290,7 +294,7 @@ function renderGrid(): void {
       swatch.type = 'button';
       swatch.className = 'picked-swatch';
       swatch.dataset.id = id;
-      swatch.style.backgroundColor = paint.display;
+      swatch.style.backgroundColor = paint.webhex;
       swatch.setAttribute('aria-label', `Remove ${paintLabel(paint)} from the set`);
       const name = document.createElement('span');
       name.className = 'picked-name';
