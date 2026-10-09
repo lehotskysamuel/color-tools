@@ -32,6 +32,7 @@ interface CardContext {
   /** The view a new render starts at, or null for the default. */
   view(): SolidView | null;
   viewChanged(card: SetCard, view: SolidView): void;
+  /** A column switched sets; its new render has not been sized yet. */
   setChanged(): void;
   remove(card: SetCard): void;
 }
@@ -180,7 +181,12 @@ export class SetComparator {
         this.view = view;
         for (const card of this.cards) if (card !== from) card.solid.setView(view);
       },
-      setChanged: () => this.save(),
+      setChanged: () => {
+        // A new render starts at the canvas's default 300×150, and nothing else resizes it when the column keeps
+        // its size, so size it before its first frame.
+        this.layout();
+        this.save();
+      },
       remove: (card) => this.remove(card),
     };
 
