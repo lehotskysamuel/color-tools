@@ -9,7 +9,7 @@ import type { HoverHandler } from './slicePlot';
 import type { Tooltip } from './tooltip';
 
 const STORAGE_KEY = 'color-tools.compared-sets';
-const DEFAULT_SETS = ['gameColor', 'squidmarColorMegaSet'];
+const DEFAULT_SETS = ['gameColor', 'squidmarColor'];
 /** A comparison needs two sets, so the remove buttons show only above this many. */
 const MIN_SETS = 2;
 /** Each render has its own WebGL context, and a page gets only about 16; the deep-dive's solid takes one. */

@@ -5,13 +5,18 @@ import { LAYOUTS, PAINTS } from './vallejo';
 describe('Vallejo paint sets', () => {
   it('has every set of the source table, with all of its items', () => {
     const sizes = Object.fromEntries(
-      [...SETS.values()].map((set) => [`${set.code} ${set.title}`, set.colors.length + set.notInCatalog.length]),
+      [...SETS.values()].map((set) => [
+        [set.code, set.title].filter(Boolean).join(' '),
+        set.colors.length + set.notInCatalog.length,
+      ]),
     );
     expect(sizes).toEqual({
       '72.201 Squidmar Essential': 12,
       '72.202 Squidmar Dark Future': 12,
       '72.203 Squidmar Fantasy': 12,
       '72.207 Squidmar Special FX': 12,
+      'Squidmar Color Mega Set': 72,
+      'Squidmar Color Essentials': 30,
       '72.183 Vallejo BSL': 47,
       '72.215 Vallejo Starter Value': 10,
       '72.299 Vallejo Introduction': 16,
@@ -21,6 +26,12 @@ describe('Vallejo paint sets', () => {
       '70.257 Vallejo Wargame Special': 16,
       '72.182 Vallejo Inspiration': 48,
     });
+  });
+
+  it('makes the Squidmar Color Mega Set the whole range, and the Essentials part of it', () => {
+    const range = LAYOUTS.find((l) => l.id === 'squidmarColor')!.sections.flatMap((s) => s.rows.flat());
+    expect(SETS.get('squidmarColorMegaSet')!.colors).toEqual([...range].sort());
+    expect(SETS.get('squidmarColorEssentials')!.colors.filter((code) => !range.includes(code))).toEqual([]);
   });
 
   it('lists a paint under colors exactly when the catalog has it, once, in code order', () => {

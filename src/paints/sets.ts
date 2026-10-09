@@ -5,8 +5,8 @@ import { type OffCatalogItem, type PaintLayout, PAINTS } from './vallejo';
 export interface PaintSet {
   id: string;
   title: string;
-  /** Vallejo's product code for the set. */
-  code: string;
+  /** Vallejo's product code for the set, or null when it has none yet (the Squidmar Color boxes). */
+  code: string | null;
   /** Codes of the set's paints that the catalog has a color for, in code order. */
   colors: string[];
   /** The rest of the set. */
@@ -70,16 +70,19 @@ export function customSetParts(custom: CustomSet): PaintSet[] {
   return custom.sets.map((id) => SETS.get(id)!);
 }
 
-const setTitle = (set: PaintSet) => `${set.title} (${set.code})`;
+const setTitle = (set: PaintSet) => (set.code ? `${set.title} (${set.code})` : set.title);
 
 /** One section per set. Items missing from several sets are listed once. */
 function setLayout(id: string, title: string, parts: PaintSet[]): PaintLayout {
-  const codes = parts.map((set) => set.code).join(', ').replace(/, (?=[^,]*$)/, ' and ');
+  const and = (names: string[]) => names.join(', ').replace(/, (?=[^,]*$)/, ' and ');
+  const coded = parts.every((set) => set.code);
   const notInCatalog = new Map(parts.flatMap((set) => set.notInCatalog.map((item) => [item.code, item] as const)));
   return {
     id,
     title,
-    source: `Vallejo set${parts.length > 1 ? 's' : ''} ${codes}`,
+    source: coded
+      ? `Vallejo set${parts.length > 1 ? 's' : ''} ${and(parts.map((set) => set.code!))}`
+      : and(parts.map((set) => (set.code ? `Vallejo set ${set.code}` : `the ${set.title}`))),
     notInCatalog: [...notInCatalog.values()],
     sections: parts.map((set) => ({ title: setTitle(set), rows: [set.colors] })),
   };

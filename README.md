@@ -82,10 +82,11 @@ gray, CIE L\* 50, in both themes; only the text is on white, or black in the dar
 
 ### Paints
 
-The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. The
-**Layout** select switches between the five layouts in `data/vallejo-layouts.json`: the Game Color chart, the
-Model Color chart, the Squidmar Color Mega Set and Essentials, and the Kimera Kolors base set. Every paint in the
-catalog is in at least one of them. The page remembers the choice in `localStorage`.
+The pane to the left of the views shows the paints from `data/vallejo.json`, laid out as they are printed. Under
+**Ranges**, the **Layout** select switches between the four layouts in `data/vallejo-layouts.json`, one per range:
+the Game Color chart, the Model Color chart, Squidmar Color (all 72 paints, as the Mega Set image prints them) and
+the Kimera Kolors base set. Every paint in the catalog is in one of them. The page remembers the choice in
+`localStorage`.
 
 The same select also offers the boxed **paint sets** of `data/vallejo-sets.json`, the **custom sets** of
 `data/custom-sets/`, and the custom sets saved in this browser by the [Set Builder](#set-builder). A set has
@@ -241,10 +242,10 @@ takes a share of it.
 
 The **Set comparator** tab (`#compare` in the URL, so a reload keeps it and the back button returns to the
 deep-dive) puts paint sets side by side, one column each. Each column has its own **Layout** select, with the same
-layouts as the deep-dive's paint pane: charts and images, paint sets and custom sets. A set counts each of its
+layouts as the deep-dive's paint pane: ranges, paint sets and custom sets. A set counts each of its
 paints once, even when a custom set holds a paint in more than one of its sets.
 
-- It starts with two columns: Game Color chart and Squidmar Color Mega Set.
+- It starts with two columns: Game Color chart and Squidmar Color.
 - **+ Add set** adds a column with the first layout no column shows yet, up to eight columns.
 - With three or more columns, each has a **×** that removes it. Two always stay, since a comparison needs two.
 - The page remembers the columns in `localStorage`.
@@ -475,20 +476,23 @@ node scripts/add-oklch.js data/vallejo.json
 
 ### `data/vallejo-layouts.json`
 
-The order the colors are printed in, as rows of keys (codes, or names for Kimera
-Kolors). Every one is a key in `vallejo.json`.
+One layout per range, in the order its colors are printed, as rows of keys
+(codes, or names for Kimera Kolors). Every one is a key in `vallejo.json`.
 
-| key                       | contents                                              |
-| ------------------------- | ----------------------------------------------------- |
-| `gameColor`               | Game Color chart: main chart, Wash, Fluo, Ink         |
-| `modelColor`              | Model Color chart (its two inks sit in the main grid) |
-| `squidmarColorMegaSet`    | Squidmar Color Mega Set: all 72 paints, by type       |
-| `squidmarColorEssentials` | Squidmar Color Essentials: 30 of the 72, by type      |
-| `kimeraKolorsBaseSet`     | Kimera Kolors base set: 13 paints in 2 rows           |
+| key                   | contents                                                        |
+| --------------------- | --------------------------------------------------------------- |
+| `gameColor`           | Game Color chart: main chart, Wash, Fluo, Ink                   |
+| `modelColor`          | Model Color chart (its two inks sit in the main grid)           |
+| `squidmarColor`       | Squidmar Color: all 72 paints, by type, from the Mega Set image |
+| `kimeraKolorsBaseSet` | Kimera Kolors base set: 13 paints in 2 rows                     |
+
+The two Squidmar Color boxes, the Mega Set and the Essentials, are paint sets
+in [`vallejo-sets.json`](#datavallejo-setsjson). The Mega Set holds the whole
+range, so its image gives the range's layout.
 
 Each layout has `sections`, and each section has `rows`, an array of arrays of
 keys. In the charts a row is one printed row of swatches, and sections carry
-the chart heading as `title`. The Squidmar images have no headings, so their
+the chart heading as `title`. The Squidmar image has no headings, so its
 sections are the paint types, titled like the Game Color chart's: Squidmar
 Color (the 48 plain acrylics), Metallic (74.249–255), Fluo (74.256–260) and Ink
 (74.261–272); Squidmar Color has no washes. Each section keeps the image's rows
@@ -534,9 +538,11 @@ of its two sets, in `data/sources/`: the Mega Set (all 72 paints, headed "72
 New Paints") and the Essentials (30 of them, headed "30 New Paints").
 `scripts/extract_squidmar.py` finds each brush-stroke swatch and takes its
 dominant fill color, ignoring the printed code, the stroke's edges and the
-background. The colors come from the Mega Set image. The Essentials image is
-sampled as a cross-check: its 30 paints agree with the Mega Set values within
-5 RGB units per channel (mean ΔE2000 0.6). Metallics are drawn as gradients,
+background. The colors and the `squidmarColor` layout come from the Mega Set
+image. The Essentials image is sampled as a cross-check: its 30 paints agree
+with the Mega Set values within 5 RGB units per channel (mean ΔE2000 0.6). The
+script also checks that the two sets in `vallejo-sets.json` list the paints of
+their images. Metallics are drawn as gradients,
 so their `rgb` is the gradient's dominant mid-tone. Names are transcribed from
 the images, with `Fluoresc` spelled out as `Fluorescent`.
 
@@ -594,7 +600,8 @@ sets.squidmarFantasy;
 // }
 ```
 
-- `code`: Vallejo's product code for the set.
+- `code`: Vallejo's product code for the set, or `null` for the two Squidmar Color boxes, which have no published
+  code yet (they are released on 30.10.2026). A set without a code is listed by its title alone.
 - `colors`: the set's paints that `vallejo.json` has, in code order. Every code is a key there.
 - `notInCatalog`: the rest of the set, which `vallejo.json` has no color for, with its name and its `kind`:
   `metallic` (left out of the charts' data), `Xpress Color` and `Special FX` (their swatches are gradients and
@@ -604,23 +611,25 @@ sets.squidmarFantasy;
 In the table, *items* counts everything in the set and *drawn*
 the paints with a color in `vallejo.json`, which are the ones the page shows.
 
-| key                  | set                            | items | drawn |
-| -------------------- | ------------------------------ | ----: | ----: |
-| `squidmarEssential`  | 72.201 Squidmar Essential      |    12 |    12 |
-| `squidmarDarkFuture` | 72.202 Squidmar Dark Future    |    12 |     9 |
-| `squidmarFantasy`    | 72.203 Squidmar Fantasy        |    12 |    10 |
-| `squidmarSpecialFx`  | 72.207 Squidmar Special FX     |    12 |    10 |
-| `bsl`                | 72.183 Vallejo BSL             |    47 |    47 |
-| `starterValue`       | 72.215 Vallejo Starter Value   |    10 |     9 |
-| `introduction`       | 72.299 Vallejo Introduction    |    16 |    13 |
-| `advanced`           | 72.298 Vallejo Advanced        |    16 |    13 |
-| `specialist`         | 72.188 Vallejo Specialist      |    16 |    11 |
-| `wargamesBasics`     | 70.260 Vallejo Wargames Basics |     8 |     7 |
-| `wargameSpecial`     | 70.257 Vallejo Wargame Special |    16 |    14 |
-| `inspiration`        | 72.182 Vallejo Inspiration     |    48 |    38 |
+| key                       | set                            | items | drawn |
+| ------------------------- | ------------------------------ | ----: | ----: |
+| `squidmarEssential`       | 72.201 Squidmar Essential      |    12 |    12 |
+| `squidmarDarkFuture`      | 72.202 Squidmar Dark Future    |    12 |     9 |
+| `squidmarFantasy`         | 72.203 Squidmar Fantasy        |    12 |    10 |
+| `squidmarSpecialFx`       | 72.207 Squidmar Special FX     |    12 |    10 |
+| `squidmarColorMegaSet`    | Squidmar Color Mega Set        |    72 |    72 |
+| `squidmarColorEssentials` | Squidmar Color Essentials      |    30 |    30 |
+| `bsl`                     | 72.183 Vallejo BSL             |    47 |    47 |
+| `starterValue`            | 72.215 Vallejo Starter Value   |    10 |     9 |
+| `introduction`            | 72.299 Vallejo Introduction    |    16 |    13 |
+| `advanced`                | 72.298 Vallejo Advanced        |    16 |    13 |
+| `specialist`              | 72.188 Vallejo Specialist      |    16 |    11 |
+| `wargamesBasics`          | 70.260 Vallejo Wargames Basics |     8 |     7 |
+| `wargameSpecial`          | 70.257 Vallejo Wargame Special |    16 |    14 |
+| `inspiration`             | 72.182 Vallejo Inspiration     |    48 |    38 |
 
-The contents come from a comparison table of these twelve sets, compiled from Vallejo's set pages (September
-2026). Names are taken from `vallejo.json`, so where the set pages differ (72.044 "Dark Fleshtone", 72.091 "Sepia
+The contents of the twelve coded sets come from a comparison table compiled from Vallejo's set pages (September
+2026), and those of the two Squidmar Color boxes from their announcement images (see [Source](#source)). Names are taken from `vallejo.json`, so where the set pages differ (72.044 "Dark Fleshtone", 72.091 "Sepia
 Ink") the chart's name is used.
 
 ### `data/custom-sets/`
