@@ -290,25 +290,10 @@ body {
   border-radius: 4px;
 }
 
-/*
- * Combinations: one block per printed block, as many side by side as fit with cells of at least 24px.
- * Rows are further apart than cells, so each triplet still reads as one row.
- */
-.swatch-blocks {
-  --triplet: 3;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(calc(var(--triplet) * 29px), 1fr));
-  gap: 16px 14px;
-  padding: 12px;
-  background: var(--stage);
-  border-radius: 4px;
-}
-
-.swatch-block {
-  display: grid;
-  grid-template-columns: repeat(var(--triplet), minmax(0, var(--swatch-max)));
-  align-content: start;
-  gap: 9px 5px;
+/* Sets: no printed rows, so the swatches flow across the pane, about as large as a chart's. */
+.swatch-flow {
+  grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  justify-self: stretch;
 }
 
 /* A section's heading on the surface, above its chart. */
@@ -365,7 +350,7 @@ body {
   outline-offset: 1px;
 }
 
-/* Every instance of the picked paint; the combination tables repeat paints. */
+/* Every instance of the picked paint; a custom set can repeat one. */
 .swatch.is-picked {
   position: relative;
   outline: 2px solid var(--ink);
@@ -648,8 +633,8 @@ input[type='range']:focus-visible {
 }
 
 .matrix {
-  --head: 216px;
-  --cell: 46px;
+  --head: 300px;
+  --cell: 48px;
   /* One 14px line, 5px padding above and below, a 1px border. */
   --row: 25px;
   table-layout: fixed;
@@ -727,6 +712,7 @@ input[type='range']:focus-visible {
 .matrix thead th {
   padding: 5px 3px 3px;
   text-align: center;
+  text-overflow: ellipsis;
   vertical-align: bottom;
 }
 
@@ -745,6 +731,10 @@ input[type='range']:focus-visible {
   text-overflow: ellipsis;
   font-family: var(--font-sans);
   font-size: 12px;
+}
+
+.matrix-type {
+  color: var(--ink-3);
 }
 
 .matrix th.is-hover {

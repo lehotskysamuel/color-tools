@@ -24,7 +24,7 @@ const escapeHtml = (text: string) =>
  * paints meet holds J, their ΔE_OK in JNDs, so the table is symmetric with zeros on the diagonal. The header row and column stick while the table scrolls. Hovering a cell highlights its row and
  * column.
  *
- * All paints make 374 × 374 cells, which take seconds to lay out, so only the rows and columns in view (plus
+ * All paints make 387 × 387 cells, which take seconds to lay out, so only the rows and columns in view (plus
  * OVERSCAN) are rendered. Spacers fill the rest: a row above and below, a column left and right of the
  * rendered block. That needs fixed cell sizes, which style.css gives as --head, --cell and --row.
  */
@@ -113,14 +113,16 @@ export class DifferenceMatrix {
     ];
     for (let j = c0; j < c1; j++) {
       const paint = paints[j];
-      html.push(`<th scope="col" aria-colindex="${j + 2}" ${title(paint)}>${swatch(paint)}${paint.code}</th>`);
+      // A paint without a code is headed by its name, cut to the column's width; the title has it in full.
+      html.push(`<th scope="col" aria-colindex="${j + 2}" ${title(paint)}>${swatch(paint)}${escapeHtml(paint.code ?? paint.name)}</th>`);
     }
     html.push(gapCell, '</tr></thead><tbody>', gapRow(r0));
     for (let i = r0; i < r1; i++) {
       const paint = paints[i];
       html.push(
         `<tr aria-rowindex="${i + 2}"><th scope="row" aria-colindex="1" ${title(paint)}>${swatch(paint)}`,
-        `<span class="mono">${paint.code}</span> <span class="matrix-name">${escapeHtml(paint.name)}</span></th>`,
+        paint.code ? `<span class="mono">${paint.code}</span> ` : '',
+        `<span class="matrix-name">${escapeHtml(paint.name)}</span> <span class="matrix-type">(${paint.type})</span></th>`,
         gapCell,
       );
       for (let j = c0; j < c1; j++) {
